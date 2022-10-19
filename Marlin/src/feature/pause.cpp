@@ -460,7 +460,6 @@ bool pause_print(const_float_t retract, const xyz_pos_t &park_point, const bool 
 
   // If axes don't need to home then the nozzle can park
   if (do_park) nozzle.park(0, park_point); // Park the nozzle by doing a Minimum Z Raise followed by an XY Move
-  TERN_(DWIN_LCD_PROUI, else ui.set_status(GET_TEXT_F(MSG_PARK_FAILED)));
 
   #if ENABLED(DUAL_X_CARRIAGE)
     const int8_t saved_ext        = active_extruder;
@@ -472,7 +471,9 @@ bool pause_print(const_float_t retract, const xyz_pos_t &park_point, const bool 
   if (unload_length)
     unload_filament(unload_length, show_lcd, PAUSE_MODE_CHANGE_FILAMENT);
 
-  TERN_(DUAL_X_CARRIAGE, set_duplication_enabled(saved_ext_dup_mode, saved_ext));
+  #if ENABLED(DUAL_X_CARRIAGE)
+    set_duplication_enabled(saved_ext_dup_mode, saved_ext);
+  #endif
 
   // Disable the Extruder for manual change
   disable_active_extruder();
@@ -578,7 +579,9 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
     }
     idle_no_sleep();
   }
-  TERN_(DUAL_X_CARRIAGE, set_duplication_enabled(saved_ext_dup_mode, saved_ext));
+  #if ENABLED(DUAL_X_CARRIAGE)
+    set_duplication_enabled(saved_ext_dup_mode, saved_ext);
+  #endif
 }
 
 /**

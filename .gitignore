@@ -147,7 +147,6 @@ vc-fileutils.settings
 imgui.ini
 eeprom.dat
 spi_flash.bin
-fs.img
 
 #cmake
 CMakeLists.txt
@@ -170,3 +169,4 @@ __pycache__
 
 # IOLogger logs
 *_log.csv
+/.vscode/extensions.json

@@ -66,8 +66,7 @@ void UpdateTBSetupItem(MenuItemClass* menuitem, uint8_t val) {
   strcpy_P(menuitem->caption, FTOP(TBItem.caption));
 }
 
-void DrawTBSetupItem(bool focused) {
-  const uint8_t line = CurrentMenu->line();
+void DrawTBSetupItem(bool focused, uint8_t line) {
   const uint16_t ypos = MYPOS(line);
   DWINUI::Draw_Box(1, focused ? Color_Bg_Black : HMI_data.Background_Color, {15, ypos, DWIN_WIDTH - 15, MLINE - 1});
   onDrawMenuItem(static_cast<MenuItemClass*>(CurrentMenu->SelectedItem()), line);
