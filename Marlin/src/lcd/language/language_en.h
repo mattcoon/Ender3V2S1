@@ -126,6 +126,14 @@ namespace Language_en {
       LSTR MSG_PREHEAT_3                  = _UxGT("Preheat ") PREHEAT_3_LABEL;
       LSTR MSG_PREHEAT_3_SETTINGS         = _UxGT("Preheat ") PREHEAT_3_LABEL _UxGT(" Conf");
     #endif
+    #ifdef PREHEAT_4_LABEL
+      LSTR MSG_PREHEAT_4                  = _UxGT("Preheat ") PREHEAT_4_LABEL;
+      LSTR MSG_PREHEAT_4_SETTINGS         = _UxGT("Preheat ") PREHEAT_4_LABEL _UxGT(" Conf");
+    #endif
+    #ifdef PREHEAT_5_LABEL
+      LSTR MSG_PREHEAT_5                  = _UxGT("Preheat ") PREHEAT_5_LABEL;
+      LSTR MSG_PREHEAT_5_SETTINGS         = _UxGT("Preheat ") PREHEAT_5_LABEL _UxGT(" Conf");
+    #endif
     LSTR MSG_PREHEAT_M                    = _UxGT("Preheat $");
     LSTR MSG_PREHEAT_M_H                  = _UxGT("Preheat $ ~");
     LSTR MSG_PREHEAT_M_END                = _UxGT("Preheat $ End");
