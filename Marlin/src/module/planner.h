@@ -499,6 +499,9 @@ class Planner {
       }
     #endif
 
+  // mmm used to force fan sync if in sync m106/m107 mode
+  static bool laserMode; // mmm
+
   private:
 
     /**

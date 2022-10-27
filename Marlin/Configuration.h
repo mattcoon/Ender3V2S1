@@ -62,25 +62,26 @@
 
 /*
 1.43 z
-
-
-Notes from pro:
 Need 
-Laser mode
-Bed tramming add turns to summary
-Fan percent
-H m s screen display
-Fast back menu
-Host commands
-Shortcuts  / toolbar - look ok - filament enable/disable
-Mpc store settings like pid bed
-Add lcd timeout option
-Unload filament / change - temp dialog not just warm preheat
-Filament menu cooldown
-Preheat option bed/hotend maybe only in filament menu
+------
+TODO: Bed tramming add turns to summary
+TODO: Fan percent
+TODO: H m s screen display
+TODO: Fast back menu
+TODO: Host commands
+TODO: Shortcuts  / toolbar - look ok - filament enable/disable
+TODO: Mpc store settings like pid bed
+TODO: Add lcd timeout option
+TODO: Unload filament / change - temp dialog not just warm preheat
+TODO: Filament menu cooldown
+TODO: Preheat option bed/hotend maybe only in filament menu
 
+Test: 
+------
+TODO: Laser mode
 
-Good
+Done:
+-------
 Bed tramming mostly
 Auto build mesh
 Flex mesh size
