@@ -69,7 +69,6 @@ TODO: Fan percent
 TODO: H m s screen display
 TODO: Fast back menu
 TODO: Host commands
-TODO: Mpc store settings like pid bed
 TODO: Add lcd timeout option
 TODO: Unload filament / change - temp dialog not just warm preheat
 TODO: Preheat option bed/hotend maybe only in filament menu
@@ -78,6 +77,7 @@ TODO: LCD Timeout
 
 Test: 
 ------
+TODO: Mpc store settings like pid bed
 TODO: Shortcuts  / toolbar - look ok - filament enable/disable
 TODO: Filament menu cooldown
 TODO: Laser mode

@@ -3341,6 +3341,9 @@ void Draw_Steps_Menu() {
       #if ENABLED(MPC_INCLUDE_FAN)
         EDIT_ITEM(ICON_MPCFan, MSG_MPC_AMBIENT_XFER_COEFF_FAN, onDrawFanAdj, SetFanAdj, &thermalManager.temp_hotend[0].constants.fan255_adjustment);
       #endif
+      #if ENABLED(EEPROM_SETTINGS)
+        MENU_ITEM(ICON_WriteEEPROM, MSG_STORE_EEPROM, onDrawMenuItem, WriteEeprom);
+      #endif
     }
     UpdateMenu(HotendMPCMenu);
   }
