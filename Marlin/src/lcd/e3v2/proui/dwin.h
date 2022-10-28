@@ -226,6 +226,9 @@ void DoCoolDown();
 #if HAS_LCD_BRIGHTNESS
   void TurnOffBacklight();
 #endif
+#if HAS_FILAMENT_SENSOR
+  void SetRunoutEnable();
+#endif
 void ApplyExtMinT();
 void ParkHead();
 #if HAS_ONESTEP_LEVELING

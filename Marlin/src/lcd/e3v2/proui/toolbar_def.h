@@ -41,6 +41,9 @@ TBItem_t TBItemA[] = {
     #define _TBPREHEAT(N) {ICON_Preheat##N, GET_TEXT_F(MSG_PREHEAT_##N), DoPreheat##N},
     REPEAT_1(PREHEAT_COUNT, _TBPREHEAT)
   #endif
+  #if HAS_FILAMENT_SENSOR
+    {ICON_Runout, GET_TEXT_F(MSG_RUNOUT_ENABLE), SetRunoutEnable},
+  #endif
   {ICON_Brightness, GET_TEXT_F(MSG_BRIGHTNESS_OFF), TurnOffBacklight},
   {ICON_Reboot, GET_TEXT_F(MSG_RESET_PRINTER), RebootPrinter},
   {ICON_WriteEEPROM, GET_TEXT_F(MSG_STORE_EEPROM), WriteEeprom}
