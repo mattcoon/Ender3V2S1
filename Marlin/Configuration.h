@@ -73,11 +73,13 @@ TODO: Shortcuts  / toolbar - look ok - filament enable/disable
 TODO: Mpc store settings like pid bed
 TODO: Add lcd timeout option
 TODO: Unload filament / change - temp dialog not just warm preheat
-TODO: Filament menu cooldown
 TODO: Preheat option bed/hotend maybe only in filament menu
+TODO: pause screen timeout when popup active / prevent blck screen without response
+TODO: LCD Timeout
 
 Test: 
 ------
+TODO: Filament menu cooldown
 TODO: Laser mode
 
 Done:
