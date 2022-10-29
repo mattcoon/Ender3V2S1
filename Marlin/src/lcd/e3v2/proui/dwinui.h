@@ -155,6 +155,7 @@
 #define BTN_Print             90
 #define BTN_Save              91
 #define BTN_Purge             92
+#define BTN_Repeat            98
 
 // Extended and default UI Colors
 #define Color_Black           0

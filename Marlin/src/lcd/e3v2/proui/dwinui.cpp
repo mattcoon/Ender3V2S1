@@ -228,6 +228,7 @@ void DWINUI::Draw_Button(uint8_t id, uint16_t x, uint16_t y) {
     case BTN_Print   : Draw_Button(GET_TEXT_F(MSG_BUTTON_PRINT), x, y); break;
     case BTN_Save    : Draw_Button(GET_TEXT_F(MSG_BUTTON_SAVE), x, y); break;
     case BTN_Purge   : Draw_Button(GET_TEXT_F(MSG_BUTTON_PURGE), x, y); break;
+    case BTN_Repeat  : Draw_Button(GET_TEXT_F(MSG_BUTTON_REPEAT), x, y); break;
     default: break;
   }
 }

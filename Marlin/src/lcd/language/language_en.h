@@ -484,6 +484,7 @@ namespace Language_en {
   LSTR MSG_BUTTON_ADVANCED                = _UxGT("Advanced");
   LSTR MSG_BUTTON_SAVE                    = _UxGT("Save");
   LSTR MSG_BUTTON_PURGE                   = _UxGT("Purge");
+  LSTR MSG_BUTTON_REPEAT                  = _UxGT("Repeat");
   LSTR MSG_PAUSING                        = _UxGT("Pausing...");
   LSTR MSG_PAUSE_PRINT                    = _UxGT("Pause Print");
   LSTR MSG_ADVANCED_PAUSE                 = _UxGT("Advanced Pause");

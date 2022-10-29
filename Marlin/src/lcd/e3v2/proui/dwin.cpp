@@ -1843,7 +1843,22 @@ void DWIN_RedrawScreen() {
     }
   }
 
-  void Draw_Popup_FilamentPurge() {
+void Draw_Popup_RepeatTramming() {
+    // DWIN_Draw_Popup(ICON_BLTouch, GET_TEXT_F(MSG_ADVANCED_PAUSE), GET_TEXT_F(MSG_FILAMENT_CHANGE_PURGE_CONTINUE));
+    DWINUI::Draw_Button(BTN_Repeat, 26, 280);
+    DWINUI::Draw_Button(BTN_Cancel, 146, 280);
+    Draw_Select_Highlight(true);
+  }
+
+  void onClick_RepeatTramming() {
+    if (HMI_flag.select_flag)
+      Trammingwizard();
+    else {
+      HMI_SaveProcessID(NothingToDo);
+    }
+  }
+
+void Draw_Popup_FilamentPurge() {
     DWIN_Draw_Popup(ICON_BLTouch, GET_TEXT_F(MSG_ADVANCED_PAUSE), GET_TEXT_F(MSG_FILAMENT_CHANGE_PURGE_CONTINUE));
     DWINUI::Draw_Button(BTN_Purge, 26, 280);
     DWINUI::Draw_Button(BTN_Continue, 146, 280);
@@ -2514,9 +2529,10 @@ void TramC () { Tram(4); }
       DWINUI::Draw_String((s == (screw_thread&1)) ? F("CW") : F("CCW")); 
       // DWINUI::Draw_CenteredString(200, F("[Confirm] to repeat"));
     }
-    DWINUI::Draw_Button(BTN_Continue, 86, 305);
-    checkkey = Menu;
-    HMI_SaveProcessID(WaitResponse);
+    Goto_Popup(Draw_Popup_RepeatTramming, onClick_RepeatTramming);
+    // DWINUI::Draw_Button(BTN_Continue, 86, 305);
+    // checkkey = Menu;
+    // HMI_SaveProcessID(WaitResponse);
   }
 
   void SetManualTramming() {
