@@ -64,7 +64,6 @@
 1.43 z
 Need 
 ------
-TODO: Bed tramming add turns to summary
 TODO: Fan percent
 TODO: H m s screen display
 TODO: Fast back menu
@@ -77,6 +76,7 @@ TODO: LCD Timeout
 
 Test: 
 ------
+TODO: Bed tramming add turns to summary
 TODO: Mpc store settings like pid bed
 TODO: Shortcuts  / toolbar - look ok - filament enable/disable
 TODO: Filament menu cooldown

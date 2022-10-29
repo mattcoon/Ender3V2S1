@@ -1041,6 +1041,9 @@
 
   #define ASSISTED_TRAMMING_WAIT_POSITION { X_CENTER, Y_CENTER, 30 } // mmm Move the nozzle out of the way for adjustment
 
+
+#endif
+
   /**
    * Screw thread:
    *   M3: 30 = Clockwise, 31 = Counter-Clockwise
@@ -1048,8 +1051,6 @@
    *   M5: 50 = Clockwise, 51 = Counter-Clockwise
    */
   #define TRAMMING_SCREW_THREAD 40
-
-#endif
 
 // @section motion
 

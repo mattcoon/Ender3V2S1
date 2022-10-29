@@ -2476,6 +2476,9 @@ void TramC () { Tram(4); }
       DWINUI::Draw_CenteredString(160,F("Tolerance achieved!"));
     }
     else {
+      const float threads_factor[] = { 0.5, 0.7, 0.8 };
+      const uint8_t screw_thread = TRAMMING_SCREW_THREAD;
+      float adjust = 0;
       uint8_t p = 0;
       float max = 0;
       FSTR_P plabel;
@@ -2486,8 +2489,12 @@ void TramC () { Tram(4); }
           s = (zval[x][y] >= 0);
           max = d;
           p = x + 2 * y;
+          adjust = ABS(d) < 0.001f ? 0 : d / threads_factor[(screw_thread - 30) / 10];
         }
       }
+      const int full_turns = trunc(adjust);
+      const float decimal_part = adjust - float(full_turns);
+      const int minutes = trunc(decimal_part * 60.0f);
       switch (p) {
         case 0b00 : plabel = GET_TEXT_F(MSG_LEVBED_FL); break;
         case 0b01 : plabel = GET_TEXT_F(MSG_LEVBED_FR); break;
@@ -2496,9 +2503,16 @@ void TramC () { Tram(4); }
         default   : plabel = F(""); break;
       }
       DWINUI::Draw_CenteredString(120, F("Corners not leveled"));
-      DWINUI::Draw_CenteredString(140, F("Knob adjustment required"));
-      DWINUI::Draw_CenteredString(Color_Green, 160, s ? F("Lower") : F("Raise"));
-      DWINUI::Draw_CenteredString(Color_Green, 180, plabel);
+      DWINUI::Draw_CenteredString(140,plabel);
+      DWINUI::Draw_String(F(" : "));
+      DWINUI::cursor.x = 60;
+      DWINUI::cursor.y = 160;
+      DWINUI::Draw_Int(1, full_turns);
+      DWINUI::Draw_String(F(" Turns, "));
+      DWINUI::Draw_Int(2, minutes);
+      DWINUI::Draw_String(F(" mins "));
+      DWINUI::Draw_String((s == (screw_thread&1)) ? F("CW") : F("CCW")); 
+      // DWINUI::Draw_CenteredString(200, F("[Confirm] to repeat"));
     }
     DWINUI::Draw_Button(BTN_Continue, 86, 305);
     checkkey = Menu;
