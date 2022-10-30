@@ -136,7 +136,7 @@
 #define ICON_TBSetup           CI(1,ICON_Contact)
 #define ICON_UBLActive         CI(1,ICON_HotendTemp)
 #define ICON_ZAfterHome        CI(1,ICON_SetEndTemp)
-#define ICON_LaserMode         CI(1,ICON_BLTouch)
+#define ICON_LaserMode         CI(1,ICON_SetCustomPreheat)
 //LED Lights
 #define ICON_CaseLight         CI(1,ICON_Motion)
 #define ICON_LedControl        CI(1,ICON_Motion)

@@ -73,17 +73,22 @@ TODO: Unload filament / change - temp dialog not just warm preheat
 TODO: Preheat option bed/hotend maybe only in filament menu
 TODO: pause screen timeout when popup active / prevent blck screen without response
 TODO: LCD Timeout
+TODO: toggle runout toolbar message between disable and enable not checkbox
+TODO: tramming repeat... lower button or shrink chart
+TODO: tramming cancel not returning to menu clean
+TODO: add status of fil sensor on bottom.
 
 Test: 
 ------
 TODO: Bed tramming add turns to summary
-TODO: Mpc store settings like pid bed
-TODO: Shortcuts  / toolbar - look ok - filament enable/disable
 TODO: Filament menu cooldown
-TODO: Laser mode
 
 Done:
 -------
+tramming repeat
+Mpc store settings like pid bed
+Shortcuts  / toolbar - look ok - filament enable/disable
+Laser mode
 Bed tramming mostly
 Auto build mesh
 Flex mesh size
@@ -2212,7 +2217,7 @@ Flex mesh size
 #define EEPROM_BOOT_SILENT    // Keep M503 quiet and only give errors during first load
 #if ENABLED(EEPROM_SETTINGS)
   #define EEPROM_AUTO_INIT  // Init EEPROM automatically on any errors.  // Ender Configs
-  #define EEPROM_INIT_NOW   // Init EEPROM on first boot after a new build.  // MRiscoC Reset EEPROM on first boot
+  // #define EEPROM_INIT_NOW   // Init EEPROM on first boot after a new build.  // MRiscoC Reset EEPROM on first boot
 #endif
 
 // @section host

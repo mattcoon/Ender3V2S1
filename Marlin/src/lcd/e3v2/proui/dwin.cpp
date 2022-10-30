@@ -1844,7 +1844,6 @@ void DWIN_RedrawScreen() {
   }
 
 void Draw_Popup_RepeatTramming() {
-    // DWIN_Draw_Popup(ICON_BLTouch, GET_TEXT_F(MSG_ADVANCED_PAUSE), GET_TEXT_F(MSG_FILAMENT_CHANGE_PURGE_CONTINUE));
     DWINUI::Draw_Button(BTN_Repeat, 26, 280);
     DWINUI::Draw_Button(BTN_Cancel, 146, 280);
     Draw_Select_Highlight(true);
@@ -1854,7 +1853,8 @@ void Draw_Popup_RepeatTramming() {
     if (HMI_flag.select_flag)
       Trammingwizard();
     else {
-      HMI_SaveProcessID(NothingToDo);
+      HMI_SaveProcessID(Menu);
+      Draw_Tramming_Menu();
     }
   }
 
@@ -2527,11 +2527,9 @@ void TramC () { Tram(4); }
       DWINUI::Draw_Int(2, minutes);
       DWINUI::Draw_String(F(" mins "));
       DWINUI::Draw_String((s == (screw_thread&1)) ? F("CW") : F("CCW")); 
-      // DWINUI::Draw_CenteredString(200, F("[Confirm] to repeat"));
     }
     Goto_Popup(Draw_Popup_RepeatTramming, onClick_RepeatTramming);
     // DWINUI::Draw_Button(BTN_Continue, 86, 305);
-    // checkkey = Menu;
     // HMI_SaveProcessID(WaitResponse);
   }
 
@@ -2755,7 +2753,7 @@ void onDrawPIDd(MenuItemClass* menuitem, int8_t line) { onDrawFloatMenu(menuitem
 
 void Draw_Prepare_Menu() {
   checkkey = Menu;
-  if (SET_MENU(PrepareMenu, MSG_PREPARE, 9 + PREHEAT_COUNT)) {
+  if (SET_MENU(PrepareMenu, MSG_PREPARE, 10 + PREHEAT_COUNT)) {
     BACK_ITEM(Goto_Main_Menu);
     #if ENABLED(ADVANCED_PAUSE_FEATURE)
       MENU_ITEM(ICON_FilMan, MSG_FILAMENT_MAN, onDrawSubMenu, Draw_FilamentMan_Menu);
@@ -3183,7 +3181,7 @@ void Draw_Motion_Menu() {
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
   void Draw_FilamentMan_Menu() {
     checkkey = Menu;
-    if (SET_MENU(FilamentMenu, MSG_FILAMENT_MAN, 5)) {
+    if (SET_MENU(FilamentMenu, MSG_FILAMENT_MAN, 6)) {
       BACK_ITEM(Draw_Prepare_Menu);
       #if ENABLED(NOZZLE_PARK_FEATURE)
         MENU_ITEM(ICON_Park, MSG_FILAMENT_PARK_ENABLED, onDrawMenuItem, ParkHead);
@@ -3361,7 +3359,7 @@ void Draw_Steps_Menu() {
 
   void Draw_HotendMPC_Menu() {
     checkkey = Menu;
-    if (SET_MENU_F(HotendMPCMenu, STR_MPC_AUTOTUNE " Settings", 7)) {
+    if (SET_MENU_F(HotendMPCMenu, STR_MPC_AUTOTUNE " Settings", 8)) {
       BACK_ITEM(Draw_AdvancedSettings_Menu);
       MENU_ITEM(ICON_MPCNozzle, MSG_MPC_AUTOTUNE, onDrawMenuItem, HotendMPC);
       EDIT_ITEM(ICON_MPCHeater, MSG_MPC_POWER, onDrawPFloatMenu, SetHeaterPower, &thermalManager.temp_hotend[0].constants.heater_power);
