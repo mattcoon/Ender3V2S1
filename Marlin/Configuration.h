@@ -66,7 +66,6 @@ Need
 ------
 TODO: Fan percent
 TODO: H m s screen display
-TODO: Fast back menu
 TODO: Host commands
 TODO: Add lcd timeout option
 TODO: Unload filament / change - temp dialog not just warm preheat
@@ -75,16 +74,19 @@ TODO: pause screen timeout when popup active / prevent blck screen without respo
 TODO: LCD Timeout
 TODO: toggle runout toolbar message between disable and enable not checkbox
 TODO: tramming repeat... lower button or shrink chart
-TODO: tramming cancel not returning to menu clean
-TODO: add status of fil sensor on bottom.
+TODO: tramming lift to safe z
+TODO: prepare preheat submenu
+TODO: add status of fil sensor on bottom. extruder icon background color? green working closed, yellow disabled, red runout
 
 Test: 
 ------
-TODO: Bed tramming add turns to summary
-TODO: Filament menu cooldown
+TODO: Fast back menu
 
 Done:
 -------
+tramming cancel not returning to menu clean
+Filament menu cooldown
+Bed tramming add turns to summary
 tramming repeat
 Mpc store settings like pid bed
 Shortcuts  / toolbar - look ok - filament enable/disable
