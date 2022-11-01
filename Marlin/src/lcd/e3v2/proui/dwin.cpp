@@ -234,6 +234,7 @@ static uint32_t _remain_time = 0;
 MenuClass *FileMenu = nullptr;
 MenuClass *PrepareMenu = nullptr;
 MenuClass *TrammingMenu = nullptr;
+MenuClass *PreheatingMenu = nullptr;
 MenuClass *MoveMenu = nullptr;
 MenuClass *ControlMenu = nullptr;
 MenuClass *AdvancedSettings = nullptr;
@@ -2753,7 +2754,7 @@ void onDrawPIDd(MenuItemClass* menuitem, int8_t line) { onDrawFloatMenu(menuitem
 
 void Draw_Prepare_Menu() {
   checkkey = Menu;
-  if (SET_MENU(PrepareMenu, MSG_PREPARE, 10 + PREHEAT_COUNT)) {
+  if (SET_MENU(PrepareMenu, MSG_PREPARE, 11)) {
     BACK_ITEM(Goto_Main_Menu);
     #if ENABLED(ADVANCED_PAUSE_FEATURE)
       MENU_ITEM(ICON_FilMan, MSG_FILAMENT_MAN, onDrawSubMenu, Draw_FilamentMan_Menu);
@@ -2780,10 +2781,7 @@ void Draw_Prepare_Menu() {
         MENU_ITEM(ICON_SetHome, MSG_SET_HOME_OFFSETS, onDrawMenuItem, SetHome);
       #endif
     #endif
-    #if HAS_PREHEAT
-      #define _ITEM_PREHEAT(N) MENU_ITEM(ICON_Preheat##N, MSG_PREHEAT_##N, onDrawMenuItem, DoPreheat##N);
-      REPEAT_1(PREHEAT_COUNT, _ITEM_PREHEAT)
-    #endif
+    MENU_ITEM(ICON_CustomPreheat, MSG_PREHEAT, onDrawSubMenu, Draw_Preheat_Menu);
     MENU_ITEM(ICON_Cool, MSG_COOLDOWN, onDrawMenuItem, DoCoolDown);
     EDIT_ITEM(ICON_LaserMode, MSG_ENABLE_LASERMODE, onDrawChkbMenu, SetLaserMode, &planner.laserMode);
   }
@@ -2809,6 +2807,19 @@ void Draw_Tramming_Menu() {
     MENU_ITEM(ICON_Axis, MSG_LEVBED_C , onDrawMenuItem, TramC );
   }
   UpdateMenu(TrammingMenu);
+}
+
+void Draw_Preheat_Menu() {
+  checkkey = Menu;
+  if (SET_MENU(PreheatingMenu, MSG_PREHEAT, 2 + PREHEAT_COUNT)) {
+    BACK_ITEM(Draw_Prepare_Menu);
+    BACK_ITEM(Goto_Main_Menu);
+    #if HAS_PREHEAT
+      #define _ITEM_PREHEAT(N) MENU_ITEM(ICON_Preheat##N, MSG_PREHEAT_##N, onDrawMenuItem, DoPreheat##N);
+      REPEAT_1(PREHEAT_COUNT, _ITEM_PREHEAT)
+    #endif
+  }
+  UpdateMenu(PreheatingMenu);
 }
 
 void Draw_Control_Menu() {
@@ -3193,9 +3204,10 @@ void Draw_Motion_Menu() {
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
   void Draw_FilamentMan_Menu() {
     checkkey = Menu;
-    if (SET_MENU(FilamentMenu, MSG_FILAMENT_MAN, 7)) {
+    if (SET_MENU(FilamentMenu, MSG_FILAMENT_MAN, 8)) {
       BACK_ITEM(Draw_Prepare_Menu);
       BACK_ITEM(Goto_Main_Menu);
+      MENU_ITEM(ICON_CustomPreheat, MSG_PREHEAT, onDrawSubMenu, Draw_Preheat_Menu);
       #if ENABLED(NOZZLE_PARK_FEATURE)
         MENU_ITEM(ICON_Park, MSG_FILAMENT_PARK_ENABLED, onDrawMenuItem, ParkHead);
       #endif
