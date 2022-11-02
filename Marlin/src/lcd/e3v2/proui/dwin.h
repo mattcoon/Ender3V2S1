@@ -211,6 +211,9 @@ void AutoHome();
 #if HAS_PREHEAT
   #define _DOPREHEAT(N) void DoPreheat##N();
   REPEAT_1(PREHEAT_COUNT, _DOPREHEAT)
+
+  #define _DOPREHEATHOTEND(N) void DoPreheatHotEnd##N();
+  REPEAT_1(PREHEAT_COUNT, _DOPREHEATHOTEND)
 #endif
 void DoCoolDown();
 #if HAS_HOTEND  && ENABLED(PIDTEMP)

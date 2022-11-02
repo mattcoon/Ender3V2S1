@@ -235,6 +235,7 @@ MenuClass *FileMenu = nullptr;
 MenuClass *PrepareMenu = nullptr;
 MenuClass *TrammingMenu = nullptr;
 MenuClass *PreheatingMenu = nullptr;
+MenuClass *PreheatingHotendMenu = nullptr;
 MenuClass *MoveMenu = nullptr;
 MenuClass *ControlMenu = nullptr;
 MenuClass *AdvancedSettings = nullptr;
@@ -2076,6 +2077,9 @@ void AutoHome() { queue.inject_P(G28_STR); }
 #if HAS_PREHEAT
   #define _DoPreheat(N) void DoPreheat##N() { ui.preheat_all(N-1); }
   REPEAT_1(PREHEAT_COUNT, _DoPreheat)
+
+  #define _DoPreheatHotEnd(N) void DoPreheatHotEnd##N() { ui.preheat_hotend(N-1); }
+  REPEAT_1(PREHEAT_COUNT, _DoPreheatHotEnd)
 #endif
 
 void DoCoolDown() { thermalManager.cooldown(); }
@@ -2811,9 +2815,8 @@ void Draw_Tramming_Menu() {
 
 void Draw_Preheat_Menu() {
   checkkey = Menu;
-  if (SET_MENU(PreheatingMenu, MSG_PREHEAT, 2 + PREHEAT_COUNT)) {
+  if (SET_MENU(PreheatingMenu, MSG_PREHEAT, 1 + PREHEAT_COUNT)) {
     BACK_ITEM(Draw_Prepare_Menu);
-    BACK_ITEM(Goto_Main_Menu);
     #if HAS_PREHEAT
       #define _ITEM_PREHEAT(N) MENU_ITEM(ICON_Preheat##N, MSG_PREHEAT_##N, onDrawMenuItem, DoPreheat##N);
       REPEAT_1(PREHEAT_COUNT, _ITEM_PREHEAT)
@@ -2821,6 +2824,19 @@ void Draw_Preheat_Menu() {
   }
   UpdateMenu(PreheatingMenu);
 }
+
+void Draw_PreheatHotEnd_Menu() {
+  checkkey = Menu;
+  if (SET_MENU(PreheatingHotendMenu, MSG_PREHEAT, 1 + PREHEAT_COUNT)) {
+    BACK_ITEM(Draw_Prepare_Menu);
+    #if HAS_PREHEAT
+      #define _ITEM_PREHEATHE(N) MENU_ITEM(ICON_Preheat##N, MSG_PREHEAT_##N, onDrawMenuItem, DoPreheatHotEnd##N);
+      REPEAT_1(PREHEAT_COUNT, _ITEM_PREHEATHE)
+    #endif
+  }
+  UpdateMenu(PreheatingHotendMenu);
+}
+
 
 void Draw_Control_Menu() {
   checkkey = Menu;
@@ -3207,7 +3223,7 @@ void Draw_Motion_Menu() {
     if (SET_MENU(FilamentMenu, MSG_FILAMENT_MAN, 8)) {
       BACK_ITEM(Draw_Prepare_Menu);
       BACK_ITEM(Goto_Main_Menu);
-      MENU_ITEM(ICON_CustomPreheat, MSG_PREHEAT, onDrawSubMenu, Draw_Preheat_Menu);
+      MENU_ITEM(ICON_CustomPreheat, MSG_PREHEAT, onDrawSubMenu, Draw_PreheatHotEnd_Menu);
       #if ENABLED(NOZZLE_PARK_FEATURE)
         MENU_ITEM(ICON_Park, MSG_FILAMENT_PARK_ENABLED, onDrawMenuItem, ParkHead);
       #endif
