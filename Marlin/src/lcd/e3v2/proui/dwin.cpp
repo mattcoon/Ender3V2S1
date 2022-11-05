@@ -667,6 +667,20 @@ void _draw_ZOffsetIcon() {
   #endif
 }
 
+void _draw_FilamentSensorStatus() {
+  uint16_t RunoutColor = Color_Grey;
+  if (runout.enabled) {
+    if (runout.filament_ran_out) {
+      RunoutColor = Color_Red;
+    }
+    else {
+      RunoutColor = Color_Green;
+    }
+  }
+  DWIN_Draw_Rectangle(1, RunoutColor, 111, 416, 130, 437);
+  DWINUI::Draw_Icon(ICON_StepE, 112, 417);
+}
+
 void _draw_xyz_position(const bool force) {
   _update_axis_value(X_AXIS,  27, 459, force);
   _update_axis_value(Y_AXIS, 112, 459, force);
@@ -757,6 +771,7 @@ void update_variable() {
     DWINUI::Draw_Signed_Float(DWIN_FONT_STAT, HMI_data.Indicator_Color,  HMI_data.Background_Color, 2, 2, 204, 417, _offset);
   }
 
+  _draw_FilamentSensorStatus();
   _draw_ZOffsetIcon();
   _draw_xyz_position(false);
 }
