@@ -64,7 +64,6 @@
 1.43 z
 Need 
 ------
-TODO: Fan percent
 TODO: H m s screen display
 TODO: Host commands
 TODO: Add lcd timeout option
@@ -83,6 +82,7 @@ TODO: prepare preheat submenu
 TODO: preheat hotend mode
 TODO: Preheat option bed/hotend maybe only in filament menu
 TODO: add status of fil sensor on bottom. extruder icon background color? green working closed, yellow disabled, red runout
+TODO: Fan percent
 
 Done:
 -------

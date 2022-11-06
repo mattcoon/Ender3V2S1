@@ -977,9 +977,8 @@ void DWIN_Draw_Dashboard() {
 
   #if HAS_FAN
     DWINUI::Draw_Icon(ICON_FanSpeed, 187, 383);
-    DWINUI::Draw_Int(DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 3, 195 + 2 * STAT_CHR_W, 384, thermalManager.fan_speed[0]);
-    // DWINUI::Draw_Int(DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 3, 195 + 2 * STAT_CHR_W, 384, (PRO_data.fan_percent) ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
-    // DWIN_Draw_String((PRO_data.fan_percent) ? false : true, DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 195 + 5 * STAT_CHR_W + 2, 384, (PRO_data.fan_percent) ? F("%") : F(" "));
+    DWINUI::Draw_Int(DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 3, 195 + 2 * STAT_CHR_W, 384, (PRO_data.fan_percent) ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
+    DWIN_Draw_String((PRO_data.fan_percent) ? false : true, DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 195 + 5 * STAT_CHR_W + 2, 384, (PRO_data.fan_percent) ? F("%") : F(" "));
   #endif
 
   #if HAS_ZOFFSET_ITEM
@@ -2691,6 +2690,11 @@ void SetStepsZ() { HMI_value.axis = Z_AXIS, SetPFloatOnClick( MIN_STEP, MAX_STEP
   }
 #endif
 
+void SetFanPercent() {
+  PRO_data.fan_percent = !PRO_data.fan_percent;
+  Show_Chkb_Line(CurrentMenu->line(), PRO_data.fan_percent);
+}
+
 #if ENABLED(FWRETRACT)
   void Return_FWRetract_Menu() { (PreviousMenu == FilSetMenu) ? Draw_FilSet_Menu() : Draw_Tune_Menu(); }
   void SetRetractLength() { SetPFloatOnClick( 0, 10, UNITFDIGITS); }
@@ -2883,7 +2887,7 @@ void Draw_Control_Menu() {
 
 void Draw_AdvancedSettings_Menu() {
   checkkey = Menu;
-  if (SET_MENU(AdvancedSettings, MSG_ADVANCED_SETTINGS, 22)) {
+  if (SET_MENU(AdvancedSettings, MSG_ADVANCED_SETTINGS, 23)) {
     BACK_ITEM(Goto_Main_Menu);
     #if ENABLED(EEPROM_SETTINGS)
       MENU_ITEM(ICON_WriteEEPROM, MSG_STORE_EEPROM, onDrawMenuItem, WriteEeprom);
@@ -2940,6 +2944,7 @@ void Draw_AdvancedSettings_Menu() {
       EDIT_ITEM(ICON_Brightness, MSG_BRIGHTNESS, onDrawPInt8Menu, SetBrightness, &ui.brightness);
       MENU_ITEM(ICON_Brightness, MSG_BRIGHTNESS_OFF, onDrawMenuItem, TurnOffBacklight);
     #endif
+    EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawPInt8Menu, SetFanPercent, &PRO_data.fan_percent);
     MENU_ITEM(ICON_Scolor, MSG_COLORS_SELECT, onDrawSubMenu, Draw_SelectColors_Menu);
   }
   ui.reset_status(true);
