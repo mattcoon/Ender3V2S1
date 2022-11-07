@@ -64,16 +64,14 @@
 1.43 z
 Need 
 ------
-TODO: H m s screen display
 TODO: Host commands
-TODO: Add lcd timeout option
 TODO: Unload filament / change - temp dialog not just warm preheat
 TODO: pause screen timeout when popup active / prevent blck screen without response
 TODO: LCD Timeout
-TODO: toggle runout toolbar message between disable and enable not checkbox
 TODO: tramming repeat... lower button or shrink chart
 TODO: tramming lift to safe z
 TODO: make flex environment for 4.2.7 and 4.2.2 with direct drive or bowden
+TODO: maybe toggle runout toolbar message between disable and enable not checkbox
 
 Test: 
 ------
@@ -83,6 +81,7 @@ TODO: preheat hotend mode
 TODO: Preheat option bed/hotend maybe only in filament menu
 TODO: add status of fil sensor on bottom. extruder icon background color? green working closed, yellow disabled, red runout
 TODO: Fan percent
+TODO: H m s screen display
 
 Done:
 -------

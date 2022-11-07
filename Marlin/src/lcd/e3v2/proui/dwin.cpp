@@ -502,14 +502,18 @@ void Draw_Print_ProgressBar() {
 
 void Draw_Print_ProgressElapsed() {
   char buf[10];
+  const char *timestr = "%02i:%02i ";
+  if (PRO_data.time_format_textual) timestr = "%02ih%02im";
   duration_t elapsed = print_job_timer.duration(); // print timer
-  sprintf_P(buf, PSTR("%02i:%02i "), (uint16_t)(elapsed.value / 3600), ((uint16_t)elapsed.value % 3600) / 60);
+  sprintf_P(buf, PSTR(timestr), (uint16_t)(elapsed.value / 3600), ((uint16_t)elapsed.value % 3600) / 60);
   DWINUI::Draw_String(HMI_data.Text_Color, HMI_data.Background_Color, 47, 192, buf);
 }
 
 void Draw_Print_ProgressRemain() {
   char buf[10];
-  sprintf_P(buf, PSTR("%02i:%02i "), (uint16_t)(_remain_time / 3600), ((uint16_t)_remain_time % 3600) / 60);
+  const char *timestr = "%02i:%02i ";
+  if (PRO_data.time_format_textual) timestr = "%02ih%02im";
+  sprintf_P(buf, PSTR(timestr), (uint16_t)(_remain_time / 3600), ((uint16_t)_remain_time % 3600) / 60);
   DWINUI::Draw_String(HMI_data.Text_Color, HMI_data.Background_Color, 181, 192, buf);
 }
 
@@ -2695,6 +2699,11 @@ void SetFanPercent() {
   Show_Chkb_Line(CurrentMenu->line(), PRO_data.fan_percent);
 }
 
+void SetTimeFormat() {
+  PRO_data.time_format_textual = !PRO_data.time_format_textual;
+  Show_Chkb_Line(CurrentMenu->line(), PRO_data.time_format_textual);
+}
+
 #if ENABLED(FWRETRACT)
   void Return_FWRetract_Menu() { (PreviousMenu == FilSetMenu) ? Draw_FilSet_Menu() : Draw_Tune_Menu(); }
   void SetRetractLength() { SetPFloatOnClick( 0, 10, UNITFDIGITS); }
@@ -2944,7 +2953,8 @@ void Draw_AdvancedSettings_Menu() {
       EDIT_ITEM(ICON_Brightness, MSG_BRIGHTNESS, onDrawPInt8Menu, SetBrightness, &ui.brightness);
       MENU_ITEM(ICON_Brightness, MSG_BRIGHTNESS_OFF, onDrawMenuItem, TurnOffBacklight);
     #endif
-    EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawPInt8Menu, SetFanPercent, &PRO_data.fan_percent);
+    EDIT_ITEM(ICON_PrintTime, MSG_PROGRESS_IN_HHMM, onDrawChkbMenu, SetTimeFormat, &PRO_data.time_format_textual);
+    EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, SetFanPercent, &PRO_data.fan_percent);
     MENU_ITEM(ICON_Scolor, MSG_COLORS_SELECT, onDrawSubMenu, Draw_SelectColors_Menu);
   }
   ui.reset_status(true);

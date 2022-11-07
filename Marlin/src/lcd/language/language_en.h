@@ -441,6 +441,7 @@ namespace Language_en {
   LSTR MSG_BRIGHTNESS                     = _UxGT("LCD Brightness");
   LSTR MSG_SCREEN_TIMEOUT                 = _UxGT("LCD Timeout (m)");
   LSTR MSG_FAN_SPEED_PERCENT              = _UxGT("Show Fan Speed in %");
+  LSTR MSG_PROGRESS_IN_HHMM               = _UxGT("Progress in __h __m");
   LSTR MSG_BRIGHTNESS_OFF                 = _UxGT("Turn Off LCD");
   LSTR MSG_STORE_EEPROM                   = _UxGT("Store Settings");
   LSTR MSG_LOAD_EEPROM                    = _UxGT("Load Settings");
