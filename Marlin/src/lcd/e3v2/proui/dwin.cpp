@@ -2372,8 +2372,12 @@ void SetSpeed() { SetPIntOnClick(MIN_PRINT_SPEED, MAX_PRINT_SPEED); }
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
 
   void ChangeFilament() {
-    HMI_SaveProcessID(NothingToDo);
-    queue.inject(F("M600 B2"));
+    if (!thermalManager.targetTooColdToExtrude(active_extruder)) {
+      HMI_SaveProcessID(NothingToDo);
+      queue.inject(F("M600 B2"));
+    }
+    else
+      Draw_PreheatHotEnd_Menu();
   }
 
   #if ENABLED(NOZZLE_PARK_FEATURE)
@@ -2385,13 +2389,21 @@ void SetSpeed() { SetPIntOnClick(MIN_PRINT_SPEED, MAX_PRINT_SPEED); }
 
   #if ENABLED(FILAMENT_LOAD_UNLOAD_GCODES)
     void UnloadFilament() {
-      LCD_MESSAGE(MSG_FILAMENTUNLOAD);
-      queue.inject(F("M702 Z20"));
+      if (!thermalManager.targetTooColdToExtrude(active_extruder)) {
+        LCD_MESSAGE(MSG_FILAMENTUNLOAD);
+        queue.inject(F("M702 Z20"));
+      }
+      else
+        Draw_PreheatHotEnd_Menu();
     }
 
     void LoadFilament() {
-      LCD_MESSAGE(MSG_FILAMENTLOAD);
-      queue.inject(F("M701 Z20"));
+      if (!thermalManager.targetTooColdToExtrude(active_extruder)) {
+        LCD_MESSAGE(MSG_FILAMENTLOAD);
+        queue.inject(F("M701 Z20"));
+      }
+      else
+        Draw_PreheatHotEnd_Menu();
     }
   #endif
 

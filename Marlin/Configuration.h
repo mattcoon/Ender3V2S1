@@ -65,7 +65,6 @@
 Need 
 ------
 TODO: Host commands
-TODO: Unload filament / change - temp dialog not just warm preheat
 TODO: pause screen timeout when popup active / prevent blck screen without response
 TODO: LCD Timeout
 TODO: tramming repeat... lower button or shrink chart
@@ -82,6 +81,7 @@ TODO: Preheat option bed/hotend maybe only in filament menu
 TODO: add status of fil sensor on bottom. extruder icon background color? green working closed, yellow disabled, red runout
 TODO: Fan percent
 TODO: H m s screen display
+TODO: Unload filament / change - temp dialog not just warm preheat
 
 Done:
 -------

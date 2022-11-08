@@ -336,6 +336,7 @@ void Draw_Prepare_Menu();
 void Draw_Move_Menu();
 void Draw_Tramming_Menu();
 void Draw_Preheat_Menu();
+void Draw_PreheatHotEnd_Menu();
 #if HAS_HOME_OFFSET
   void Draw_HomeOffset_Menu();
 #endif
