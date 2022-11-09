@@ -67,7 +67,6 @@ Need
 TODO: Host commands
 TODO: pause screen timeout when popup active / prevent blck screen without response
 TODO: LCD Timeout
-TODO: tramming repeat... lower button or shrink chart
 TODO: tramming lift to safe z
 TODO: make flex environment for 4.2.7 and 4.2.2 with direct drive or bowden
 TODO: maybe toggle runout toolbar message between disable and enable not checkbox
@@ -82,6 +81,7 @@ TODO: add status of fil sensor on bottom. extruder icon background color? green 
 TODO: Fan percent
 TODO: H m s screen display
 TODO: Unload filament / change - temp dialog not just warm preheat
+TODO: tramming repeat... lower button or shrink chart
 
 Done:
 -------

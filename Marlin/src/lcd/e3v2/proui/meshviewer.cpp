@@ -38,11 +38,12 @@
 
 MeshViewerClass MeshViewer;
 
-void MeshViewerClass::DrawMesh(bed_mesh_t zval, const uint8_t sizex, const uint8_t sizey) {
-  const int8_t mx = 25, my = 25;  // Margins
+void MeshViewerClass::DrawMesh(bed_mesh_t zval, const uint8_t sizex, const uint8_t sizey, int8_t margins) {
+  const int8_t mx = margins, my = margins;  // Margins
+  const int8_t mxsz = _MIN(30,margins); // max circle diameter
   const int16_t stx = (DWIN_WIDTH - 2 * mx) / (sizex - 1),  // Steps
                 sty = (DWIN_WIDTH - 2 * my) / (sizey - 1);
-  const int8_t rmax = _MIN(mx - 2, stx / 2);
+  const int8_t rmax = _MIN( _MIN(mxsz - 2 , mx-2) , stx / 2);
   const int8_t rmin = 7;
   int16_t zmesh[sizex][sizey];
   #define px(xp) (mx + (xp) * stx)

@@ -24,7 +24,7 @@ class MeshViewerClass {
 public:
   float max, min;
   void Draw(bool withsave = false);
-  void DrawMesh(bed_mesh_t zval, const uint8_t sizex, const uint8_t sizey);
+  void DrawMesh(bed_mesh_t zval, const uint8_t sizex, const uint8_t sizey, int8_t margins = 25);
 };
 
 extern MeshViewerClass MeshViewer;

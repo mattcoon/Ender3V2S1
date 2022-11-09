@@ -2503,13 +2503,13 @@ void TramC () { Tram(4); }
     }
     zval[0][0] = Tram(0);
     checkkey = NothingToDo;
-    MeshViewer.DrawMesh(zval, 2, 2);
+    MeshViewer.DrawMesh(zval, 2, 2, 50);
     zval[1][0] = Tram(1);
-    MeshViewer.DrawMesh(zval, 2, 2);
+    MeshViewer.DrawMesh(zval, 2, 2, 50);
     zval[1][1] = Tram(2);
-    MeshViewer.DrawMesh(zval, 2, 2);
+    MeshViewer.DrawMesh(zval, 2, 2, 50);
     zval[0][1] = Tram(3);
-    MeshViewer.DrawMesh(zval, 2, 2);
+    MeshViewer.DrawMesh(zval, 2, 2, 50);
 
     DWINUI::Draw_CenteredString(140, F("Calculating average"));
     DWINUI::Draw_CenteredString(160, F("and relative heights"));
@@ -2518,7 +2518,7 @@ void TramC () { Tram(4); }
     LOOP_L_N(x, 2) LOOP_L_N(y, 2) avg += zval[x][y];
     avg /= 4.0f;
     LOOP_L_N(x, 2) LOOP_L_N(y, 2) zval[x][y] -= avg;
-    MeshViewer.DrawMesh(zval, 2, 2);
+    MeshViewer.DrawMesh(zval, 2, 2, 50);
     ui.reset_status();
 
     if (ABS(MeshViewer.max - MeshViewer.min) < 0.05) {
