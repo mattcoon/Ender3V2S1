@@ -128,7 +128,7 @@ Flex mesh size
 
 // Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-  #define MOTHERBOARD BOARD_CREALITY_V427  // Board v4.2.7
+  #define MOTHERBOARD BOARD_CREALITY_V422  
 #endif
 
 /**
@@ -175,6 +175,22 @@ Flex mesh size
 
 // Enable the Bluetooth serial interface on AT90USB devices
 //#define BLUETOOTH
+
+#ifndef CREALITY_DAD
+
+  #define MATT_DirectEx //comment out for Bowden extrusion
+
+  #define X_STEP_PIN                          PB9
+  #define X_DIR_PIN                           PC2
+  #define Y_STEP_PIN                          PB7
+
+  #define Y_DIR_PIN                           PB8
+  #define Z_STEP_PIN                          PB5
+  #define Z_DIR_PIN                           PB6
+
+  #define E0_STEP_PIN                         PB3
+  #define E0_DIR_PIN                          PB4
+#endif
 
 // Name displayed in the LCD "Ready" message and Info menu
 #define CUSTOM_MACHINE_NAME "Ender3V2-427-BLTUBL-MPC"
@@ -730,12 +746,21 @@ Flex mesh size
   #define MPC_INCLUDE_FAN                             // Model the fan speed?
 
   // Measured physical constants from M306
+#ifndef CREALITY_DAD // matt direct
   #define MPC_BLOCK_HEAT_CAPACITY { 14.5f }           // (J/K) Heat block heat capacities.
   #define MPC_SENSOR_RESPONSIVENESS { 0.15f }         // (K/s per ∆K) Rate of change of sensor temperature from heat block.
   #define MPC_AMBIENT_XFER_COEFF { 0.105f }           // (W/K) Heat transfer coefficients from heat block to room air with fan off.
   #if ENABLED(MPC_INCLUDE_FAN)
     #define MPC_AMBIENT_XFER_COEFF_FAN255 { 0.129f }  // (W/K) Heat transfer coefficients from heat block to room air with fan on full.
   #endif
+#else
+  #define MPC_BLOCK_HEAT_CAPACITY { 14.5f }           // (J/K) Heat block heat capacities.
+  #define MPC_SENSOR_RESPONSIVENESS { 0.62f }         // (K/s per ∆K) Rate of change of sensor temperature from heat block.
+  #define MPC_AMBIENT_XFER_COEFF { 0.0653f }           // (W/K) Heat transfer coefficients from heat block to room air with fan off.
+  #if ENABLED(MPC_INCLUDE_FAN)
+    #define MPC_AMBIENT_XFER_COEFF_FAN255 { 0.0808f }  // (W/K) Heat transfer coefficients from heat block to room air with fan on full.
+  #endif
+#endif
 
   // For one fan and multiple hotends MPC needs to know how to apply the fan cooling effect.
   #if ENABLED(MPC_INCLUDE_FAN)
