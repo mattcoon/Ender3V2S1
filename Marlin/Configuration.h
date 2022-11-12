@@ -68,23 +68,28 @@ TODO: Host commands
 TODO: pause screen timeout when popup active / prevent blck screen without response
 TODO: LCD Timeout
 TODO: tramming lift to safe z
-TODO: make flex environment for 4.2.7 and 4.2.2 with direct drive or bowden
-TODO: maybe toggle runout toolbar message between disable and enable not checkbox
 
 Test: 
 ------
-TODO: Fast back menu
-TODO: prepare preheat submenu
+TODO: filament status color too much . second circle?
+TODO: filament menu update status with temp too low
+TODO: percent calc wrong, and toggle for stat not working in advance menu
+TODO: change order of preheat menu to have TPU before warmup
+TODO: main fast back called it main / home
+TODO: maybe toggle runout toolbar message. remove checkbox
 TODO: preheat hotend mode
-TODO: Preheat option bed/hotend maybe only in filament menu
 TODO: add status of fil sensor on bottom. extruder icon background color? green working closed, yellow disabled, red runout
 TODO: Fan percent
 TODO: H m s screen display
-TODO: Unload filament / change - temp dialog not just warm preheat
 TODO: tramming repeat... lower button or shrink chart
 
 Done:
 -------
+Preheat option bed/hotend maybe only in filament menu
+make flex environment for 4.2.7 and 4.2.2 with direct drive or bowden
+Unload filament / change - temp dialog not just warm preheat
+Fast back menu
+prepare preheat submenu
 tramming cancel not returning to menu clean
 Filament menu cooldown
 Bed tramming add turns to summary
@@ -2295,15 +2300,15 @@ Flex mesh size
 #define PREHEAT_3_TEMP_CHAMBER 35
 #define PREHEAT_3_FAN_SPEED     0 // Value from 0 to 255
 
-#define PREHEAT_4_LABEL       "Warmup"
-#define PREHEAT_4_TEMP_HOTEND 180
-#define PREHEAT_4_TEMP_BED     45
+#define PREHEAT_4_LABEL       "TPU"
+#define PREHEAT_4_TEMP_HOTEND 230
+#define PREHEAT_4_TEMP_BED      0
 #define PREHEAT_4_TEMP_CHAMBER 35
 #define PREHEAT_4_FAN_SPEED     0 // Value from 0 to 255
 
-#define PREHEAT_5_LABEL       "TPU"
-#define PREHEAT_5_TEMP_HOTEND 230
-#define PREHEAT_5_TEMP_BED      0
+#define PREHEAT_5_LABEL       "Warmup"
+#define PREHEAT_5_TEMP_HOTEND 180
+#define PREHEAT_5_TEMP_BED     45
 #define PREHEAT_5_TEMP_CHAMBER 35
 #define PREHEAT_5_FAN_SPEED     0 // Value from 0 to 255
 

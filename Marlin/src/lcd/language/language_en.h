@@ -478,6 +478,7 @@ namespace Language_en {
   LSTR MSG_BUTTON_CONTINUE                = _UxGT("Continue");
   LSTR MSG_BUTTON_DONE                    = _UxGT("Done");
   LSTR MSG_BUTTON_BACK                    = _UxGT("Back");
+  LSTR MSG_BUTTON_MAIN                    = _UxGT("Main");
   LSTR MSG_BUTTON_PROCEED                 = _UxGT("Proceed");
   LSTR MSG_BUTTON_SKIP                    = _UxGT("Skip");
   LSTR MSG_BUTTON_INFO                    = _UxGT("Info");
@@ -724,6 +725,7 @@ namespace Language_en {
   LSTR MSG_RUNOUT_SENSOR                  = _UxGT("Runout Sensor");
   LSTR MSG_RUNOUT_DISTANCE_MM             = _UxGT("Runout Dist mm");
   LSTR MSG_RUNOUT_ENABLE                  = _UxGT("Enable Runout");
+  LSTR MSG_RUNOUT_TOGGLE                  = _UxGT("Toggle Runout");
   LSTR MSG_RUNOUT_ACTIVE                  = _UxGT("Runout Active");
   LSTR MSG_INVERT_EXTRUDER                = _UxGT("Invert Extruder");
   LSTR MSG_EXTRUDER_MIN_TEMP              = _UxGT("Extruder Min Temp.");

@@ -231,6 +231,7 @@ void DoCoolDown();
 #endif
 #if HAS_FILAMENT_SENSOR
   void SetRunoutEnable();
+  void ToggleRunout();
 #endif
 void ApplyExtMinT();
 void ParkHead();
