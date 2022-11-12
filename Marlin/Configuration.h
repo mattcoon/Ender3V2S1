@@ -68,23 +68,24 @@ TODO: Host commands
 TODO: pause screen timeout when popup active / prevent blck screen without response
 TODO: LCD Timeout
 TODO: tramming lift to safe z
+TODO: host shutdown in toolbar
+TODO: H m screen display toggle in menu
 
 Test: 
 ------
-TODO: filament status color too much . second circle?
-TODO: filament menu update status with temp too low
-TODO: percent calc wrong, and toggle for stat not working in advance menu
-TODO: change order of preheat menu to have TPU before warmup
-TODO: main fast back called it main / home
-TODO: maybe toggle runout toolbar message. remove checkbox
-TODO: preheat hotend mode
-TODO: add status of fil sensor on bottom. extruder icon background color? green working closed, yellow disabled, red runout
-TODO: Fan percent
-TODO: H m s screen display
-TODO: tramming repeat... lower button or shrink chart
 
 Done:
 -------
+add status of fil sensor on bottom. extruder icon background color? green working closed, yellow disabled, red runout
+filament status color too much . shift right side 2 px
+preheat hotend mode
+Fan percent
+percent calc wrong, and toggle for stat not working in advance menu
+tramming repeat... lower button or shrink chart
+maybe toggle runout toolbar message. remove checkbox
+change order of preheat menu to have TPU before warmup
+filament menu update status with temp too low
+main fast back called it main / home
 Preheat option bed/hotend maybe only in filament menu
 make flex environment for 4.2.7 and 4.2.2 with direct drive or bowden
 Unload filament / change - temp dialog not just warm preheat
@@ -1847,7 +1848,7 @@ Flex mesh size
   #define FIL_RUNOUT_ENABLED_DEFAULT true // Enable the sensor on startup. Override with M412 followed by M500.
   #define NUM_RUNOUT_SENSORS   1          // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
 
-  #define FIL_RUNOUT_STATE     LOW        // Pin state indicating that filament is NOT present.
+  #define FIL_RUNOUT_STATE     HIGH       // Pin state indicating that filament is NOT present.
   #define FIL_RUNOUT_PULLUP               // Use internal pullup for filament runout pins.
   //#define FIL_RUNOUT_PULLDOWN           // Use internal pulldown for filament runout pins.
   //#define WATCH_ALL_RUNOUT_SENSORS      // Execute runout script on any triggering sensor, not only for the active extruder.
@@ -1892,7 +1893,7 @@ Flex mesh size
   #define FILAMENT_RUNOUT_SCRIPT "M600"
 
   // After a runout is detected, continue printing this length of filament
-  // before executing the runout script. Useful for a sensor at the end of
+  // before executing the runout script. Useful for a sensor at the exnd of
   // a feed tube. Requires 4 bytes SRAM per sensor, plus 4 bytes overhead.
   #define FILAMENT_RUNOUT_DISTANCE_MM 10  // MRiscoC Customizable by menu
 
@@ -2313,7 +2314,6 @@ Flex mesh size
 #define PREHEAT_5_FAN_SPEED     0 // Value from 0 to 255
 
 // @section motion
-#define FAN_SPEED_PERCENT_DEF  true
 #define TIME_HMS_FORMAT        true
 
 /**

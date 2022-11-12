@@ -45,7 +45,6 @@ constexpr int16_t DEF_Z_MAX_POS = Z_MAX_POS;
 #if HAS_EXTRUDERS
   constexpr bool DEF_INVERT_E0_DIR = INVERT_E0_DIR;
 #endif
-  constexpr bool DEF_FAN_SPEED_PERCENT = FAN_SPEED_PERCENT_DEF;
   constexpr bool DEF_TIME_HMS_FORMAT = TIME_HMS_FORMAT;
 
 #if HAS_MESH
@@ -112,7 +111,6 @@ typedef struct {
   #if HAS_EXTRUDERS
     bool Invert_E0 = DEF_INVERT_E0_DIR;
   #endif
-    bool fan_percent = DEF_FAN_SPEED_PERCENT;
     bool time_format_textual = DEF_TIME_HMS_FORMAT;
   #if ENABLED(NOZZLE_PARK_FEATURE)
     xyz_int_t Park_point = DEF_NOZZLE_PARK_POINT;

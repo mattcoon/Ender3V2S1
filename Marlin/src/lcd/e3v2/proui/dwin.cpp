@@ -674,15 +674,13 @@ void _draw_ZOffsetIcon() {
 void _draw_FilamentSensorStatus() {
   uint16_t RunoutColor = Color_Yellow;
   if (runout.enabled) {
-    if (runout.filament_ran_out) {
+    if (FilamentSensorDevice::poll_runout_state(0)) 
       RunoutColor = Color_Red;
-    }
-    else {
+    else
       RunoutColor = Color_Green;
-    }
   }
-  DWIN_Draw_Rectangle(1, RunoutColor, 111, 416, 130, 437);
-  DWIN_Draw_Rectangle(1, HMI_data.Background_Color, 113, 418, 128, 435);
+  DWIN_Draw_Rectangle(1, RunoutColor, 110, 416, 132, 438);
+  DWIN_Draw_Rectangle(1, HMI_data.Background_Color, 112, 418, 130, 436);
   DWINUI::Draw_Icon(ICON_StepE, 112, 417);
 }
 
@@ -764,7 +762,7 @@ void update_variable() {
   #if HAS_FAN
     if (_new_fanspeed) {
       _fanspeed = thermalManager.fan_speed[0];
-      DWINUI::Draw_Int(DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 3, 195 + 2 * STAT_CHR_W, 384, _fanspeed);
+      DWINUI::Draw_Int(DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 3, 195 + 2 * STAT_CHR_W, 384, (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255));
     }
   #endif
 
@@ -980,9 +978,9 @@ void DWIN_Draw_Dashboard() {
 
   #if HAS_FAN
     DWINUI::Draw_Icon(ICON_FanSpeed, 187, 383);
-    DWINUI::Draw_Int(DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 3, 195 + 2 * STAT_CHR_W, 384, (PRO_data.fan_percent) ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
-    DWIN_Draw_String( false, DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 195 + 5 * STAT_CHR_W + 2, 384, (PRO_data.fan_percent) ? F("%") : F(" "));
-  #endif
+    DWINUI::Draw_Int(DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 3, 195 + 2 * STAT_CHR_W, 384, (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255));
+    DWIN_Draw_String( false, DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 195 + 5 * STAT_CHR_W + 2, 384, F("%"));
+#endif
 
   #if HAS_ZOFFSET_ITEM
     DWINUI::Draw_Icon(planner.leveling_active ? ICON_SetZOffset : ICON_Zoffset, 187, 416);
@@ -2377,9 +2375,10 @@ void SetSpeed() { SetPIntOnClick(MIN_PRINT_SPEED, MAX_PRINT_SPEED); }
       HMI_SaveProcessID(NothingToDo);
       queue.inject(F("M600 B2"));
     }
-    else
+    else {
       ui.set_status(GET_TEXT_F(MSG_HOTEND_TOO_COLD));
       Draw_PreheatHotEnd_Menu();
+    }
   }
 
   #if ENABLED(NOZZLE_PARK_FEATURE)
@@ -2395,8 +2394,10 @@ void SetSpeed() { SetPIntOnClick(MIN_PRINT_SPEED, MAX_PRINT_SPEED); }
         LCD_MESSAGE(MSG_FILAMENTUNLOAD);
         queue.inject(F("M702 Z20"));
       }
-      else
+      else {
+        ui.set_status(GET_TEXT_F(MSG_HOTEND_TOO_COLD));
         Draw_PreheatHotEnd_Menu();
+      }
     }
 
     void LoadFilament() {
@@ -2404,8 +2405,10 @@ void SetSpeed() { SetPIntOnClick(MIN_PRINT_SPEED, MAX_PRINT_SPEED); }
         LCD_MESSAGE(MSG_FILAMENTLOAD);
         queue.inject(F("M701 Z20"));
       }
-      else
+      else {
+        ui.set_status(GET_TEXT_F(MSG_HOTEND_TOO_COLD));
         Draw_PreheatHotEnd_Menu();
+      }
     }
   #endif
 
@@ -2708,11 +2711,6 @@ void SetStepsZ() { HMI_value.axis = Z_AXIS, SetPFloatOnClick( MIN_STEP, MAX_STEP
   }
 #endif
 
-void SetFanPercent() {
-  PRO_data.fan_percent = !PRO_data.fan_percent;
-  Show_Chkb_Line(CurrentMenu->line(), PRO_data.fan_percent);
-}
-
 void SetTimeFormat() {
   PRO_data.time_format_textual = !PRO_data.time_format_textual;
   Show_Chkb_Line(CurrentMenu->line(), PRO_data.time_format_textual);
@@ -2910,7 +2908,7 @@ void Draw_Control_Menu() {
 
 void Draw_AdvancedSettings_Menu() {
   checkkey = Menu;
-  if (SET_MENU(AdvancedSettings, MSG_ADVANCED_SETTINGS, 23)) {
+  if (SET_MENU(AdvancedSettings, MSG_ADVANCED_SETTINGS, 22)) {
     BACK_HOME();
     #if ENABLED(EEPROM_SETTINGS)
       MENU_ITEM(ICON_WriteEEPROM, MSG_STORE_EEPROM, onDrawMenuItem, WriteEeprom);
@@ -2968,7 +2966,6 @@ void Draw_AdvancedSettings_Menu() {
       MENU_ITEM(ICON_Brightness, MSG_BRIGHTNESS_OFF, onDrawMenuItem, TurnOffBacklight);
     #endif
     EDIT_ITEM(ICON_PrintTime, MSG_PROGRESS_IN_HHMM, onDrawChkbMenu, SetTimeFormat, &PRO_data.time_format_textual);
-    EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, SetFanPercent, &PRO_data.fan_percent);
     MENU_ITEM(ICON_Scolor, MSG_COLORS_SELECT, onDrawSubMenu, Draw_SelectColors_Menu);
   }
   ui.reset_status(true);
