@@ -44,7 +44,10 @@ TBItem_t TBItemA[] = {
   #if HAS_FILAMENT_SENSOR
     {ICON_Runout, GET_TEXT_F(MSG_RUNOUT_TOGGLE), ToggleRunout},
   #endif
-  {ICON_Brightness, GET_TEXT_F(MSG_BRIGHTNESS_OFF), TurnOffBacklight},
+  #if ENABLED(HOST_SHUTDOWN_MENU_ITEM) && defined(SHUTDOWN_ACTION)
+    {ICON_Host, GET_TEXT_F(MSG_HOST_SHUTDOWN), HostShutDown},
+  #endif
   {ICON_Reboot, GET_TEXT_F(MSG_RESET_PRINTER), RebootPrinter},
+  {ICON_Brightness, GET_TEXT_F(MSG_BRIGHTNESS_OFF), TurnOffBacklight},
   {ICON_WriteEEPROM, GET_TEXT_F(MSG_STORE_EEPROM), WriteEeprom}
 };
