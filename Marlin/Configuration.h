@@ -62,17 +62,15 @@
 
 /*
 1.43 z
-Need 
-------
 TODO: Host commands
 TODO: pause screen timeout when popup active / prevent blck screen without response
 TODO: LCD Timeout
-TODO: tramming lift to safe z
-TODO: host shutdown in toolbar
-TODO: H m screen display toggle in menu
 
 Test: 
 ------
+TODO: host shutdown in toolbar
+TODO: tramming lift to safe z
+TODO: H m screen display toggle in menu
 
 Done:
 -------
@@ -2314,6 +2312,7 @@ Flex mesh size
 #define PREHEAT_5_FAN_SPEED     0 // Value from 0 to 255
 
 // @section motion
+#define FAN_SPEED_PERCENT_DEF  true
 #define TIME_HMS_FORMAT        true
 
 /**
