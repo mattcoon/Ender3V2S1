@@ -84,6 +84,7 @@ EncoderState Encoder_ReceiveAnalyze() {
     if (ELAPSED(now, next_click_update_ms)) {
       next_click_update_ms = millis() + 300;
       Encoder_tick();
+      ui.refresh_backlight_timeout();
       #if PIN_EXISTS(LCD_LED)
         //LED_Action();
       #endif
@@ -154,6 +155,8 @@ EncoderState Encoder_ReceiveAnalyze() {
 
     temp_diff = 0;
   }
+  if (temp_diffState != ENCODER_DIFF_NO)
+      ui.refresh_backlight_timeout();
   return temp_diffState;
 }
 

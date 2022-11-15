@@ -63,11 +63,11 @@
 /*
 1.43 z
 TODO: Host commands
-TODO: pause screen timeout when popup active / prevent blck screen without response
-TODO: LCD Timeout
 
 Test: 
 ------
+TODO: LCD Timeout
+TODO: pause screen timeout when popup active / prevent blck screen without response
 TODO: host shutdown in toolbar
 TODO: tramming lift to safe z
 TODO: H m screen display toggle in menu

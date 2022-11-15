@@ -179,6 +179,7 @@ typedef struct {
   #if ProUIex && HAS_LEVELING
     bool cancel_abl:1;  // cancel current abl
   #endif
+  bool disable_backlight_timeout_flag:1; // stop the timeout counter for long tasks
 } HMI_flag_t;
 
 extern HMI_value_t HMI_value;

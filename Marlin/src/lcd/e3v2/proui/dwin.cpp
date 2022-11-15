@@ -1221,6 +1221,35 @@ void EachMomentUpdate() {
     if (did_expire) ui.reset_status();
   #endif
 
+  // manage LCD backlight timeout
+  if (ui.backlight_timeout_minutes) {
+    // backlight_timeout_minutes = 0 means disabled
+    HMI_flag.disable_backlight_timeout_flag = false;
+    switch (checkkey) {
+      case Popup:
+      case Leveling:
+      case Locked:
+      case PrintDone:
+      case WaitResponse:
+      case PidProcess:
+      case MPCProcess:
+        HMI_flag.disable_backlight_timeout_flag = true;
+        break;
+      default:
+        break;
+
+    }
+    if (!HMI_flag.disable_backlight_timeout_flag && ELAPSED(ms, ui.backlight_off_ms)) {
+      ui.backlight = false;
+      ui.set_brightness(0);
+      ui.backlight_off_ms = 0;
+    }
+  }
+  else
+    HMI_flag.disable_backlight_timeout_flag = true;;
+
+
+
   if (ELAPSED(ms, next_status_update_ms)) {
     next_status_update_ms = ms + 500;
     DWIN_DrawStatusMessage();
@@ -2167,6 +2196,8 @@ void SetPID(celsius_t t, heater_id_t h) {
   void SetBrightness() { SetIntOnClick(LCD_BRIGHTNESS_MIN, LCD_BRIGHTNESS_MAX, ui.brightness, ApplyBrightness, LiveBrightness); }
   void TurnOffBacklight() { HMI_SaveProcessID(WaitResponse); ui.set_brightness(0); DWIN_RedrawScreen(); }
 #endif
+  void ApplyScreenTimeout() { ui.backlight_timeout_minutes = MenuData.Value; }
+  void SetScreenTimeout() { SetIntOnClick(ui.backlight_timeout_min,ui.backlight_timeout_max, ui.backlight_timeout_minutes, ApplyScreenTimeout); }
 
 #if ENABLED(CASE_LIGHT_MENU)
   void SetCaseLight() {
@@ -2971,6 +3002,8 @@ void Draw_AdvancedSettings_Menu() {
       EDIT_ITEM(ICON_Brightness, MSG_BRIGHTNESS, onDrawPInt8Menu, SetBrightness, &ui.brightness);
       MENU_ITEM(ICON_Brightness, MSG_BRIGHTNESS_OFF, onDrawMenuItem, TurnOffBacklight);
     #endif
+    EDIT_ITEM(ICON_Brightness, MSG_SCREEN_TIMEOUT, onDrawPInt8Menu, SetScreenTimeout, &ui.backlight_timeout_minutes);
+  
     EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, SetFanPercent, &PRO_data.fan_percent);
     EDIT_ITEM(ICON_PrintTime, MSG_PROGRESS_IN_HHMM, onDrawChkbMenu, SetTimeFormat, &PRO_data.time_format_textual);
     MENU_ITEM(ICON_Scolor, MSG_COLORS_SELECT, onDrawSubMenu, Draw_SelectColors_Menu);
