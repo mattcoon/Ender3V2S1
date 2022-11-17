@@ -67,13 +67,13 @@ TODO: Host commands
 Test: 
 ------
 TODO: LCD Timeout
-TODO: pause screen timeout when popup active / prevent blck screen without response
-TODO: host shutdown in toolbar
-TODO: tramming lift to safe z
-TODO: H m screen display toggle in menu
 
 Done:
 -------
+pause screen timeout when popup active / prevent blck screen without response
+host shutdown in toolbar
+tramming lift to safe z
+H m screen display toggle in menu
 add status of fil sensor on bottom. extruder icon background color? green working closed, yellow disabled, red runout
 filament status color too much . shift right side 2 px
 preheat hotend mode

@@ -1240,7 +1240,6 @@ void EachMomentUpdate() {
 
     }
     if (!HMI_flag.disable_backlight_timeout_flag && ELAPSED(ms, ui.backlight_off_ms)) {
-      ui.backlight = false;
       ui.set_brightness(0);
       ui.backlight_off_ms = 0;
     }

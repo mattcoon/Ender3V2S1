@@ -3204,7 +3204,7 @@ void MarlinSettings::reset() {
   // LCD Backlight / Sleep Timeout
   //
   #if LCD_BACKLIGHT_TIMEOUT_MINS
-    ui.backlight_timeout_minutes = LCD_BACKLIGHT_TIMEOUT_MINS;
+    ui.backlight_timeout_minutes = DEF_LCD_BACKLIGHT_TIMEOUT_MINS;
   #elif HAS_DISPLAY_SLEEP
     ui.sleep_timeout_minutes = DISPLAY_SLEEP_MINUTES;
   #endif
