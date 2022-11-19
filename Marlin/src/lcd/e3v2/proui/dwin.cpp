@@ -1221,6 +1221,7 @@ void EachMomentUpdate() {
     if (did_expire) ui.reset_status();
   #endif
 
+#if LCD_BACKLIGHT_TIMEOUT_MINS
   // manage LCD backlight timeout
   if (ui.backlight_timeout_minutes) {
     // backlight_timeout_minutes = 0 means disabled
@@ -1246,7 +1247,7 @@ void EachMomentUpdate() {
   }
   else
     HMI_flag.disable_backlight_timeout_flag = true;;
-
+#endif
 
 
   if (ELAPSED(ms, next_status_update_ms)) {
@@ -2195,8 +2196,10 @@ void SetPID(celsius_t t, heater_id_t h) {
   void SetBrightness() { SetIntOnClick(LCD_BRIGHTNESS_MIN, LCD_BRIGHTNESS_MAX, ui.brightness, ApplyBrightness, LiveBrightness); }
   void TurnOffBacklight() { HMI_SaveProcessID(WaitResponse); ui.set_brightness(0); DWIN_RedrawScreen(); }
 #endif
+#if LCD_BACKLIGHT_TIMEOUT_MINS
   void ApplyScreenTimeout() { ui.backlight_timeout_minutes = MenuData.Value; }
   void SetScreenTimeout() { SetIntOnClick(ui.backlight_timeout_min,ui.backlight_timeout_max, ui.backlight_timeout_minutes, ApplyScreenTimeout); }
+#endif
 
 #if ENABLED(CASE_LIGHT_MENU)
   void SetCaseLight() {
@@ -2600,8 +2603,6 @@ void TramC () { Tram(4); }
       DWINUI::Draw_String((s == (screw_thread&1)) ? F("CW") : F("CCW")); 
     }
     Goto_Popup(Draw_Popup_RepeatTramming, onClick_RepeatTramming);
-    // DWINUI::Draw_Button(BTN_Continue, 86, 305);
-    // HMI_SaveProcessID(WaitResponse);
   }
 
   void SetManualTramming() {
@@ -3001,7 +3002,9 @@ void Draw_AdvancedSettings_Menu() {
       EDIT_ITEM(ICON_Brightness, MSG_BRIGHTNESS, onDrawPInt8Menu, SetBrightness, &ui.brightness);
       MENU_ITEM(ICON_Brightness, MSG_BRIGHTNESS_OFF, onDrawMenuItem, TurnOffBacklight);
     #endif
+    #if LCD_BACKLIGHT_TIMEOUT_MINS
     EDIT_ITEM(ICON_Brightness, MSG_SCREEN_TIMEOUT, onDrawPInt8Menu, SetScreenTimeout, &ui.backlight_timeout_minutes);
+    #endif
   
     EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, SetFanPercent, &PRO_data.fan_percent);
     EDIT_ITEM(ICON_PrintTime, MSG_PROGRESS_IN_HHMM, onDrawChkbMenu, SetTimeFormat, &PRO_data.time_format_textual);

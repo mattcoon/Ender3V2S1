@@ -63,6 +63,7 @@
 /*
 1.43 z
 TODO: Host commands
+TODO: Dynamic icon setting
 
 Test: 
 ------

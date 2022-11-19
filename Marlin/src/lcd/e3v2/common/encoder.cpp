@@ -84,11 +84,13 @@ EncoderState Encoder_ReceiveAnalyze() {
     if (ELAPSED(now, next_click_update_ms)) {
       next_click_update_ms = millis() + 300;
       Encoder_tick();
-      ui.refresh_backlight_timeout();
+      #if LCD_BACKLIGHT_TIMEOUT_MINS
+       ui.refresh_backlight_timeout();
+      #endif
       #if PIN_EXISTS(LCD_LED)
         //LED_Action();
       #endif
-      if (!ui.backlight) ui.refresh_brightness();
+      if (!ui.backlight) {ui.refresh_brightness(); DWIN_RedrawScreen();}
       const bool was_waiting = wait_for_user;
       wait_for_user = false;
       return was_waiting ? ENCODER_DIFF_NO : ENCODER_DIFF_ENTER;
@@ -155,8 +157,10 @@ EncoderState Encoder_ReceiveAnalyze() {
 
     temp_diff = 0;
   }
+  #if LCD_BACKLIGHT_TIMEOUT_MINS
   if (temp_diffState != ENCODER_DIFF_NO)
       ui.refresh_backlight_timeout();
+  #endif
   return temp_diffState;
 }
 
