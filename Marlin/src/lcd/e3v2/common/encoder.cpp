@@ -90,10 +90,13 @@ EncoderState Encoder_ReceiveAnalyze() {
       #if PIN_EXISTS(LCD_LED)
         //LED_Action();
       #endif
-      if (!ui.backlight) {ui.refresh_brightness(); DWIN_RedrawScreen();}
-      const bool was_waiting = wait_for_user;
-      wait_for_user = false;
-      return was_waiting ? ENCODER_DIFF_NO : ENCODER_DIFF_ENTER;
+      if (!ui.backlight) 
+        ui.refresh_backlight_timeout();
+      else {
+        const bool was_waiting = wait_for_user;
+        wait_for_user = false;
+        return was_waiting ? ENCODER_DIFF_NO : ENCODER_DIFF_ENTER;
+      }
     }
     else return ENCODER_DIFF_NO;
   }

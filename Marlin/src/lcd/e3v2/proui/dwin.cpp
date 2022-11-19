@@ -1241,7 +1241,8 @@ void EachMomentUpdate() {
 
     }
     if (!HMI_flag.disable_backlight_timeout_flag && ELAPSED(ms, ui.backlight_off_ms)) {
-      ui.set_brightness(0);
+      ui.backlight = false;
+      DWIN_LCD_Brightness(0);
       ui.backlight_off_ms = 0;
     }
   }
@@ -2197,7 +2198,7 @@ void SetPID(celsius_t t, heater_id_t h) {
   void TurnOffBacklight() { HMI_SaveProcessID(WaitResponse); ui.set_brightness(0); DWIN_RedrawScreen(); }
 #endif
 #if LCD_BACKLIGHT_TIMEOUT_MINS
-  void ApplyScreenTimeout() { ui.backlight_timeout_minutes = MenuData.Value; }
+  void ApplyScreenTimeout() { ui.backlight_timeout_minutes = MenuData.Value; ui.refresh_backlight_timeout(); }
   void SetScreenTimeout() { SetIntOnClick(ui.backlight_timeout_min,ui.backlight_timeout_max, ui.backlight_timeout_minutes, ApplyScreenTimeout); }
 #endif
 

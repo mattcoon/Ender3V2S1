@@ -184,10 +184,9 @@ constexpr uint8_t epps = ENCODER_PULSES_PER_STEP;
       WRITE(LCD_BACKLIGHT_PIN, HIGH);
     #else // mmm
     if (!ui.backlight) {
-      ui.backlight = true;
       ui.refresh_brightness();
     }
-    #endif
+    #endif // mmm
   }
 
 #elif HAS_DISPLAY_SLEEP
