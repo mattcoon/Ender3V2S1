@@ -2201,7 +2201,8 @@ void SetPID(celsius_t t, heater_id_t h) {
   void ApplyScreenTimeout() { ui.backlight_timeout_minutes = MenuData.Value; ui.refresh_backlight_timeout(); }
   void SetScreenTimeout() { SetIntOnClick(ui.backlight_timeout_min,ui.backlight_timeout_max, ui.backlight_timeout_minutes, ApplyScreenTimeout); }
 #endif
-
+  void ApplyBaseIcon() { DWIN_RedrawScreen(); }
+  void SetBaseIcon() { SetIntOnClick(0,10,PRO_data.baseIcon,ApplyBaseIcon); }
 #if ENABLED(CASE_LIGHT_MENU)
   void SetCaseLight() {
     caselight.on = !caselight.on;
@@ -3006,7 +3007,7 @@ void Draw_AdvancedSettings_Menu() {
     #if LCD_BACKLIGHT_TIMEOUT_MINS
     EDIT_ITEM(ICON_Brightness, MSG_SCREEN_TIMEOUT, onDrawPInt8Menu, SetScreenTimeout, &ui.backlight_timeout_minutes);
     #endif
-  
+    EDIT_ITEM(ICON_FanSpeed, MSG_ICON_SET, onDrawPInt8Menu, SetBaseIcon, &PRO_data.baseIcon);
     EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, SetFanPercent, &PRO_data.fan_percent);
     EDIT_ITEM(ICON_PrintTime, MSG_PROGRESS_IN_HHMM, onDrawChkbMenu, SetTimeFormat, &PRO_data.time_format_textual);
     MENU_ITEM(ICON_Scolor, MSG_COLORS_SELECT, onDrawSubMenu, Draw_SelectColors_Menu);

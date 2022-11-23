@@ -22,6 +22,7 @@
 #pragma once
 
 #include "../../../inc/MarlinConfigPre.h"
+#include "../common/dwin_set.h"
 
 #ifndef LOW
   #define LOW  0x0
@@ -121,6 +122,7 @@ typedef struct {
     bool Runout_active_state = FIL_RUNOUT_STATE;
     bool FilamentMotionSensor = DEF_FIL_MOTION_SENSOR;
   #endif
+    uint8_t baseIcon = ICON;
   #if HAS_HOTEND
     celsius_t hotend_maxtemp = HEATER_0_MAXTEMP;
   #endif

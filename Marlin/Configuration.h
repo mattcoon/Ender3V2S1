@@ -63,10 +63,12 @@
 /*
 1.43 z
 TODO: Host commands
-TODO: Dynamic icon setting
+TODO: filament loading setting
+TODO: preheat filament  - back to filament not prepare
 
 Test: 
 ------
+TODO: Dynamic icon setting
 TODO: LCD Timeout
 
 Done:

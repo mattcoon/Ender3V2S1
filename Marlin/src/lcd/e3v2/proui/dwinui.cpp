@@ -26,6 +26,7 @@
 #include "dwin_defines.h"
 #include "dwin_lcd.h"
 #include "dwinui.h"
+#include "proui.h"
 
 //#define DEBUG_OUT 1
 //#include "../../../core/debug_out.h"
@@ -208,7 +209,7 @@ void DWINUI::Draw_Float(uint8_t bShow, bool signedMode, font_t size, uint16_t co
 //  picID: Icon ID
 //  x/y: Upper-left point
 void DWINUI::ICON_Show(bool BG, uint8_t icon, uint16_t x, uint16_t y) {
-  const uint8_t libID = ICON TERN_(HAS_CUSTOMICONS, + (icon / 100));
+  const uint8_t libID = PRO_data.baseIcon TERN_(HAS_CUSTOMICONS, + (icon / 100));
   const uint8_t picID = icon TERN_(HAS_CUSTOMICONS, % 100);
   DWIN_ICON_Show(BG, false, !BG, libID, picID, x, y);
 }

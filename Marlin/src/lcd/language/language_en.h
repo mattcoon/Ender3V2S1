@@ -440,6 +440,7 @@ namespace Language_en {
   LSTR MSG_CONTRAST                       = _UxGT("LCD Contrast");
   LSTR MSG_BRIGHTNESS                     = _UxGT("LCD Brightness");
   LSTR MSG_SCREEN_TIMEOUT                 = _UxGT("LCD Timeout (m)");
+  LSTR MSG_ICON_SET                       = _UxGT("ICON Selection");
   LSTR MSG_PROGRESS_IN_HHMM               = _UxGT("Progress in __h__m");
   LSTR MSG_FAN_SPEED_PERCENT              = _UxGT("Show Fan Speed in %");
   LSTR MSG_BRIGHTNESS_OFF                 = _UxGT("Turn Off LCD");
