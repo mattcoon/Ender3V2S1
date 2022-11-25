@@ -1749,6 +1749,9 @@ void DWIN_SetDataDefaults() {
       PRO_data.Runout_active_state = FIL_RUNOUT_STATE;
       PRO_data.FilamentMotionSensor = DEF_FIL_MOTION_SENSOR;
     #endif
+    PRO_data.baseIcon = ICON;
+    PRO_data.fan_percent = DEF_FAN_SPEED_PERCENT;
+    PRO_data.time_format_textual = DEF_TIME_HMS_FORMAT;
     #if HAS_TOOLBAR
       const uint8_t _def[] = DEF_TBOPT;
       LOOP_L_N(i,TBMaxOpt) PRO_data.TBopt[i] = _def[i];
@@ -2201,7 +2204,7 @@ void SetPID(celsius_t t, heater_id_t h) {
   void ApplyScreenTimeout() { ui.backlight_timeout_minutes = MenuData.Value; ui.refresh_backlight_timeout(); }
   void SetScreenTimeout() { SetIntOnClick(ui.backlight_timeout_min,ui.backlight_timeout_max, ui.backlight_timeout_minutes, ApplyScreenTimeout); }
 #endif
-  void ApplyBaseIcon() { DWIN_RedrawScreen(); }
+  void ApplyBaseIcon() {PRO_data.baseIcon =  MenuData.Value; DWIN_RedrawScreen(); }
   void SetBaseIcon() { SetIntOnClick(0,10,PRO_data.baseIcon,ApplyBaseIcon); }
 #if ENABLED(CASE_LIGHT_MENU)
   void SetCaseLight() {
@@ -2907,7 +2910,7 @@ void Draw_Preheat_Menu() {
 void Draw_PreheatHotEnd_Menu() {
   checkkey = Menu;
   if (SET_MENU(PreheatingHotendMenu, MSG_PREHEAT, 1 + PREHEAT_COUNT)) {
-    BACK_ITEM(Draw_Prepare_Menu);
+    BACK_ITEM(Draw_FilamentMan_Menu);
     #if HAS_PREHEAT
       #define _ITEM_PREHEATHE(N) MENU_ITEM(ICON_Preheat##N, MSG_PREHEAT_##N, onDrawMenuItem, DoPreheatHotEnd##N);
       REPEAT_1(PREHEAT_COUNT, _ITEM_PREHEATHE)
@@ -2947,7 +2950,7 @@ void Draw_Control_Menu() {
 
 void Draw_AdvancedSettings_Menu() {
   checkkey = Menu;
-  if (SET_MENU(AdvancedSettings, MSG_ADVANCED_SETTINGS, 23)) {
+  if (SET_MENU(AdvancedSettings, MSG_ADVANCED_SETTINGS, 25)) {
     BACK_HOME();
     #if ENABLED(EEPROM_SETTINGS)
       MENU_ITEM(ICON_WriteEEPROM, MSG_STORE_EEPROM, onDrawMenuItem, WriteEeprom);

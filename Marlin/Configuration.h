@@ -63,16 +63,18 @@
 /*
 1.43 z
 TODO: Host commands
-TODO: filament loading setting
-TODO: preheat filament  - back to filament not prepare
+TODO: filament loading setting - keep track of filament
+TODO: filament sensor mode menu
 
 Test: 
 ------
-TODO: Dynamic icon setting
 TODO: LCD Timeout
+TODO: toggle for percent menu not working
 
 Done:
 -------
+Dynamic icon setting
+preheat filament  - back to filament not prepare
 pause screen timeout when popup active / prevent blck screen without response
 host shutdown in toolbar
 tramming lift to safe z
