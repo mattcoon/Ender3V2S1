@@ -2324,6 +2324,9 @@ void SetPID(celsius_t t, heater_id_t h) {
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
   void SetFilLoad()   { SetPFloatOnClick(0, MAX_LOAD_UNLOAD, UNITFDIGITS); }
   void SetFilUnload() { SetPFloatOnClick(0, MAX_LOAD_UNLOAD, UNITFDIGITS); }
+  void SetFilUnloadPreLength() { SetPFloatOnClick(0, MAX_LOAD_UNLOAD, UNITFDIGITS); }
+  void ApplyFilUnloadPreDelay() { fc_settings[0].unload_predelay =  MenuData.Value * 1000; }
+  void SetFilUnloadPreDelay() { SetIntOnClick(0, 255, fc_settings[0].unload_predelay / 1000, ApplyFilUnloadPreDelay); }
 #endif
 
 #if ENABLED(PREVENT_COLD_EXTRUSION)
@@ -2932,6 +2935,9 @@ void Draw_Control_Menu() {
       MENU_ITEM(ICON_ResumeEEPROM, MSG_RESTORE_DEFAULTS, onDrawMenuItem, ResetEeprom);
     #endif
     MENU_ITEM(ICON_Reboot, MSG_RESET_PRINTER, onDrawMenuItem, RebootPrinter);
+    #if ENABLED(HOST_SHUTDOWN_MENU_ITEM) && defined(SHUTDOWN_ACTION)
+      MENU_ITEM(ICON_Host, MSG_HOST_SHUTDOWN, onDrawMenuItem, HostShutDown);
+    #endif
     #if ENABLED(CASE_LIGHT_MENU)
       #if ENABLED(CASELIGHT_USES_BRIGHTNESS)
         MENU_ITEM(ICON_CaseLight, MSG_CASE_LIGHT, onDrawSubMenu, Draw_CaseLight_Menu);
@@ -3078,7 +3084,7 @@ void Draw_Move_Menu() {
 
 void Draw_FilSet_Menu() {
   checkkey = Menu;
-  if (SET_MENU(FilSetMenu, MSG_FILAMENT_SET, 10)) {
+  if (SET_MENU(FilSetMenu, MSG_FILAMENT_SET, 12)) {
     BACK_ITEM(Draw_AdvancedSettings_Menu);
     BACK_HOME();
     #if HAS_FILAMENT_SENSOR
@@ -3099,6 +3105,8 @@ void Draw_FilSet_Menu() {
     #if ENABLED(ADVANCED_PAUSE_FEATURE)
       EDIT_ITEM(ICON_FilLoad, MSG_FILAMENT_LOAD, onDrawPFloatMenu, SetFilLoad, &fc_settings[0].load_length);
       EDIT_ITEM(ICON_FilUnload, MSG_FILAMENT_UNLOAD, onDrawPFloatMenu, SetFilUnload, &fc_settings[0].unload_length);
+      EDIT_ITEM(ICON_FilUnload, MSG_FILAMENT_PREUNLOAD, onDrawPFloatMenu, SetFilUnloadPreLength, &fc_settings[0].unload_prelength);
+      EDIT_ITEM(ICON_FilUnload, MSG_FILAMENT_UNLOADDELAY, onDrawPIntMenu, SetFilUnloadPreDelay, &fc_settings[0].unload_predelay);
     #endif
     #if ENABLED(FWRETRACT)
       MENU_ITEM(ICON_FWRetract, MSG_FWRETRACT, onDrawSubMenu, Draw_FWRetract_Menu);

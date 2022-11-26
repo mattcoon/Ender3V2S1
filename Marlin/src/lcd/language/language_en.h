@@ -434,6 +434,8 @@ namespace Language_en {
   LSTR MSG_FILAMENT_DIAM                  = _UxGT("Fil. Dia.");
   LSTR MSG_FILAMENT_DIAM_E                = _UxGT("Fil. Dia. *");
   LSTR MSG_FILAMENT_UNLOAD                = _UxGT("Unload mm");
+  LSTR MSG_FILAMENT_PREUNLOAD             = _UxGT("Initial Unload mm");
+  LSTR MSG_FILAMENT_UNLOADDELAY           = _UxGT("Initial Unload delay s");
   LSTR MSG_FILAMENT_LOAD                  = _UxGT("Load mm");
   LSTR MSG_ADVANCE_K                      = _UxGT("Advance K");
   LSTR MSG_ADVANCE_K_E                    = _UxGT("Advance K *");

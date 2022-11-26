@@ -65,6 +65,7 @@
 TODO: Host commands
 TODO: filament loading setting - keep track of filament
 TODO: filament sensor mode menu
+TODO: filament change lift z axis
 
 Test: 
 ------
@@ -73,6 +74,7 @@ TODO: toggle for percent menu not working
 
 Done:
 -------
+unload retraction variable. from no pause retraction to current 3mm / 5sec
 Dynamic icon setting
 preheat filament  - back to filament not prepare
 pause screen timeout when popup active / prevent blck screen without response

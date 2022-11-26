@@ -3297,6 +3297,8 @@ void MarlinSettings::reset() {
     EXTRUDER_LOOP() {
       fc_settings[e].unload_length = FILAMENT_CHANGE_UNLOAD_LENGTH;
       fc_settings[e].load_length = FILAMENT_CHANGE_FAST_LOAD_LENGTH;
+      fc_settings[e].unload_predelay = FILAMENT_UNLOAD_PURGE_DELAY;
+      fc_settings[e].unload_prelength = FILAMENT_UNLOAD_PURGE_LENGTH;
     }
   #endif
 
