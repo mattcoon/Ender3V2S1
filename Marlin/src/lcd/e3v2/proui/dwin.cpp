@@ -225,6 +225,7 @@ constexpr float max_acceleration_edit_values[] =
 
 static uint8_t _percent_done = 0;
 static uint32_t _remain_time = 0;
+static uint8_t _unloadDelay = fc_settings[0].unload_predelay/1000;
 
 #if HAS_HOTEND
   float last_E = 0;
@@ -1746,8 +1747,8 @@ void DWIN_SetDataDefaults() {
       PRO_data.Park_point = DEF_NOZZLE_PARK_POINT;
     #endif
     #if HAS_FILAMENT_SENSOR
-      PRO_data.Runout_active_state = FIL_RUNOUT_STATE;
-      PRO_data.FilamentMotionSensor = DEF_FIL_MOTION_SENSOR;
+      PRO_data.Runout_active_state = !!FIL_RUNOUT_STATE;
+      PRO_data.FilamentMotionSensor = !!DEF_FIL_MOTION_SENSOR;
     #endif
     PRO_data.baseIcon = ICON;
     PRO_data.fan_percent = DEF_FAN_SPEED_PERCENT;
@@ -1789,6 +1790,8 @@ void DWIN_CopySettingsFrom(const char * const buff) {
     );
   #endif
   TERN_(ProUIex, ProEx.LoadSettings());
+  _unloadDelay = fc_settings[0].unload_predelay/1000;
+
 }
 
 // Initialize or re-initialize the LCD
@@ -2310,7 +2313,7 @@ void SetPID(celsius_t t, heater_id_t h) {
     void SetRunoutActive() {
       uint8_t val;
       val = PRO_data.FilamentMotionSensor ? 2 : PRO_data.Runout_active_state ? 1 : 0;
-      SetOnClick(SetIntNoDraw, 0, 2, 0, val, ProEx.ApplyRunoutActive, LiveRunoutActive);
+      SetOnClick(SetIntNoDraw, 0, 2, 0, val, LiveRunoutActive, LiveRunoutActive);
       ProEx.DrawRunoutActive(true);
     }
   #endif
@@ -2325,8 +2328,8 @@ void SetPID(celsius_t t, heater_id_t h) {
   void SetFilLoad()   { SetPFloatOnClick(0, MAX_LOAD_UNLOAD, UNITFDIGITS); }
   void SetFilUnload() { SetPFloatOnClick(0, MAX_LOAD_UNLOAD, UNITFDIGITS); }
   void SetFilUnloadPreLength() { SetPFloatOnClick(0, MAX_LOAD_UNLOAD, UNITFDIGITS); }
-  void ApplyFilUnloadPreDelay() { fc_settings[0].unload_predelay =  MenuData.Value * 1000; }
-  void SetFilUnloadPreDelay() { SetIntOnClick(0, 255, fc_settings[0].unload_predelay / 1000, ApplyFilUnloadPreDelay); }
+  void ApplyFilUnloadPreDelay() { _unloadDelay = MenuData.Value; fc_settings[0].unload_predelay = _unloadDelay * 1000; }
+  void SetFilUnloadPreDelay() { SetIntOnClick(0, 255,_unloadDelay, ApplyFilUnloadPreDelay); }
 #endif
 
 #if ENABLED(PREVENT_COLD_EXTRUSION)
@@ -2414,6 +2417,7 @@ void SetSpeed() { SetPIntOnClick(MIN_PRINT_SPEED, MAX_PRINT_SPEED); }
   void ChangeFilament() {
     if (!thermalManager.targetTooColdToExtrude(active_extruder)) {
       HMI_SaveProcessID(NothingToDo);
+      do_blocking_move_to_z(_MIN(current_position.z + PRO_data.Park_point.z, Z_MAX_POS), feedRate_t(NOZZLE_PARK_Z_FEEDRATE));
       queue.inject(F("M600 B2"));
     }
     else {
@@ -3106,7 +3110,7 @@ void Draw_FilSet_Menu() {
       EDIT_ITEM(ICON_FilLoad, MSG_FILAMENT_LOAD, onDrawPFloatMenu, SetFilLoad, &fc_settings[0].load_length);
       EDIT_ITEM(ICON_FilUnload, MSG_FILAMENT_UNLOAD, onDrawPFloatMenu, SetFilUnload, &fc_settings[0].unload_length);
       EDIT_ITEM(ICON_FilUnload, MSG_FILAMENT_PREUNLOAD, onDrawPFloatMenu, SetFilUnloadPreLength, &fc_settings[0].unload_prelength);
-      EDIT_ITEM(ICON_FilUnload, MSG_FILAMENT_UNLOADDELAY, onDrawPIntMenu, SetFilUnloadPreDelay, &fc_settings[0].unload_predelay);
+      EDIT_ITEM(ICON_FilUnload, MSG_FILAMENT_UNLOADDELAY, onDrawPIntMenu, SetFilUnloadPreDelay, &_unloadDelay);
     #endif
     #if ENABLED(FWRETRACT)
       MENU_ITEM(ICON_FWRetract, MSG_FWRETRACT, onDrawSubMenu, Draw_FWRetract_Menu);
@@ -3795,12 +3799,17 @@ void Draw_Steps_Menu() {
 // ToolBar
 //=============================================================================
 #if HAS_TOOLBAR
+  void SetTBCaption() {
+    PRO_data.TBShowCaption = !PRO_data.TBShowCaption;
+    Show_Chkb_Line(CurrentMenu->line(), PRO_data.TBShowCaption);
+  }
 
   void Draw_TBSetup_Menu() {
     checkkey = Menu;
-    if (SET_MENU(TBSetupMenu, MSG_TOOLBAR_SETUP, TBMaxOpt + 2)) {
+    if (SET_MENU(TBSetupMenu, MSG_TOOLBAR_SETUP, TBMaxOpt + 3)) {
       BACK_ITEM(Draw_AdvancedSettings_Menu);
       BACK_HOME();
+      EDIT_ITEM(ICON_TBSetup,MSG_TOOLBAR_CAPTIONS, onDrawChkbMenu, SetTBCaption, &PRO_data.TBShowCaption);
       LOOP_L_N(i, TBMaxOpt) EDIT_ITEM_F(0, "", onDrawTBSetupItem, SetTBSetupItem, &PRO_data.TBopt[i]);
     }
     UpdateMenu(TBSetupMenu);

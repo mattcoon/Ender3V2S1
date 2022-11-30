@@ -70,6 +70,7 @@ namespace Language_en {
   LSTR MSG_MAIN                           = _UxGT("Main");
   LSTR MSG_ADVANCED_SETTINGS              = _UxGT("Advanced Settings");
   LSTR MSG_TOOLBAR_SETUP                  = _UxGT("Toolbar Setup");
+  LSTR MSG_TOOLBAR_CAPTIONS               = _UxGT("Enable Toolbar Caption");
   LSTR MSG_OPTION_DISABLED                = _UxGT("Option Disabled");
   LSTR MSG_CONFIGURATION                  = _UxGT("Configuration");
   LSTR MSG_RUN_AUTO_FILES                 = _UxGT("Run Auto Files");
@@ -444,7 +445,7 @@ namespace Language_en {
   LSTR MSG_SCREEN_TIMEOUT                 = _UxGT("LCD Timeout (m)");
   LSTR MSG_ICON_SET                       = _UxGT("ICON Selection");
   LSTR MSG_PROGRESS_IN_HHMM               = _UxGT("Progress in __h__m");
-  LSTR MSG_FAN_SPEED_PERCENT              = _UxGT("Show Fan Speed in %");
+  LSTR MSG_FAN_SPEED_PERCENT              = _UxGT("Fan Speed Percent");
   LSTR MSG_BRIGHTNESS_OFF                 = _UxGT("Turn Off LCD");
   LSTR MSG_STORE_EEPROM                   = _UxGT("Store Settings");
   LSTR MSG_LOAD_EEPROM                    = _UxGT("Load Settings");

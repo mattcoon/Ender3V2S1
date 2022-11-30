@@ -61,22 +61,31 @@
  */
 
 /*
-1.43 z
+
 TODO: Host commands
 TODO: filament loading setting - keep track of filament
 TODO: filament sensor mode menu
-TODO: filament change lift z axis
+TODO: automatic first setup
+      calibration MPC, PID
+      tram wizard, mesh
+TODO: toolbar descriptions making a mess
 
 Test: 
 ------
 TODO: LCD Timeout
 TODO: toggle for percent menu not working
+TODO: Minimus 4010 43.5mm, 5.7mm
 
 Done:
 -------
+filament change pre unload timing fixed display
+toolbar descripiton as option to disable
+filament change lift z axis
+V2.1.3.2
 unload retraction variable. from no pause retraction to current 3mm / 5sec
 Dynamic icon setting
 preheat filament  - back to filament not prepare
+v2.1.3.1
 pause screen timeout when popup active / prevent blck screen without response
 host shutdown in toolbar
 tramming lift to safe z
@@ -758,11 +767,11 @@ Flex mesh size
 
   // Measured physical constants from M306
 #ifndef CREALITY_DAD // matt direct
-  #define MPC_BLOCK_HEAT_CAPACITY { 14.5f }           // (J/K) Heat block heat capacities.
-  #define MPC_SENSOR_RESPONSIVENESS { 0.15f }         // (K/s per ∆K) Rate of change of sensor temperature from heat block.
-  #define MPC_AMBIENT_XFER_COEFF { 0.105f }           // (W/K) Heat transfer coefficients from heat block to room air with fan off.
+  #define MPC_BLOCK_HEAT_CAPACITY { 15.25f }           // (J/K) Heat block heat capacities.
+  #define MPC_SENSOR_RESPONSIVENESS { 0.24f }         // (K/s per ∆K) Rate of change of sensor temperature from heat block.
+  #define MPC_AMBIENT_XFER_COEFF { 0.118f }           // (W/K) Heat transfer coefficients from heat block to room air with fan off.
   #if ENABLED(MPC_INCLUDE_FAN)
-    #define MPC_AMBIENT_XFER_COEFF_FAN255 { 0.129f }  // (W/K) Heat transfer coefficients from heat block to room air with fan on full.
+    #define MPC_AMBIENT_XFER_COEFF_FAN255 { 0.131f }  // (W/K) Heat transfer coefficients from heat block to room air with fan on full.
   #endif
 #else
   #define MPC_BLOCK_HEAT_CAPACITY { 14.5f }           // (J/K) Heat block heat capacities.
@@ -1560,7 +1569,7 @@ Flex mesh size
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { -41.5, -7, 0 }  // MRiscoC BLTouch offset for support: https://www.thingiverse.com/thing:4605354 (z-offset = -1.80 mm)
+#define NOZZLE_TO_PROBE_OFFSET { -43.5, -5.7, 0 }  // MRiscoC BLTouch offset for support: https://www.thingiverse.com/thing:4605354 (z-offset = -1.80 mm)
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
