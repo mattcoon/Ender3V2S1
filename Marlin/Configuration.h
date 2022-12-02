@@ -64,20 +64,21 @@
 
 TODO: Host commands
 TODO: filament loading setting - keep track of filament
-TODO: filament sensor mode menu
 TODO: automatic first setup
       calibration MPC, PID
       tram wizard, mesh
-TODO: toolbar descriptions making a mess
 
 Test: 
 ------
 TODO: LCD Timeout
-TODO: toggle for percent menu not working
-TODO: Minimus 4010 43.5mm, 5.7mm
 
 Done:
 -------
+V2.1.3.3
+filament sensor mode menu
+toggle for percent menu not working
+Minimus 4010 43.5mm, 5.7mm
+toolbar descriptions making a mess
 filament change pre unload timing fixed display
 toolbar descripiton as option to disable
 filament change lift z axis

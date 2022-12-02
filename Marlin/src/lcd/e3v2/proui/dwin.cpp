@@ -2758,6 +2758,7 @@ void SetStepsZ() { HMI_value.axis = Z_AXIS, SetPFloatOnClick( MIN_STEP, MAX_STEP
 void SetFanPercent() {
   HMI_data.fan_percent = !HMI_data.fan_percent;
   Show_Chkb_Line(CurrentMenu->line(), HMI_data.fan_percent);
+  DWIN_Draw_Dashboard();
 }
 
 void SetTimeFormat() {
