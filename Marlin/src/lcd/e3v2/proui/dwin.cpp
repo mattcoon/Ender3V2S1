@@ -504,7 +504,7 @@ void Draw_Print_ProgressBar() {
 void Draw_Print_ProgressElapsed() {
   char buf[10];
   const char *timestr = "%02i:%02i ";
-  if (PRO_data.time_format_textual) timestr = "%02ih%02im";
+  if (HMI_data.time_format_textual) timestr = "%02ih%02im";
   duration_t elapsed = print_job_timer.duration(); // print timer
   sprintf_P(buf, PSTR(timestr), (uint16_t)(elapsed.value / 3600), ((uint16_t)elapsed.value % 3600) / 60);
   DWINUI::Draw_String(HMI_data.Text_Color, HMI_data.Background_Color, 47, 192, buf);
@@ -513,7 +513,7 @@ void Draw_Print_ProgressElapsed() {
 void Draw_Print_ProgressRemain() {
   char buf[10];
   const char *timestr = "%02i:%02i ";
-  if (PRO_data.time_format_textual) timestr = "%02ih%02im";
+  if (HMI_data.time_format_textual) timestr = "%02ih%02im";
   sprintf_P(buf, PSTR(timestr), (uint16_t)(_remain_time / 3600), ((uint16_t)_remain_time % 3600) / 60);
   DWINUI::Draw_String(HMI_data.Text_Color, HMI_data.Background_Color, 181, 192, buf);
 }
@@ -763,7 +763,7 @@ void update_variable() {
   #if HAS_FAN
     if (_new_fanspeed) {
       _fanspeed = thermalManager.fan_speed[0];
-      DWINUI::Draw_Int(DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 3, 195 + 2 * STAT_CHR_W, 384, (PRO_data.fan_percent) ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
+      DWINUI::Draw_Int(DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 3, 195 + 2 * STAT_CHR_W, 384, (HMI_data.fan_percent) ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
     }
   #endif
 
@@ -979,8 +979,8 @@ void DWIN_Draw_Dashboard() {
 
   #if HAS_FAN
     DWINUI::Draw_Icon(ICON_FanSpeed, 187, 383);
-    DWINUI::Draw_Int(DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 3, 195 + 2 * STAT_CHR_W, 384, (PRO_data.fan_percent) ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
-    DWIN_Draw_String( false, DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 195 + 5 * STAT_CHR_W + 2, 384, (PRO_data.fan_percent) ? F("%") : F(" "));
+    DWINUI::Draw_Int(DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 3, 195 + 2 * STAT_CHR_W, 384, (HMI_data.fan_percent) ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
+    DWIN_Draw_String( false, DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 195 + 5 * STAT_CHR_W + 2, 384, (HMI_data.fan_percent) ? F("%") : F(" "));
 #endif
 
   #if HAS_ZOFFSET_ITEM
@@ -1750,9 +1750,9 @@ void DWIN_SetDataDefaults() {
       PRO_data.Runout_active_state = !!FIL_RUNOUT_STATE;
       PRO_data.FilamentMotionSensor = !!DEF_FIL_MOTION_SENSOR;
     #endif
-    PRO_data.baseIcon = ICON;
-    PRO_data.fan_percent = DEF_FAN_SPEED_PERCENT;
-    PRO_data.time_format_textual = DEF_TIME_HMS_FORMAT;
+    HMI_data.baseIcon = ICON;
+    HMI_data.fan_percent = DEF_FAN_SPEED_PERCENT;
+    HMI_data.time_format_textual = DEF_TIME_HMS_FORMAT;
     #if HAS_TOOLBAR
       const uint8_t _def[] = DEF_TBOPT;
       LOOP_L_N(i,TBMaxOpt) PRO_data.TBopt[i] = _def[i];
@@ -2207,8 +2207,8 @@ void SetPID(celsius_t t, heater_id_t h) {
   void ApplyScreenTimeout() { ui.backlight_timeout_minutes = MenuData.Value; ui.refresh_backlight_timeout(); }
   void SetScreenTimeout() { SetIntOnClick(ui.backlight_timeout_min,ui.backlight_timeout_max, ui.backlight_timeout_minutes, ApplyScreenTimeout); }
 #endif
-  void ApplyBaseIcon() {PRO_data.baseIcon =  MenuData.Value; DWIN_RedrawScreen(); }
-  void SetBaseIcon() { SetIntOnClick(0,10,PRO_data.baseIcon,ApplyBaseIcon); }
+  void ApplyBaseIcon() {HMI_data.baseIcon =  MenuData.Value; DWIN_RedrawScreen(); }
+  void SetBaseIcon() { SetIntOnClick(0,10,HMI_data.baseIcon,ApplyBaseIcon); }
 #if ENABLED(CASE_LIGHT_MENU)
   void SetCaseLight() {
     caselight.on = !caselight.on;
@@ -2756,13 +2756,13 @@ void SetStepsZ() { HMI_value.axis = Z_AXIS, SetPFloatOnClick( MIN_STEP, MAX_STEP
 #endif
 
 void SetFanPercent() {
-  PRO_data.fan_percent = !PRO_data.fan_percent;
-  Show_Chkb_Line(CurrentMenu->line(), PRO_data.fan_percent);
+  HMI_data.fan_percent = !HMI_data.fan_percent;
+  Show_Chkb_Line(CurrentMenu->line(), HMI_data.fan_percent);
 }
 
 void SetTimeFormat() {
-  PRO_data.time_format_textual = !PRO_data.time_format_textual;
-  Show_Chkb_Line(CurrentMenu->line(), PRO_data.time_format_textual);
+  HMI_data.time_format_textual = !HMI_data.time_format_textual;
+  Show_Chkb_Line(CurrentMenu->line(), HMI_data.time_format_textual);
 }
 
 #if ENABLED(FWRETRACT)
@@ -3020,9 +3020,9 @@ void Draw_AdvancedSettings_Menu() {
     #if LCD_BACKLIGHT_TIMEOUT_MINS
     EDIT_ITEM(ICON_Brightness, MSG_SCREEN_TIMEOUT, onDrawPInt8Menu, SetScreenTimeout, &ui.backlight_timeout_minutes);
     #endif
-    EDIT_ITEM(ICON_FanSpeed, MSG_ICON_SET, onDrawPInt8Menu, SetBaseIcon, &PRO_data.baseIcon);
-    EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, SetFanPercent, &PRO_data.fan_percent);
-    EDIT_ITEM(ICON_PrintTime, MSG_PROGRESS_IN_HHMM, onDrawChkbMenu, SetTimeFormat, &PRO_data.time_format_textual);
+    EDIT_ITEM(ICON_FanSpeed, MSG_ICON_SET, onDrawPInt8Menu, SetBaseIcon, &HMI_data.baseIcon);
+    EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, SetFanPercent, &HMI_data.fan_percent);
+    EDIT_ITEM(ICON_PrintTime, MSG_PROGRESS_IN_HHMM, onDrawChkbMenu, SetTimeFormat, &HMI_data.time_format_textual);
     MENU_ITEM(ICON_Scolor, MSG_COLORS_SELECT, onDrawSubMenu, Draw_SelectColors_Menu);
   }
   ui.reset_status(true);
@@ -3800,8 +3800,8 @@ void Draw_Steps_Menu() {
 //=============================================================================
 #if HAS_TOOLBAR
   void SetTBCaption() {
-    PRO_data.TBShowCaption = !PRO_data.TBShowCaption;
-    Show_Chkb_Line(CurrentMenu->line(), PRO_data.TBShowCaption);
+    HMI_data.TBShowCaption = !HMI_data.TBShowCaption;
+    Show_Chkb_Line(CurrentMenu->line(), HMI_data.TBShowCaption);
   }
 
   void Draw_TBSetup_Menu() {
@@ -3809,7 +3809,7 @@ void Draw_Steps_Menu() {
     if (SET_MENU(TBSetupMenu, MSG_TOOLBAR_SETUP, TBMaxOpt + 3)) {
       BACK_ITEM(Draw_AdvancedSettings_Menu);
       BACK_HOME();
-      EDIT_ITEM(ICON_TBSetup,MSG_TOOLBAR_CAPTIONS, onDrawChkbMenu, SetTBCaption, &PRO_data.TBShowCaption);
+      EDIT_ITEM(ICON_TBSetup,MSG_TOOLBAR_CAPTIONS, onDrawChkbMenu, SetTBCaption, &HMI_data.TBShowCaption);
       LOOP_L_N(i, TBMaxOpt) EDIT_ITEM_F(0, "", onDrawTBSetupItem, SetTBSetupItem, &PRO_data.TBopt[i]);
     }
     UpdateMenu(TBSetupMenu);

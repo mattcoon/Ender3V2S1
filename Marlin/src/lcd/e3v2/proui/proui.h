@@ -22,7 +22,6 @@
 #pragma once
 
 #include "../../../inc/MarlinConfigPre.h"
-#include "../common/dwin_set.h"
 
 #ifndef LOW
   #define LOW  0x0
@@ -46,8 +45,6 @@ constexpr int16_t DEF_Z_MAX_POS = Z_MAX_POS;
 #if HAS_EXTRUDERS
   constexpr bool DEF_INVERT_E0_DIR = INVERT_E0_DIR;
 #endif
-  constexpr bool DEF_FAN_SPEED_PERCENT = FAN_SPEED_PERCENT_DEF;
-  constexpr bool DEF_TIME_HMS_FORMAT = TIME_HMS_FORMAT;
 
 #if HAS_MESH
 
@@ -113,8 +110,6 @@ typedef struct {
   #if HAS_EXTRUDERS
     bool Invert_E0 = DEF_INVERT_E0_DIR;
   #endif
-    bool fan_percent = DEF_FAN_SPEED_PERCENT;
-    bool time_format_textual = DEF_TIME_HMS_FORMAT;
   #if ENABLED(NOZZLE_PARK_FEATURE)
     xyz_int_t Park_point = DEF_NOZZLE_PARK_POINT;
   #endif
@@ -122,13 +117,11 @@ typedef struct {
     bool Runout_active_state = FIL_RUNOUT_STATE;
     bool FilamentMotionSensor = DEF_FIL_MOTION_SENSOR;
   #endif
-    uint8_t baseIcon = ICON;
   #if HAS_HOTEND
     celsius_t hotend_maxtemp = HEATER_0_MAXTEMP;
   #endif
   #if HAS_TOOLBAR
     uint8_t TBopt[TBMaxOpt] = DEF_TBOPT;
-    bool TBShowCaption = true;
   #endif
 } PRO_data_t;
 extern PRO_data_t PRO_data;

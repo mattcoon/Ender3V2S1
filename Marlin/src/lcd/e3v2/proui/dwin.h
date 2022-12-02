@@ -34,6 +34,9 @@
 namespace GET_LANG(LCD_LANGUAGE) {
 }
 
+  constexpr bool DEF_FAN_SPEED_PERCENT = FAN_SPEED_PERCENT_DEF;
+  constexpr bool DEF_TIME_HMS_FORMAT = TIME_HMS_FORMAT;
+
 const char DateTime[16+1] =
 {
   // YY year
@@ -154,6 +157,11 @@ typedef struct {
   #if BOTH(LED_CONTROL_MENU, HAS_COLOR_LEDS)
     uint32_t LED_Color = Def_Leds_Color;
   #endif
+  bool fan_percent = DEF_FAN_SPEED_PERCENT;
+  bool time_format_textual = DEF_TIME_HMS_FORMAT;
+  bool TBShowCaption = true;
+  uint8_t baseIcon = ICON;
+
 } HMI_data_t;
 
 extern HMI_data_t HMI_data;
