@@ -67,13 +67,18 @@ TODO: filament loading setting - keep track of filament
 TODO: automatic first setup
       calibration MPC, PID
       tram wizard, mesh
+TODO: variable toolbar / increase count
+TODO: filament change toolbar
 
 Test: 
 ------
+TODO: Zprobe wizard toolbar not working?? only sometimes?
 TODO: LCD Timeout
 
 Done:
 -------
+V2.1.3.4
+filament sensor not changing fix call to update
 V2.1.3.3
 filament sensor mode menu
 toggle for percent menu not working
