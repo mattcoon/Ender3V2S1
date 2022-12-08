@@ -71,7 +71,8 @@ TODO: variable toolbar / increase count
 
 Test: 
 ------
-TODO: LCD Timeout
+encoder only reset screen on timeout. eliminate activation or selection
+LCD assets
 
 Done:
 -------
