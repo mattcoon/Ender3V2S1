@@ -86,6 +86,7 @@ namespace Language_en {
   LSTR MSG_Z_AFTER_HOME                   = _UxGT("Z After Homing");
   LSTR MSG_FILAMENT_SET                   = _UxGT("Filament Settings");
   LSTR MSG_FILAMENT_MAN                   = _UxGT("Filament Management");
+  LSTR MSG_FILAMENT_MGT                   = _UxGT("Manage Filament");
   LSTR MSG_MANUAL_LEVELING                = _UxGT("Manual Leveling");
   LSTR MSG_LEVBED_FL                      = _UxGT("Front Left");
   LSTR MSG_LEVBED_FR                      = _UxGT("Front Right");

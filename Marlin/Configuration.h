@@ -65,9 +65,9 @@
 TODO: Host commands
 TODO: filament loading setting - keep track of filament
 TODO: automatic first setup
-      calibration MPC, PID
+      calibration MPC, PID, Z-offset
       tram wizard, mesh
-TODO: variable toolbar / increase count
+TODO: fix z offset wizard
 
 Test: 
 ------
@@ -76,6 +76,8 @@ LCD assets
 
 Done:
 -------
+filament management toolbar shortcut changed description
+LCD Timeout
 V2.1.3.4
 filament change toolbar
 Zprobe wizard toolbar not working?? only sometimes?
@@ -2272,7 +2274,7 @@ Flex mesh size
 #define EEPROM_BOOT_SILENT    // Keep M503 quiet and only give errors during first load
 #if ENABLED(EEPROM_SETTINGS)
   #define EEPROM_AUTO_INIT  // Init EEPROM automatically on any errors.  // Ender Configs
-  // #define EEPROM_INIT_NOW   // Init EEPROM on first boot after a new build.  // MRiscoC Reset EEPROM on first boot
+  #define EEPROM_INIT_NOW   // Init EEPROM on first boot after a new build.  // MRiscoC Reset EEPROM on first boot
 #endif
 
 // @section host

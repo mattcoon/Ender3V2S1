@@ -44,7 +44,7 @@ TBItem_t TBItemA[] = {
   #if HAS_FILAMENT_SENSOR
     {ICON_Runout, GET_TEXT_F(MSG_RUNOUT_TOGGLE), ToggleRunout},
   #endif
-    {ICON_FilUnload,GET_TEXT_F(MSG_FILAMENT_MAN), Draw_FilamentMan_Menu},
+    {ICON_FilUnload,GET_TEXT_F(MSG_FILAMENT_MGT), Draw_FilamentMan_Menu},
   #if ENABLED(HOST_SHUTDOWN_MENU_ITEM) && defined(SHUTDOWN_ACTION)
     {ICON_Host, GET_TEXT_F(MSG_HOST_SHUTDOWN), HostShutDown},
   #endif
