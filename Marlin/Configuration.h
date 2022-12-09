@@ -205,9 +205,7 @@ Flex mesh size
 // Enable the Bluetooth serial interface on AT90USB devices
 //#define BLUETOOTH
 
-#ifndef CREALITY_DAD
-
-  #define MATT_DirectEx //comment out for Bowden extrusion
+#ifndef CREALITY_STOCK
 
   #define X_STEP_PIN                          PB9
   #define X_DIR_PIN                           PC2
@@ -219,6 +217,10 @@ Flex mesh size
 
   #define E0_STEP_PIN                         PB3
   #define E0_DIR_PIN                          PB4
+#endif
+
+#ifndef CREALITY_BOWDEN
+  #define DIRECT_DRIVE
 #endif
 
 // Name displayed in the LCD "Ready" message and Info menu
@@ -775,7 +777,7 @@ Flex mesh size
   #define MPC_INCLUDE_FAN                             // Model the fan speed?
 
   // Measured physical constants from M306
-#ifndef CREALITY_DAD // matt direct
+#ifndef CREALITY_BOWDEN // Stock
   #define MPC_BLOCK_HEAT_CAPACITY { 15.25f }           // (J/K) Heat block heat capacities.
   #define MPC_SENSOR_RESPONSIVENESS { 0.24f }         // (K/s per ∆K) Rate of change of sensor temperature from heat block.
   #define MPC_AMBIENT_XFER_COEFF { 0.118f }           // (W/K) Heat transfer coefficients from heat block to room air with fan off.
