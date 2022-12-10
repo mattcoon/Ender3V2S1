@@ -668,6 +668,7 @@ namespace Language_en {
   LSTR MSG_INFO_BOARD_MENU                = _UxGT("Board Info");
   LSTR MSG_INFO_THERMISTOR_MENU           = _UxGT("Thermistors");
   LSTR MSG_INFO_EXTRUDERS                 = _UxGT("Extruders");
+  LSTR MSG_EXTRUDER_BOWDEN                = _UxGT("Bowden Extruder");
   LSTR MSG_INFO_BAUDRATE                  = _UxGT("Baud");
   LSTR MSG_INFO_PROTOCOL                  = _UxGT("Protocol");
   LSTR MSG_INFO_RUNAWAY_OFF               = _UxGT("Runaway Watch: OFF");

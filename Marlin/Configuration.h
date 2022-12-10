@@ -76,6 +76,7 @@ LCD assets
 
 Done:
 -------
+Selectable bowden/direct drive
 filament management toolbar shortcut changed description
 LCD Timeout
 V2.1.3.4
@@ -217,10 +218,6 @@ Flex mesh size
 
   #define E0_STEP_PIN                         PB3
   #define E0_DIR_PIN                          PB4
-#endif
-
-#ifndef CREALITY_BOWDEN
-  #define DIRECT_DRIVE
 #endif
 
 // Name displayed in the LCD "Ready" message and Info menu
