@@ -68,6 +68,7 @@ TODO: automatic first setup
       calibration MPC, PID, Z-offset
       tram wizard, mesh
 TODO: fix z offset wizard
+TODO: easy setup between stock, ddrive, sprite
 
 Test: 
 ------
