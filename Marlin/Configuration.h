@@ -70,18 +70,22 @@ TODO: automatic first setup
 TODO: fix z offset wizard toolbar
 TODO: implement laser mode and fan sharing
 TODO: add Laser position check/ low-power strobe to find the 0 point
+TODO: clear menu after config reload
+TODO: encoder only reset screen timeout. eliminate activation or selection
 
 Test: 
 ------
-TODO: encoder only reset screen timeout. eliminate activation or selection
 TODO: LCD assets
-TODO: allow movement in laser mode
-TODO: home X and Y only
-TODO: add XY home to toolbar
-TODO: eliminate bowden/direct use config files
 
 Done:
 -------
+remove LCD Timeout - too inconsistent
+allow movement when position unknown
+eliminate bowden/direct use config files
+allow movement in laser mode
+home X and Y only
+add XY home to toolbar
+2.1.3.5
 Selectable bowden/direct drive
 filament management toolbar shortcut changed description
 LCD Timeout
