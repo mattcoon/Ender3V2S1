@@ -241,6 +241,7 @@ void RebootPrinter();
 void DisableMotors();
 void AutoLev();
 void AutoHome();
+void HomeXY();
 #if HAS_PREHEAT
   #define _DOPREHEAT(N) void DoPreheat##N();
   REPEAT_1(PREHEAT_COUNT, _DOPREHEAT)

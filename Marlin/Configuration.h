@@ -68,12 +68,17 @@ TODO: automatic first setup
       calibration MPC, PID, Z-offset
       tram wizard, mesh
 TODO: fix z offset wizard
-TODO: easy setup between stock, ddrive, sprite
+TODO: implement laser mode and fan sharing
+TODO: eliminate bowden/direct use config files
+TODO: add XY home to shortcuts
+TODO: add Laser position check/ low-power strobe to find the 0 point
 
 Test: 
 ------
-encoder only reset screen on timeout. eliminate activation or selection
-LCD assets
+TODO: encoder only reset screen timeout. eliminate activation or selection
+TODO: LCD assets
+TODO: allow movement in laser mode
+TODO: home X and Y only
 
 Done:
 -------
@@ -1750,8 +1755,8 @@ Flex mesh size
 
 // @section homing
 
-#define NO_MOTION_BEFORE_HOMING // mmm Inhibit movement until all axes have been homed. Also enable HOME_AFTER_DEACTIVATE for extra safety.
-#define HOME_AFTER_DEACTIVATE   // Require rehoming after steppers are deactivated. Also enable NO_MOTION_BEFORE_HOMING for extra safety.  // MRiscoC Enabled for safety
+// #define NO_MOTION_BEFORE_HOMING // mmm Inhibit movement until all axes have been homed. Also enable HOME_AFTER_DEACTIVATE for extra safety.
+// #define HOME_AFTER_DEACTIVATE   // Require rehoming after steppers are deactivated. Also enable NO_MOTION_BEFORE_HOMING for extra safety.  // MRiscoC Enabled for safety
 
 /**
  * Set Z_IDLE_HEIGHT if the Z-Axis moves on its own when steppers are disabled.
