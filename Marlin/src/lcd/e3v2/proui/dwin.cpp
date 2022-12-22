@@ -3607,7 +3607,7 @@ void Draw_Steps_Menu() {
       BACK_ITEM(Draw_Prepare_Menu);
       BACK_HOME();
       MENU_ITEM(ICON_Homing, MSG_AUTO_HOME, onDrawMenuItem, AutoHome);
-      MENU_ITEM(ICON_Homing, MSG_AUTO_HOME_XY, onDrawMenuItem, HomeXY);
+      MENU_ITEM(ICON_HomeXY, MSG_AUTO_HOME_XY, onDrawMenuItem, HomeXY);
       #if ENABLED(INDIVIDUAL_AXIS_HOMING_SUBMENU)
         MENU_ITEM(ICON_HomeX, MSG_AUTO_HOME_X, onDrawMenuItem, HomeX);
         MENU_ITEM(ICON_HomeY, MSG_AUTO_HOME_Y, onDrawMenuItem, HomeY);

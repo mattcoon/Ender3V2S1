@@ -69,6 +69,7 @@
 #define ICON_FWRetZRaise       CI(1,ICON_MoveZ)
 #define ICON_FWRecSpeed        CI(1,ICON_Setspeed)
 #define ICON_FWRecExtra        CI(1,ICON_StepE)
+#define ICON_HomeXY            CI(1,ICON_MoveX)
 #define ICON_HomeX             CI(1,ICON_MoveX)
 #define ICON_HomeY             CI(1,ICON_MoveY)
 #define ICON_HomeZ             CI(1,ICON_MoveZ)
