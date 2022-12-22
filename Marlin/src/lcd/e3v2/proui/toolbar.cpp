@@ -42,8 +42,7 @@ void onDrawTBItem(MenuItemClass* menuitem, int8_t line) {
   const uint8_t xp = xoff + line * B_XPos + (line > sel ? tw : 0);
   if (focused && (line == sel)) {
     DWIN_Draw_Box(1, Color_Bg_Window, xp - 2, TBYPos, B_XPos, TBHeight);
-    if (HMI_data.TBShowCaption)
-      DWINUI::Draw_String(xp + B_XPos, B_YPos + 1, menuitem->caption);
+    DWINUI::Draw_String(xp + B_XPos, B_YPos + 1, menuitem->caption);
   }
   DWINUI::Draw_Icon(menuitem->icon, xp, B_YPos);
 };
@@ -67,7 +66,8 @@ void UpdateTBSetupItem(MenuItemClass* menuitem, uint8_t val) {
   strcpy_P(menuitem->caption, FTOP(TBItem.caption));
 }
 
-void DrawTBSetupItem(bool focused, uint8_t line) {
+void DrawTBSetupItem(bool focused) {
+  const uint8_t line = CurrentMenu->line();
   const uint16_t ypos = MYPOS(line);
   DWINUI::Draw_Box(1, focused ? Color_Bg_Black : HMI_data.Background_Color, {15, ypos, DWIN_WIDTH - 15, MLINE - 1});
   onDrawMenuItem(static_cast<MenuItemClass*>(CurrentMenu->SelectedItem()), line);

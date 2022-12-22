@@ -1,8 +1,8 @@
 /**
  * DWIN Enhanced implementation for PRO UI
  * Author: Miguel A. Risco-Castillo (MRISCOC)
- * Version: 3.19.1
- * Date: 2022/08/18
+ * Version: 3.20.1
+ * Date: 2022/10/25
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,7 +26,6 @@
 #include "dwin_defines.h"
 #include "dwin_lcd.h"
 #include "dwinui.h"
-#include "dwin.h"
 
 //#define DEBUG_OUT 1
 //#include "../../../core/debug_out.h"
@@ -209,7 +208,7 @@ void DWINUI::Draw_Float(uint8_t bShow, bool signedMode, font_t size, uint16_t co
 //  picID: Icon ID
 //  x/y: Upper-left point
 void DWINUI::ICON_Show(bool BG, uint8_t icon, uint16_t x, uint16_t y) {
-  const uint8_t libID = HMI_data.baseIcon TERN_(HAS_CUSTOMICONS, + (icon / 100));
+  const uint8_t libID = ICON TERN_(HAS_CUSTOMICONS, + (icon / 100));
   const uint8_t picID = icon TERN_(HAS_CUSTOMICONS, % 100);
   DWIN_ICON_Show(BG, false, !BG, libID, picID, x, y);
 }
@@ -229,7 +228,6 @@ void DWINUI::Draw_Button(uint8_t id, uint16_t x, uint16_t y) {
     case BTN_Print   : Draw_Button(GET_TEXT_F(MSG_BUTTON_PRINT), x, y); break;
     case BTN_Save    : Draw_Button(GET_TEXT_F(MSG_BUTTON_SAVE), x, y); break;
     case BTN_Purge   : Draw_Button(GET_TEXT_F(MSG_BUTTON_PURGE), x, y); break;
-    case BTN_Repeat  : Draw_Button(GET_TEXT_F(MSG_BUTTON_REPEAT), x, y); break;
     default: break;
   }
 }
@@ -325,8 +323,8 @@ uint16_t DWINUI::RainbowInt(int16_t val, int16_t minv, int16_t maxv) {
 //  x/y: Upper-left point
 //  mode : 0 : unchecked, 1 : checked
 void DWINUI::Draw_Checkbox(uint16_t color, uint16_t bcolor, uint16_t x, uint16_t y, bool checked=false) {
-  DWIN_Draw_String(true, font8x16, color, bcolor, x + 4, y, checked ? F("x") : F(" "));
   DWIN_Draw_Rectangle(0, color, x + 2, y + 2, x + 17, y + 17);
+  DWIN_Draw_Rectangle(1, checked ? color : bcolor, x + 6, y + 6, x + 13, y + 13);
 }
 
 // Clear Menu by filling the menu area with background color

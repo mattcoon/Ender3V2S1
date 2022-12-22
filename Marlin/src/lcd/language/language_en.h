@@ -70,7 +70,6 @@ namespace Language_en {
   LSTR MSG_MAIN                           = _UxGT("Main");
   LSTR MSG_ADVANCED_SETTINGS              = _UxGT("Advanced Settings");
   LSTR MSG_TOOLBAR_SETUP                  = _UxGT("Toolbar Setup");
-  LSTR MSG_TOOLBAR_CAPTIONS               = _UxGT("Enable Toolbar Caption");
   LSTR MSG_OPTION_DISABLED                = _UxGT("Option Disabled");
   LSTR MSG_CONFIGURATION                  = _UxGT("Configuration");
   LSTR MSG_RUN_AUTO_FILES                 = _UxGT("Run Auto Files");
@@ -79,7 +78,6 @@ namespace Language_en {
   LSTR MSG_PROGRESS_BAR_TEST              = _UxGT("Progress Bar Test");
   LSTR MSG_HOMING                         = _UxGT("Homing");
   LSTR MSG_AUTO_HOME                      = _UxGT("Auto Home");
-  LSTR MSG_AUTO_HOME_XY                   = _UxGT("Home XY");
   LSTR MSG_AUTO_HOME_A                    = _UxGT("Home @");
   LSTR MSG_AUTO_HOME_X                    = _UxGT("Home X");
   LSTR MSG_AUTO_HOME_Y                    = _UxGT("Home Y");
@@ -87,7 +85,6 @@ namespace Language_en {
   LSTR MSG_Z_AFTER_HOME                   = _UxGT("Z After Homing");
   LSTR MSG_FILAMENT_SET                   = _UxGT("Filament Settings");
   LSTR MSG_FILAMENT_MAN                   = _UxGT("Filament Management");
-  LSTR MSG_FILAMENT_MGT                   = _UxGT("Manage Filament");
   LSTR MSG_MANUAL_LEVELING                = _UxGT("Manual Leveling");
   LSTR MSG_LEVBED_FL                      = _UxGT("Front Left");
   LSTR MSG_LEVBED_FR                      = _UxGT("Front Right");
@@ -114,7 +111,6 @@ namespace Language_en {
   LSTR MSG_SELECT_ORIGIN                  = _UxGT("Select Origin");
   LSTR MSG_LAST_VALUE_SP                  = _UxGT("Last value ");
   #if HAS_PREHEAT
-    LSTR MSG_PREHEAT                      = _UxGT("Preheat");
     LSTR MSG_PREHEAT_1                    = _UxGT("Preheat ") PREHEAT_1_LABEL;
     LSTR MSG_PREHEAT_1_H                  = _UxGT("Preheat ") PREHEAT_1_LABEL " ~";
     LSTR MSG_PREHEAT_1_END                = _UxGT("Preheat ") PREHEAT_1_LABEL _UxGT(" End");
@@ -130,14 +126,6 @@ namespace Language_en {
       LSTR MSG_PREHEAT_3                  = _UxGT("Preheat ") PREHEAT_3_LABEL;
       LSTR MSG_PREHEAT_3_SETTINGS         = _UxGT("Preheat ") PREHEAT_3_LABEL _UxGT(" Conf");
     #endif
-    #ifdef PREHEAT_4_LABEL
-      LSTR MSG_PREHEAT_4                  = _UxGT("Preheat ") PREHEAT_4_LABEL;
-      LSTR MSG_PREHEAT_4_SETTINGS         = _UxGT("Preheat ") PREHEAT_4_LABEL _UxGT(" Conf");
-    #endif
-    #ifdef PREHEAT_5_LABEL
-      LSTR MSG_PREHEAT_5                  = _UxGT("Preheat ") PREHEAT_5_LABEL;
-      LSTR MSG_PREHEAT_5_SETTINGS         = _UxGT("Preheat ") PREHEAT_5_LABEL _UxGT(" Conf");
-    #endif
     LSTR MSG_PREHEAT_M                    = _UxGT("Preheat $");
     LSTR MSG_PREHEAT_M_H                  = _UxGT("Preheat $ ~");
     LSTR MSG_PREHEAT_M_END                = _UxGT("Preheat $ End");
@@ -146,6 +134,7 @@ namespace Language_en {
     LSTR MSG_PREHEAT_M_BEDONLY            = _UxGT("Preheat $ Bed");
     LSTR MSG_PREHEAT_M_SETTINGS           = _UxGT("Preheat $ Conf");
   #endif
+  LSTR MSG_PREHEAT_HOTEND                 = _UxGT("Preheat Hotend");
   LSTR MSG_PREHEAT_CUSTOM                 = _UxGT("Preheat Custom");
   LSTR MSG_COOLDOWN                       = _UxGT("Cooldown");
 
@@ -330,11 +319,14 @@ namespace Language_en {
   LSTR MSG_MOVE_01MM                      = _UxGT("Move 0.1mm");
   LSTR MSG_MOVE_1MM                       = _UxGT("Move 1mm");
   LSTR MSG_MOVE_10MM                      = _UxGT("Move 10mm");
+  LSTR MSG_MOVE_50MM                      = _UxGT("Move 50mm");
   LSTR MSG_MOVE_100MM                     = _UxGT("Move 100mm");
   LSTR MSG_MOVE_0001IN                    = _UxGT("Move 0.001in");
   LSTR MSG_MOVE_001IN                     = _UxGT("Move 0.01in");
   LSTR MSG_MOVE_01IN                      = _UxGT("Move 0.1in");
+  LSTR MSG_MOVE_05IN                      = _UxGT("Move 0.5in");
   LSTR MSG_MOVE_1IN                       = _UxGT("Move 1.0in");
+  LSTR MSG_LIVE_MOVE                      = _UxGT("Live Move");
   LSTR MSG_SPEED                          = _UxGT("Speed");
   LSTR MSG_BED_Z                          = _UxGT("Bed Z");
   LSTR MSG_NOZZLE                         = _UxGT("Nozzle");
@@ -347,6 +339,7 @@ namespace Language_en {
   LSTR MSG_COOLER                         = _UxGT("Laser Coolant");
   LSTR MSG_COOLER_TOGGLE                  = _UxGT("Toggle Cooler");
   LSTR MSG_FLOWMETER_SAFETY               = _UxGT("Flow Safety");
+  LSTR MSG_CUTTER                         = _UxGT("Cutter");
   LSTR MSG_LASER                          = _UxGT("Laser");
   LSTR MSG_FAN_SPEED                      = _UxGT("Fan Speed");
   LSTR MSG_FAN_SPEED_N                    = _UxGT("Fan Speed ~");
@@ -401,6 +394,7 @@ namespace Language_en {
   LSTR MSG_VN_JERK                        = _UxGT("Max @ Jerk");
   LSTR MSG_VE_JERK                        = _UxGT("Max E Jerk");
   LSTR MSG_JUNCTION_DEVIATION             = _UxGT("Junction Dev");
+  LSTR MSG_STEP_SMOOTHING                 = _UxGT("Step Smoothing");
   LSTR MSG_MAX_SPEED                      = _UxGT("Max Speed (mm/s)");
   LSTR MSG_VMAX_A                         = _UxGT("Max ") STR_A _UxGT(" Speed");
   LSTR MSG_VMAX_B                         = _UxGT("Max ") STR_B _UxGT(" Speed");
@@ -419,6 +413,17 @@ namespace Language_en {
   LSTR MSG_AMAX_EN                        = _UxGT("Max * Accel");
   LSTR MSG_A_RETRACT                      = _UxGT("Retract Accel");
   LSTR MSG_A_TRAVEL                       = _UxGT("Travel Accel");
+  LSTR MSG_INPUT_SHAPING                  = _UxGT("Input Shaping");
+  LSTR MSG_SHAPING_ENABLE                 = _UxGT("Enable @ shaping");
+  LSTR MSG_SHAPING_DISABLE                = _UxGT("Disable @ shaping");
+  LSTR MSG_SHAPING_FREQ                   = _UxGT("@ frequency");
+  LSTR MSG_SHAPING_ZETA                   = _UxGT("@ damping");
+  LSTR MSG_SHAPING_A_FREQ                 = STR_A _UxGT(" frequency");
+  LSTR MSG_SHAPING_B_FREQ                 = STR_B _UxGT(" frequency");
+  LSTR MSG_SHAPING_A_ZETA                 = STR_A _UxGT(" damping ");
+  LSTR MSG_SHAPING_B_ZETA                 = STR_B _UxGT(" damping ");
+  LSTR MSG_SHAPING_X_ENABLE               = _UxGT("Enable X shaping");
+  LSTR MSG_SHAPING_Y_ENABLE               = _UxGT("Enable Y shaping");
   LSTR MSG_XY_FREQUENCY_LIMIT             = _UxGT("XY Freq Limit");
   LSTR MSG_XY_FREQUENCY_FEEDRATE          = _UxGT("Min FR Factor");
   LSTR MSG_STEPS_PER_MM                   = _UxGT("Steps/mm");
@@ -437,17 +442,18 @@ namespace Language_en {
   LSTR MSG_FILAMENT_DIAM                  = _UxGT("Fil. Dia.");
   LSTR MSG_FILAMENT_DIAM_E                = _UxGT("Fil. Dia. *");
   LSTR MSG_FILAMENT_UNLOAD                = _UxGT("Unload mm");
-  LSTR MSG_FILAMENT_PREUNLOAD             = _UxGT("Initial Unload mm");
-  LSTR MSG_FILAMENT_UNLOADDELAY           = _UxGT("Initial Unload delay s");
   LSTR MSG_FILAMENT_LOAD                  = _UxGT("Load mm");
+  LSTR MSG_SEGMENTS_PER_SECOND            = _UxGT("Segments/Sec");
+  LSTR MSG_DRAW_MIN_X                     = _UxGT("Draw Min X");
+  LSTR MSG_DRAW_MAX_X                     = _UxGT("Draw Max X");
+  LSTR MSG_DRAW_MIN_Y                     = _UxGT("Draw Min Y");
+  LSTR MSG_DRAW_MAX_Y                     = _UxGT("Draw Max Y");
+  LSTR MSG_MAX_BELT_LEN                   = _UxGT("Max Belt Len");
   LSTR MSG_ADVANCE_K                      = _UxGT("Advance K");
   LSTR MSG_ADVANCE_K_E                    = _UxGT("Advance K *");
   LSTR MSG_CONTRAST                       = _UxGT("LCD Contrast");
   LSTR MSG_BRIGHTNESS                     = _UxGT("LCD Brightness");
   LSTR MSG_SCREEN_TIMEOUT                 = _UxGT("LCD Timeout (m)");
-  LSTR MSG_ICON_SET                       = _UxGT("ICON Selection");
-  LSTR MSG_PROGRESS_IN_HHMM               = _UxGT("Progress in __h__m");
-  LSTR MSG_FAN_SPEED_PERCENT              = _UxGT("Fan Speed Percent");
   LSTR MSG_BRIGHTNESS_OFF                 = _UxGT("Turn Off LCD");
   LSTR MSG_STORE_EEPROM                   = _UxGT("Store Settings");
   LSTR MSG_LOAD_EEPROM                    = _UxGT("Load Settings");
@@ -484,7 +490,6 @@ namespace Language_en {
   LSTR MSG_BUTTON_CONTINUE                = _UxGT("Continue");
   LSTR MSG_BUTTON_DONE                    = _UxGT("Done");
   LSTR MSG_BUTTON_BACK                    = _UxGT("Back");
-  LSTR MSG_BUTTON_MAIN                    = _UxGT("Main");
   LSTR MSG_BUTTON_PROCEED                 = _UxGT("Proceed");
   LSTR MSG_BUTTON_SKIP                    = _UxGT("Skip");
   LSTR MSG_BUTTON_INFO                    = _UxGT("Info");
@@ -494,7 +499,6 @@ namespace Language_en {
   LSTR MSG_BUTTON_ADVANCED                = _UxGT("Advanced");
   LSTR MSG_BUTTON_SAVE                    = _UxGT("Save");
   LSTR MSG_BUTTON_PURGE                   = _UxGT("Purge");
-  LSTR MSG_BUTTON_REPEAT                  = _UxGT("Repeat");
   LSTR MSG_PAUSING                        = _UxGT("Pausing...");
   LSTR MSG_PAUSE_PRINT                    = _UxGT("Pause Print");
   LSTR MSG_ADVANCED_PAUSE                 = _UxGT("Advanced Pause");
@@ -555,6 +559,7 @@ namespace Language_en {
   LSTR MSG_PARK_XPOSITION                 = _UxGT("Park X Position");
   LSTR MSG_PARK_YPOSITION                 = _UxGT("Park Y Position");
   LSTR MSG_PARK_ZRAISE                    = _UxGT("Park Z Raise");
+  LSTR MSG_PARK_FAILED                    = _UxGT("Head cannot be parked");
   LSTR MSG_PHY_SET                        = _UxGT("Physical settings");
   LSTR MSG_PHY_XBEDSIZE                   = _UxGT("X bed size");
   LSTR MSG_PHY_YBEDSIZE                   = _UxGT("Y bed size");
@@ -615,7 +620,6 @@ namespace Language_en {
   LSTR MSG_ZPROBE_MULTIPLE                = _UxGT("Multiple Probing");
   LSTR MSG_Z_FEED_RATE                    = _UxGT("Z Feed Rate");
   LSTR MSG_ENABLE_HS_MODE                 = _UxGT("Enable HS mode");
-  LSTR MSG_ENABLE_LASERMODE               = _UxGT("Enable Laser mode");
   LSTR MSG_MOVE_NOZZLE_TO_BED             = _UxGT("Move Nozzle to Bed");
   LSTR MSG_BABYSTEP_X                     = _UxGT("Babystep X");
   LSTR MSG_BABYSTEP_Y                     = _UxGT("Babystep Y");
@@ -666,10 +670,10 @@ namespace Language_en {
   LSTR MSG_MESH_DONE                      = _UxGT("Mesh probing done");
   LSTR MSG_MESH_POINTS                    = _UxGT("Mesh Points");
   LSTR MSG_INFO_STATS_MENU                = _UxGT("Printer Stats");
+  LSTR MSG_RESET_STATS                    = _UxGT("Reset Print Stats?");
   LSTR MSG_INFO_BOARD_MENU                = _UxGT("Board Info");
   LSTR MSG_INFO_THERMISTOR_MENU           = _UxGT("Thermistors");
   LSTR MSG_INFO_EXTRUDERS                 = _UxGT("Extruders");
-  LSTR MSG_EXTRUDER_BOWDEN                = _UxGT("Bowden Extruder");
   LSTR MSG_INFO_BAUDRATE                  = _UxGT("Baud");
   LSTR MSG_INFO_PROTOCOL                  = _UxGT("Protocol");
   LSTR MSG_INFO_RUNAWAY_OFF               = _UxGT("Runaway Watch: OFF");
@@ -732,7 +736,6 @@ namespace Language_en {
   LSTR MSG_RUNOUT_SENSOR                  = _UxGT("Runout Sensor");
   LSTR MSG_RUNOUT_DISTANCE_MM             = _UxGT("Runout Dist mm");
   LSTR MSG_RUNOUT_ENABLE                  = _UxGT("Enable Runout");
-  LSTR MSG_RUNOUT_TOGGLE                  = _UxGT("Toggle Runout");
   LSTR MSG_RUNOUT_ACTIVE                  = _UxGT("Runout Active");
   LSTR MSG_INVERT_EXTRUDER                = _UxGT("Invert Extruder");
   LSTR MSG_EXTRUDER_MIN_TEMP              = _UxGT("Extruder Min Temp.");
@@ -831,6 +834,10 @@ namespace Language_en {
   #endif
   LSTR MSG_TMC_DRIVERS                    = _UxGT("TMC Drivers");
   LSTR MSG_TMC_CURRENT                    = _UxGT("Driver Current");
+  LSTR MSG_TMC_ACURRENT                   = STR_A _UxGT("Driver Current");
+  LSTR MSG_TMC_BCURRENT                   = STR_B _UxGT("Driver Current");
+  LSTR MSG_TMC_CCURRENT                   = STR_C _UxGT("Driver Current");
+  LSTR MSG_TMC_ECURRENT                   = _UxGT("E Driver Current");
   LSTR MSG_TMC_HYBRID_THRS                = _UxGT("Hybrid Threshold");
   LSTR MSG_TMC_HOMING_THRS                = _UxGT("Sensorless Homing");
   LSTR MSG_TMC_STEPPING_MODE              = _UxGT("Stepping Mode");

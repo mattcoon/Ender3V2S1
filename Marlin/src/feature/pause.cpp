@@ -352,10 +352,10 @@ bool unload_filament(const_float_t unload_length, const bool show_lcd/*=false*/,
   unscaled_e_move(-(FILAMENT_UNLOAD_PURGE_RETRACT) * mix_multiplier, (PAUSE_PARK_RETRACT_FEEDRATE) * mix_multiplier);
 
   // Wait for filament to cool
-  safe_delay(fc_settings[0].unload_predelay);
+  safe_delay(FILAMENT_UNLOAD_PURGE_DELAY);
 
   // Quickly purge
-  unscaled_e_move((FILAMENT_UNLOAD_PURGE_RETRACT + fc_settings[0].unload_prelength) * mix_multiplier,
+  unscaled_e_move((FILAMENT_UNLOAD_PURGE_RETRACT + FILAMENT_UNLOAD_PURGE_LENGTH) * mix_multiplier,
                   (FILAMENT_UNLOAD_PURGE_FEEDRATE) * mix_multiplier);
 
   // Unload filament
@@ -460,6 +460,7 @@ bool pause_print(const_float_t retract, const xyz_pos_t &park_point, const bool 
 
   // If axes don't need to home then the nozzle can park
   if (do_park) nozzle.park(0, park_point); // Park the nozzle by doing a Minimum Z Raise followed by an XY Move
+  TERN_(DWIN_LCD_PROUI, else ui.set_status(GET_TEXT_F(MSG_PARK_FAILED)));
 
   #if ENABLED(DUAL_X_CARRIAGE)
     const int8_t saved_ext        = active_extruder;
@@ -471,9 +472,7 @@ bool pause_print(const_float_t retract, const xyz_pos_t &park_point, const bool 
   if (unload_length)
     unload_filament(unload_length, show_lcd, PAUSE_MODE_CHANGE_FILAMENT);
 
-  #if ENABLED(DUAL_X_CARRIAGE)
-    set_duplication_enabled(saved_ext_dup_mode, saved_ext);
-  #endif
+  TERN_(DUAL_X_CARRIAGE, set_duplication_enabled(saved_ext_dup_mode, saved_ext));
 
   // Disable the Extruder for manual change
   disable_active_extruder();
@@ -579,9 +578,7 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
     }
     idle_no_sleep();
   }
-  #if ENABLED(DUAL_X_CARRIAGE)
-    set_duplication_enabled(saved_ext_dup_mode, saved_ext);
-  #endif
+  TERN_(DUAL_X_CARRIAGE, set_duplication_enabled(saved_ext_dup_mode, saved_ext));
 }
 
 /**

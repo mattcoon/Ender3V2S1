@@ -84,38 +84,33 @@ EncoderState Encoder_ReceiveAnalyze() {
     if (ELAPSED(now, next_click_update_ms)) {
       next_click_update_ms = millis() + 300;
       Encoder_tick();
-      #if LCD_BACKLIGHT_TIMEOUT_MINS
-       ui.refresh_backlight_timeout();
-      #endif
       #if PIN_EXISTS(LCD_LED)
         //LED_Action();
       #endif
       if (!ui.backlight) ui.refresh_brightness();
-	  else {
-        const bool was_waiting = wait_for_user;
-        wait_for_user = false;
-        return was_waiting ? ENCODER_DIFF_NO : ENCODER_DIFF_ENTER;
-	  }
+      const bool was_waiting = wait_for_user;
+      wait_for_user = false;
+      return was_waiting ? ENCODER_DIFF_NO : ENCODER_DIFF_ENTER;
     }
     else return ENCODER_DIFF_NO;
   }
   if (newbutton != lastEncoderBits) {
     switch (newbutton) {
-      case ENCODER_PHASE_0:
-             if (lastEncoderBits == ENCODER_PHASE_3) temp_diff++;
-        else if (lastEncoderBits == ENCODER_PHASE_1) temp_diff--;
+      case 0:
+             if (lastEncoderBits == 1) temp_diff++;
+        else if (lastEncoderBits == 2) temp_diff--;
         break;
-      case ENCODER_PHASE_1:
-             if (lastEncoderBits == ENCODER_PHASE_0) temp_diff++;
-        else if (lastEncoderBits == ENCODER_PHASE_2) temp_diff--;
+      case 2:
+             if (lastEncoderBits == 0) temp_diff++;
+        else if (lastEncoderBits == 3) temp_diff--;
         break;
-      case ENCODER_PHASE_2:
-             if (lastEncoderBits == ENCODER_PHASE_1) temp_diff++;
-        else if (lastEncoderBits == ENCODER_PHASE_3) temp_diff--;
+      case 3:
+             if (lastEncoderBits == 2) temp_diff++;
+        else if (lastEncoderBits == 1) temp_diff--;
         break;
-      case ENCODER_PHASE_3:
-             if (lastEncoderBits == ENCODER_PHASE_2) temp_diff++;
-        else if (lastEncoderBits == ENCODER_PHASE_0) temp_diff--;
+      case 1:
+             if (lastEncoderBits == 3) temp_diff++;
+        else if (lastEncoderBits == 0) temp_diff--;
         break;
     }
     lastEncoderBits = newbutton;
@@ -159,10 +154,6 @@ EncoderState Encoder_ReceiveAnalyze() {
 
     temp_diff = 0;
   }
-  #if LCD_BACKLIGHT_TIMEOUT_MINS
-  if (temp_diffState != ENCODER_DIFF_NO)
-      ui.refresh_backlight_timeout();
-  #endif
   return temp_diffState;
 }
 

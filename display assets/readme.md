@@ -10,11 +10,6 @@ If you have the stock icons and display assets you don't need to update the disp
 
 The `DWIN_SET` display firmware / icon assets only apply to the Ender 3V2 original display, for the Ender 3S1 you must to use the `private` display firmware / icon assets.
 
-5.ico - Custom
-6.ico - Giodej
-7.ico - Original
-8.ico - Gotcha
-9.ico - Gotcha2
 # Display firmware, boot image and icons compilations
 This page list the display assets compilations compatible with [Professional firmware](https://github.com/mriscoc/Ender3V2S1/releases/latest) fork.
 Not all icons compilations are available for the DWIN_SET and private.

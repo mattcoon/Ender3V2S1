@@ -1,8 +1,8 @@
 /**
  * Menu functions for ProUI
  * Author: Miguel A. Risco-Castillo
- * Version: 1.8.1
- * Date: 2022/09/29
+ * Version: 1.9.1
+ * Date: 2022/12/02
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as 
@@ -43,7 +43,6 @@ extern MenuData_t MenuData;
 // Create and add a MenuItem object to the menu array
 #define SET_MENU(I,L,V...) SetMenu(I, GET_TEXT_F(L), V)
 #define BACK_ITEM(H) MenuItemAdd(ICON_Back, GET_TEXT_F(MSG_BUTTON_BACK), onDrawMenuItem, H)
-#define BACK_HOME()  MenuItemAdd(ICON_Back, GET_TEXT_F(MSG_BUTTON_MAIN), onDrawMenuItem, Goto_Main_Menu)
 #define MENU_ITEM(I,L,V...) MenuItemAdd(I, GET_TEXT_F(L), V)
 #define EDIT_ITEM(I,L,V...) EditItemAdd(I, GET_TEXT_F(L), V)
 #define SET_MENU_F(I,L,V...) SetMenu(I, F(L), V)
@@ -121,7 +120,8 @@ void Erase_Menu_Text(const int8_t line);
 void Draw_Menu_Line(const uint8_t line, const uint8_t icon=0, const char * const label=nullptr, bool more=false, bool selected=false);
 void Draw_Menu_Line(const uint8_t line, const uint8_t icon=0, FSTR_P label=nullptr, bool more=false, bool selected=false);
 void Draw_Chkb_Line(const uint8_t line, const bool checked);
-void Show_Chkb_Line(const uint8_t line, const bool checked);
+void Show_Chkb_Line(const bool checked);
+void Toogle_Chkb_Line(bool &checked);
 void Draw_Menu_IntValue(uint16_t bcolor, const uint8_t line, uint8_t iNum, const int32_t value=0);
 void onDrawMenuItem(MenuItemClass* menuitem, int8_t line);
 void onDrawSubMenu(MenuItemClass* menuitem, int8_t line);

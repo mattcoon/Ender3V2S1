@@ -21,7 +21,7 @@
 *****************************************************************************
 ** @attention
 **
-** <h2><center>&copy; COPYRIGHT(c) 2014 Ac6</center></h2>
+** Copyright (c) 2014 Ac6
 **
 ** Redistribution and use in source and binary forms, with or without modification,
 ** are permitted provided that the following conditions are met:
@@ -182,6 +182,9 @@ SECTIONS
     libm.a ( * )
     libgcc.a ( * )
   }
+
+  .ARM.attributes 0 : { *(.ARM.attributes) }
+}
 
   .ARM.attributes 0 : { *(.ARM.attributes) }
 }
