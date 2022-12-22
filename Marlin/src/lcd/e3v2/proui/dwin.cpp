@@ -1750,20 +1750,6 @@ void DWIN_SetDataDefaults() {
       PRO_data.Runout_active_state = FIL_RUNOUT_STATE;
       PRO_data.FilamentMotionSensor = DEF_FIL_MOTION_SENSOR;
     #endif
-    HMI_data.extruderType.fil_change_config[0].load_length = DIR_FILAMENT_CHANGE_FAST_LOAD_LENGTH;
-    HMI_data.extruderType.fil_change_config[0].unload_length = DIR_FILAMENT_CHANGE_UNLOAD_LENGTH;
-    // HMI_data.extruderType.fil_change_config[0].unload_predelay = DIR_FILAMENT_UNLOAD_PURGE_DELAY;
-    // HMI_data.extruderType.fil_change_config[0].unload_prelength = DIR_FILAMENT_UNLOAD_PURGE_RETRACT;
-    HMI_data.extruderType.fwretraction_config[0].retract_length = DIR_RETRACT_LENGTH;
-    HMI_data.extruderType.fwretraction_config[0].retract_recover_extra = DIR_RETRACT_RECOVER_LENGTH;
-    HMI_data.extruderType.fil_change_config[1].load_length = FILAMENT_CHANGE_FAST_LOAD_LENGTH;
-    HMI_data.extruderType.fil_change_config[1].unload_length = FILAMENT_CHANGE_UNLOAD_LENGTH;
-    // HMI_data.extruderType.fil_change_config[1].unload_predelay = FILAMENT_UNLOAD_PURGE_DELAY;
-    // HMI_data.extruderType.fil_change_config[1].unload_prelength = FILAMENT_UNLOAD_PURGE_RETRACT;
-    HMI_data.extruderType.fwretraction_config[1].retract_length = RETRACT_LENGTH;
-    HMI_data.extruderType.fwretraction_config[1].retract_recover_extra = RETRACT_RECOVER_LENGTH;
-    HMI_data.extruderType.bowdenExtruder = false;
-    LoadExtruderSettings(0);
 
     HMI_data.baseIcon = ICON;
     HMI_data.fan_percent = DEF_FAN_SPEED_PERCENT;
@@ -1806,7 +1792,6 @@ void DWIN_CopySettingsFrom(const char * const buff) {
   #endif
   TERN_(ProUIex, ProEx.LoadSettings());
   _unloadDelay = fc_settings[0].unload_predelay/1000;
-  LoadExtruderSettings(HMI_data.extruderType.bowdenExtruder? 1 : 0);
 }
 
 // Initialize or re-initialize the LCD
@@ -2300,37 +2285,10 @@ void SetPID(celsius_t t, heater_id_t h) {
 
 #endif
 
-
-  void SetLaserMode() {
-    planner.laserMode = !planner.laserMode;
-    Show_Chkb_Line(CurrentMenu->line(), planner.laserMode);
-  }
-
-  void LoadExtruderSettings(u_int8_t index) {
-      fwretract.settings.retract_length = HMI_data.extruderType.fwretraction_config[index].retract_length ;
-      fwretract.settings.retract_recover_extra = HMI_data.extruderType.fwretraction_config[index].retract_recover_extra;
-      fc_settings[0].load_length = HMI_data.extruderType.fil_change_config[index].load_length;
-      fc_settings[0].unload_length = HMI_data.extruderType.fil_change_config[index].unload_length;
-      // fc_settings[0].unload_predelay = HMI_data.extruderType.fil_change_config[index].unload_predelay;
-      // fc_settings[0].unload_prelength = HMI_data.extruderType.fil_change_config[index].unload_prelength;
-  }
-
-  void CopyExtruderSetting(u_int8_t index) {
-      HMI_data.extruderType.fwretraction_config[index].retract_length = fwretract.settings.retract_length;
-      HMI_data.extruderType.fwretraction_config[index].retract_recover_extra = fwretract.settings.retract_recover_extra;
-      HMI_data.extruderType.fil_change_config[index].load_length = fc_settings[0].load_length;
-      HMI_data.extruderType.fil_change_config[index].unload_length = fc_settings[0].unload_length;
-      // HMI_data.extruderType.fil_change_config[index].unload_predelay = fc_settings[0].unload_predelay;
-      // HMI_data.extruderType.fil_change_config[index].unload_prelength = fc_settings[0].unload_prelength;
-  }
-  
-  void SetExtruderType() {
-    // copy over current setting and new settings and toggle
-    HMI_data.extruderType.bowdenExtruder = !HMI_data.extruderType.bowdenExtruder;
-    LoadExtruderSettings(HMI_data.extruderType.bowdenExtruder? 1 : 0);
-    Show_Chkb_Line(CurrentMenu->line(), HMI_data.extruderType.bowdenExtruder);
-    ReDrawMenu();
-  }
+void SetLaserMode() {
+  planner.laserMode = !planner.laserMode;
+  Show_Chkb_Line(CurrentMenu->line(), planner.laserMode);
+}
 
 #if ProUIex && ENABLED(NOZZLE_PARK_FEATURE)
   void SetParkPosX()   { SetPIntOnClick(X_MIN_POS, X_MAX_POS); }
@@ -2366,10 +2324,10 @@ void SetPID(celsius_t t, heater_id_t h) {
 #endif
 
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
-  void SetFilLoad()   { SetPFloatOnClick(0, MAX_LOAD_UNLOAD, UNITFDIGITS); CopyExtruderSetting(HMI_data.extruderType.bowdenExtruder? 1 : 0); }
-  void SetFilUnload() { SetPFloatOnClick(0, MAX_LOAD_UNLOAD, UNITFDIGITS); CopyExtruderSetting(HMI_data.extruderType.bowdenExtruder? 1 : 0);}
-  void SetFilUnloadPreLength() { SetPFloatOnClick(0, MAX_LOAD_UNLOAD, UNITFDIGITS); CopyExtruderSetting(HMI_data.extruderType.bowdenExtruder? 1 : 0);}
-  void ApplyFilUnloadPreDelay() { _unloadDelay = MenuData.Value; fc_settings[0].unload_predelay = _unloadDelay * 1000; CopyExtruderSetting(HMI_data.extruderType.bowdenExtruder? 1 : 0);}
+  void SetFilLoad()   { SetPFloatOnClick(0, MAX_LOAD_UNLOAD, UNITFDIGITS); }
+  void SetFilUnload() { SetPFloatOnClick(0, MAX_LOAD_UNLOAD, UNITFDIGITS); }
+  void SetFilUnloadPreLength() { SetPFloatOnClick(0, MAX_LOAD_UNLOAD, UNITFDIGITS); }
+  void ApplyFilUnloadPreDelay() { _unloadDelay = MenuData.Value; fc_settings[0].unload_predelay = _unloadDelay * 1000; }
   void SetFilUnloadPreDelay() { SetIntOnClick(0, 255,_unloadDelay, ApplyFilUnloadPreDelay); }
 #endif
 
@@ -2809,11 +2767,11 @@ void SetTimeFormat() {
 
 #if ENABLED(FWRETRACT)
   void Return_FWRetract_Menu() { (PreviousMenu == FilSetMenu) ? Draw_FilSet_Menu() : Draw_Tune_Menu(); }
-  void SetRetractLength() { SetPFloatOnClick( 0, 10, UNITFDIGITS); CopyExtruderSetting(HMI_data.extruderType.bowdenExtruder? 1 : 0); }
+  void SetRetractLength() { SetPFloatOnClick( 0, 10, UNITFDIGITS); }
   void SetRetractSpeed() { SetPFloatOnClick( 1, 90, UNITFDIGITS); }
   void SetZRaise() { SetPFloatOnClick( 0, 2, 2); }
   void SetRecoverSpeed() { SetPFloatOnClick( 1, 90, UNITFDIGITS); }
-  void SetAddRecover() { SetPFloatOnClick(-5, 5, UNITFDIGITS); CopyExtruderSetting(HMI_data.extruderType.bowdenExtruder? 1 : 0);}
+  void SetAddRecover() { SetPFloatOnClick(-5, 5, UNITFDIGITS); }
 #endif
 
 #if HAS_TOOLBAR
@@ -3130,7 +3088,7 @@ void Draw_Move_Menu() {
 
 void Draw_FilSet_Menu() {
   checkkey = Menu;
-  if (SET_MENU(FilSetMenu, MSG_FILAMENT_SET, 13)) {
+  if (SET_MENU(FilSetMenu, MSG_FILAMENT_SET, 12)) {
     BACK_ITEM(Draw_AdvancedSettings_Menu);
     BACK_HOME();
     #if HAS_FILAMENT_SENSOR
@@ -3142,7 +3100,6 @@ void Draw_FilSet_Menu() {
     #if HAS_FILAMENT_RUNOUT_DISTANCE
       EDIT_ITEM(ICON_Runout, MSG_RUNOUT_DISTANCE_MM, onDrawPFloatMenu, SetRunoutDistance, &runout.runout_distance());
     #endif
-    EDIT_ITEM(ICON_Extruder,MSG_EXTRUDER_BOWDEN, onDrawChkbMenu, SetExtruderType, &HMI_data.extruderType.bowdenExtruder);
     #if BOTH(ProUIex, HAS_EXTRUDERS)
       EDIT_ITEM(ICON_InvertE0, MSG_INVERT_EXTRUDER, onDrawChkbMenu, SetInvertE0, &PRO_data.Invert_E0);
     #endif

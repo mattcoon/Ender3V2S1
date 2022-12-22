@@ -111,27 +111,6 @@ enum processID : uint8_t {
 #define DWIN_CHINESE 123
 #define DWIN_ENGLISH 0
 
-  #if ENABLED(FWRETRACT)
-typedef struct {
-  float retract_length,                 
-        retract_recover_extra;          
-} fwretract_dynamicsettings;
-  #endif
-
-typedef struct {
-  float load_length;
-  float unload_length;
-} filchange_dynamicsettings_t;
-typedef struct {
-  bool bowdenExtruder; // false - direct ; true - bowden
-  #if ENABLED(FWRETRACT)
-    fwretract_dynamicsettings fwretraction_config[2]; // 0 - direct ; 1 - bowden
-  #endif
-  filchange_dynamicsettings_t fil_change_config[2]; // 0 - direct ; 1 - bowden
-} extruder_t;
-
-void LoadExtruderSettings(u_int8_t index);
-
 typedef struct {
   // Color settings
   uint16_t Background_Color = Def_Background_Color;
@@ -182,11 +161,9 @@ typedef struct {
   bool fan_percent = DEF_FAN_SPEED_PERCENT;
   bool time_format_textual = DEF_TIME_HMS_FORMAT;
   bool TBShowCaption = true;
-  bool directDriveExtruder;
   uint8_t baseIcon = ICON;
   uint8_t filamentType;
-  extruder_t extruderType;
-} HMI_data_t;
+ } HMI_data_t;
 
 extern HMI_data_t HMI_data;
 static constexpr size_t eeprom_data_size = sizeof(HMI_data_t) + TERN0(ProUIex, sizeof(PRO_data_t));
