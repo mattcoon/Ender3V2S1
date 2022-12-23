@@ -60,6 +60,80 @@
  *                      https://www.thingiverse.com/thing:1278865
  */
 
+/*
+
+TODO: Host commands
+TODO: filament loading setting - keep track of filament
+TODO: automatic first setup
+      calibration MPC, PID, Z-offset
+      tram wizard, mesh
+TODO: fix z offset wizard toolbar
+TODO: implement laser mode and fan sharing
+TODO: add Laser position check/ low-power strobe to find the 0 point
+
+Test: 
+------
+TODO: encoder only reset screen timeout. eliminate activation or selection
+TODO: LCD assets
+TODO: allow movement in laser mode
+TODO: home X and Y only
+TODO: add XY home to toolbar
+TODO: eliminate bowden/direct use config files
+
+Done:
+-------
+Selectable bowden/direct drive
+filament management toolbar shortcut changed description
+LCD Timeout
+V2.1.3.4
+filament change toolbar
+Zprobe wizard toolbar not working?? only sometimes?
+filament sensor not changing fix call to update
+V2.1.3.3
+filament sensor mode menu
+toggle for percent menu not working
+Minimus 4010 43.5mm, 5.7mm
+toolbar descriptions making a mess
+filament change pre unload timing fixed display
+toolbar descripiton as option to disable
+filament change lift z axis
+V2.1.3.2
+unload retraction variable. from no pause retraction to current 3mm / 5sec
+Dynamic icon setting
+preheat filament  - back to filament not prepare
+v2.1.3.1
+pause screen timeout when popup active / prevent blck screen without response
+host shutdown in toolbar
+tramming lift to safe z
+H m screen display toggle in menu
+add status of fil sensor on bottom. extruder icon background color? green working closed, yellow disabled, red runout
+filament status color too much . shift right side 2 px
+preheat hotend mode
+Fan percent
+percent calc wrong, and toggle for stat not working in advance menu
+tramming repeat... lower button or shrink chart
+maybe toggle runout toolbar message. remove checkbox
+change order of preheat menu to have TPU before warmup
+filament menu update status with temp too low
+main fast back called it main / home
+Preheat option bed/hotend maybe only in filament menu
+make flex environment for 4.2.7 and 4.2.2 with direct drive or bowden
+Unload filament / change - temp dialog not just warm preheat
+Fast back menu
+prepare preheat submenu
+tramming cancel not returning to menu clean
+Filament menu cooldown
+Bed tramming add turns to summary
+tramming repeat
+Mpc store settings like pid bed
+Shortcuts  / toolbar - look ok - filament enable/disable
+Laser mode
+Bed tramming mostly
+Auto build mesh
+Flex mesh size
+
+*/
+
 // @section info
 
 // Author info of this build printed to the host during boot and M115
