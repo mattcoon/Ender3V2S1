@@ -207,6 +207,7 @@ skew_factor_t Planner::skew_factor; // Initialized by settings.load()
   bool Planner::autotemp_enabled = false;
 #endif
 
+bool Planner::laserMode = LASER_MODE_DEFAULT;
 // private:
 
 xyze_long_t Planner::position{0};
@@ -1325,7 +1326,7 @@ void Planner::check_axes_activity() {
     xyze_bool_t axis_active = { false };
   #endif
 
-  #if HAS_FAN && DISABLED(LASER_SYNCHRONOUS_M106_M107)
+  #if HAS_FAN //&& DISABLED(LASER_SYNCHRONOUS_M106_M107)
     #define HAS_TAIL_FAN_SPEED 1
     static uint8_t tail_fan_speed[FAN_COUNT] = ARRAY_N_1(FAN_COUNT, 13);
     bool fans_need_update = false;
@@ -1347,11 +1348,13 @@ void Planner::check_axes_activity() {
     #endif
 
     #if HAS_TAIL_FAN_SPEED
+    if (!planner.laserMode) {
       FANS_LOOP(i) {
         const uint8_t spd = thermalManager.scaledFanSpeed(i, block->fan_speed[i]);
         if (tail_fan_speed[i] != spd) {
           fans_need_update = true;
           tail_fan_speed[i] = spd;
+        }
         }
       }
     #endif
@@ -1384,11 +1387,13 @@ void Planner::check_axes_activity() {
     TERN_(HAS_CUTTER, if (cutter.cutter_mode == CUTTER_MODE_STANDARD) cutter.refresh());
 
     #if HAS_TAIL_FAN_SPEED
+    if (!planner.laserMode) {
       FANS_LOOP(i) {
         const uint8_t spd = thermalManager.scaledFanSpeed(i);
         if (tail_fan_speed[i] != spd) {
           fans_need_update = true;
           tail_fan_speed[i] = spd;
+        }
         }
       }
     #endif
@@ -2964,7 +2969,8 @@ void Planner::buffer_sync_block(const BlockFlagBit sync_flag/*=BLOCK_BIT_SYNC_PO
     LOOP_NUM_AXES(axis) block->position[axis] += backlash.get_applied_steps((AxisEnum)axis);
   #endif
   #if BOTH(HAS_FAN, LASER_SYNCHRONOUS_M106_M107)
-    FANS_LOOP(i) block->fan_speed[i] = thermalManager.fan_speed[i];
+    if (planner.laserMode) // mmm
+      FANS_LOOP(i) block->fan_speed[i] = thermalManager.fan_speed[i];
   #endif
 
   /**

@@ -41,7 +41,7 @@ MeshViewerClass MeshViewer;
 bool meshredraw;                            // Redraw mesh points
 uint8_t sizex, sizey;                       // Mesh XY size
 uint8_t rmax;                               // Maximum radius
-#define margin 25                           // XY Margins
+//#define margin 25                           // XY Margins
 #define rmin 5                              // Minimum radius
 #define zmin -20                            // rmin at z=-0.20
 #define zmax  20                            // rmax at z= 0.20
@@ -49,6 +49,7 @@ uint8_t rmax;                               // Maximum radius
 #define r(z) ((z-zmin)*(rmax-rmin)/(zmax-zmin)+rmin)
 #define px(xp) (margin + (xp)*(width)/(sizex - 1))
 #define py(yp) (30 + DWIN_WIDTH - margin - (yp)*(width)/(sizey - 1))
+
 
 void MeshViewerClass::DrawMeshGrid(const uint8_t csizex, const uint8_t csizey) {
   sizex = csizex;

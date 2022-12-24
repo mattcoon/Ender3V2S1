@@ -352,10 +352,10 @@ bool unload_filament(const_float_t unload_length, const bool show_lcd/*=false*/,
   unscaled_e_move(-(FILAMENT_UNLOAD_PURGE_RETRACT) * mix_multiplier, (PAUSE_PARK_RETRACT_FEEDRATE) * mix_multiplier);
 
   // Wait for filament to cool
-  safe_delay(FILAMENT_UNLOAD_PURGE_DELAY);
+  safe_delay(fc_settings[0].unload_predelay);
 
   // Quickly purge
-  unscaled_e_move((FILAMENT_UNLOAD_PURGE_RETRACT + FILAMENT_UNLOAD_PURGE_LENGTH) * mix_multiplier,
+  unscaled_e_move((FILAMENT_UNLOAD_PURGE_RETRACT + fc_settings[0].unload_prelength) * mix_multiplier,
                   (FILAMENT_UNLOAD_PURGE_FEEDRATE) * mix_multiplier);
 
   // Unload filament
