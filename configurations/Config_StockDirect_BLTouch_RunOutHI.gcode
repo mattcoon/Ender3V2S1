@@ -9,13 +9,13 @@ M502                   ; reset all settings to defaults
 ; physical settings
 C100 X0 Y0             ; Set XY Min position to 0
 C101 X240 Y231 Z240    ; Set XYZ Max position
-C102 X230 Y230         ; Set a bed size of 230x230
+C102 X235 Y235         ; Set a bed size of 230x230
 C125 X240 Y221 Z20     ; setup the park position
 
 ; Bed and Hotend specific changes
 C104 U1 T275           ; Set Max Hotend Temperature
-M306 C15.3 A0.118 F0.131 R0.25 ; set MPC parameters for hotend
-M304 P462.10 I85.47 D624.59  ; set PID parameters for BED
+M306 C15.25 R0.2287 A0.1206 F0.1307; set MPC parameters for hotend
+M304 P216.47 I40.39 D773.52 ; set PID parameters for BED
 
 ; Probe settings
 C29 L25.00 R205.00 F25.00 B205.00 N5 T50 ; Set Mesh 25 insets, size of 5x5 and bed at 50°C
@@ -31,31 +31,31 @@ C412 S1 D200           ; enable filament sensor with 200mm runout
 M92 E93                ; set extruder steps / mm
 M603 L75.0 U150.0      ; Configure Filament Change load 410, unload 550mm
 ; fwretraction
-M207 F2400 S1.5 Z0     ; feedrate of 40*60 retract distance 5 and z hop 0
+M207 F2400 S1.0 Z0     ; feedrate of 40*60 retract distance 5 and z hop 0
 M208 F2400 S0          ; feedrate of 40*60 de-retract extra distance 0
 
 ; customization
 C810 A0 B1 C2 D3 E4    ; sets up the toolbar shortcuts A..E to funtions 0..16
 ;  Toolbar options for C810 A-E
 ;  0 AUTO_HOME
-;  1 TRAMMING_WIZARD
-;  2 PROBE_WIZARD
-;  3 AUTO_MESH
-;  4 DISABLE_STEPPERS
-;  5 COOLDOWN
-;  6 PREHEAT PLA
-;  7 PREHEAT ABS
-;  8 PREHEAT PETG
-;  9 PREHEAT TPU
-; 10 PREHEAT WARMUP
-; 11 RUNOUT_TOGGLE
-; 12 FILAMENT_MGT
-; 13 HOST_SHUTDOWN
-; 14 RESET_PRINTER
-; 15 BRIGHTNESS_OFF
-; 16 STORE_EEPROM
+;  1 HOME_XY
+;  2 TRAMMING_WIZARD
+;  3 PROBE_WIZARD
+;  4 AUTO_MESH
+;  5 DISABLE_STEPPERS
+;  6 COOLDOWN
+;  7 PREHEAT PLA
+;  8 PREHEAT ABS
+;  9 PREHEAT PETG
+; 10 PREHEAT TPU
+; 11 PREHEAT WARMUP
+; 12 RUNOUT_TOGGLE
+; 13 FILAMENT_MGT
+; 14 HOST_SHUTDOWN
+; 15 RESET_PRINTER
+; 16 BRIGHTNESS_OFF
+; 17 STORE_EEPROM
 ;
-M255 S0                ; Disable LCD Timeout
 M256 B127              ; Set LCD Brightness 
 M413 S0                ; Disable Powerloss recovery
 ; C11 En Rn Gn Bn      : colorize UI elements (C11 E0 to update the screen)

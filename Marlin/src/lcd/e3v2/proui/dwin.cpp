@@ -1922,6 +1922,7 @@ void Draw_Popup_RepeatTramming() {
       Draw_Tramming_Menu();
     }
   }
+
   void Draw_Popup_FilamentPurge() {
     DWIN_Draw_Popup(ICON_BLTouch, GET_TEXT_F(MSG_ADVANCED_PAUSE), GET_TEXT_F(MSG_FILAMENT_CHANGE_PURGE_CONTINUE));
     DWINUI::Draw_Button(BTN_Purge, 26, 280);
@@ -2138,7 +2139,7 @@ void HomeXY()   { queue.inject_P("G28XY"); }
 void DoCoolDown() { thermalManager.cooldown(); }
 
 
-bool EnableLiveMove = false;
+bool EnableLiveMove = true;
 void SetLiveMove() { Toogle_Chkb_Line(EnableLiveMove); }
 void LiveMove() {
   planner.synchronize();
@@ -2205,6 +2206,7 @@ void SetPID(celsius_t t, heater_id_t h) {
 
   void ApplyBaseIcon() {HMI_data.baseIcon =  MenuData.Value; DWIN_RedrawScreen(); }
   void SetBaseIcon() { SetIntOnClick(0,10,HMI_data.baseIcon,ApplyBaseIcon); }
+  
 #if ENABLED(CASE_LIGHT_MENU)
   void SetCaseLight() {
     Toogle_Chkb_Line(caselight.on);
@@ -2995,6 +2997,9 @@ void Draw_AdvancedSettings_Menu() {
       EDIT_ITEM(ICON_Brightness, MSG_BRIGHTNESS, onDrawPInt8Menu, SetBrightness, &ui.brightness);
       MENU_ITEM(ICON_Brightness, MSG_BRIGHTNESS_OFF, onDrawMenuItem, TurnOffBacklight);
     #endif
+    EDIT_ITEM(ICON_StockConfiguration, MSG_ICON_SET, onDrawPInt8Menu, SetBaseIcon, &HMI_data.baseIcon);
+    EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, SetFanPercent, &HMI_data.fan_percent);
+    EDIT_ITEM(ICON_PrintTime, MSG_PROGRESS_IN_HHMM, onDrawChkbMenu, SetTimeFormat, &HMI_data.time_format_textual);
     MENU_ITEM(ICON_Scolor, MSG_COLORS_SELECT, onDrawSubMenu, Draw_SelectColors_Menu);
   }
   ui.reset_status(true);
