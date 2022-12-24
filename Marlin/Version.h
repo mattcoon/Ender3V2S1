@@ -28,13 +28,13 @@
 /**
  * Marlin release version identifier
  */
-#define SHORT_BUILD_VERSION "2.1.3 MRiscoC"
+#define SHORT_BUILD_VERSION "2.1.3.8"
 
 /**
  * Verbose version identifier which should contain a reference to the location
  * from where the binary was downloaded or the source code was compiled.
  */
-#define DETAILED_BUILD_VERSION SHORT_BUILD_VERSION " Ender3V2-422-MM, based on bugfix-2.1.x"
+#define DETAILED_BUILD_VERSION SHORT_BUILD_VERSION " Ender3V2-42x-MM"
 
 /**
  * The STRING_DISTRIBUTION_DATE represents when the binary file was built,
@@ -57,7 +57,7 @@
  * has a distinct Github fork— the Source Code URL should just be the main
  * Marlin repository.
  */
-#define SOURCE_CODE_URL "github.com/mriscoc/Ender3V2S1"
+#define SOURCE_CODE_URL "github.com/mattcoon/Ender3V2S1"
 
 /**
  * Default generic printer UUID.

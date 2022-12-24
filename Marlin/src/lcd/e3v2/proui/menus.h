@@ -43,6 +43,7 @@ extern MenuData_t MenuData;
 // Create and add a MenuItem object to the menu array
 #define SET_MENU(I,L,V...) SetMenu(I, GET_TEXT_F(L), V)
 #define BACK_ITEM(H) MenuItemAdd(ICON_Back, GET_TEXT_F(MSG_BUTTON_BACK), onDrawMenuItem, H)
+#define BACK_HOME()  MenuItemAdd(ICON_Back, GET_TEXT_F(MSG_BUTTON_MAIN), onDrawMenuItem, Goto_Main_Menu)
 #define MENU_ITEM(I,L,V...) MenuItemAdd(I, GET_TEXT_F(L), V)
 #define EDIT_ITEM(I,L,V...) EditItemAdd(I, GET_TEXT_F(L), V)
 #define SET_MENU_F(I,L,V...) SetMenu(I, F(L), V)

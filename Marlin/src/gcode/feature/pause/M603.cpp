@@ -42,7 +42,7 @@
  */
 void GcodeSuite::M603() {
 
-  if (!parser.seen("TUL")) return M603_report();
+  if (!parser.seen("DPTUL")) return M603_report();
 
   const int8_t target_extruder = get_target_extruder_from_command();
   if (target_extruder < 0) return;
@@ -62,6 +62,20 @@ void GcodeSuite::M603() {
       NOMORE(fc_settings[target_extruder].load_length, EXTRUDE_MAXLENGTH);
     #endif
   }
+
+  // PreUnload Length
+  if (parser.seenval('P')) {
+    fc_settings[target_extruder].unload_prelength = ABS(parser.value_axis_units(E_AXIS));
+    #if ENABLED(PREVENT_LENGTHY_EXTRUDE)
+      NOMORE(fc_settings[target_extruder].unload_prelength, EXTRUDE_MAXLENGTH);
+    #endif
+  }
+
+  // PreUnload Length
+  if (parser.seenval('D')) {
+    fc_settings[target_extruder].unload_predelay = parser.value_millis();
+  }
+
 }
 
 void GcodeSuite::M603_report(const bool forReplay/*=true*/) {
@@ -69,7 +83,8 @@ void GcodeSuite::M603_report(const bool forReplay/*=true*/) {
 
   #if EXTRUDERS == 1
     report_echo_start(forReplay);
-    SERIAL_ECHOPGM("  M603 L", LINEAR_UNIT(fc_settings[0].load_length), " U", LINEAR_UNIT(fc_settings[0].unload_length), " ;");
+    SERIAL_ECHOPGM("  M603 L", LINEAR_UNIT(fc_settings[0].load_length), " U", LINEAR_UNIT(fc_settings[0].unload_length), 
+      " P", LINEAR_UNIT(fc_settings[0].unload_prelength), " D", LINEAR_UNIT(fc_settings[0].unload_predelay), " ;");
     say_units();
   #else
     EXTRUDER_LOOP() {

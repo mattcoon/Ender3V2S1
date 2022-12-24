@@ -499,6 +499,14 @@ class Planner {
       }
     #endif
 
+  // mmm used to force fan sync if in sync m106/m107 mode
+  #if ENABLED(LASER_FAN_SHARING)
+    static bool laserMode; // mmm
+    static bool laserTest; // mmm
+    static bool laser_is_powered; //mmm makeshift solution for G0
+    static uint8_t laser_power; // mmm current power setting from M3-M4
+  #endif
+
   private:
 
     /**

@@ -69,6 +69,7 @@
 #define ICON_FWRetZRaise       CI(1,ICON_MoveZ)
 #define ICON_FWRecSpeed        CI(1,ICON_Setspeed)
 #define ICON_FWRecExtra        CI(1,ICON_StepE)
+#define ICON_HomeXY            CI(1,ICON_MoveX)
 #define ICON_HomeX             CI(1,ICON_MoveX)
 #define ICON_HomeY             CI(1,ICON_MoveY)
 #define ICON_HomeZ             CI(1,ICON_MoveZ)
@@ -161,6 +162,8 @@
 #define ICON_UBLTiltGrid       CI(1,ICON_PrintSize)
 #define ICON_UBLSmartFill      CI(1,ICON_StockConfiguration)
 #define ICON_ZAfterHome        CI(1,ICON_SetEndTemp)
+#define ICON_LaserMode         CI(1,ICON_StockConfiguration)
+#define ICON_ICON_SET          CI(1,ICON_Contact)
 
 //LED Lights
 #define ICON_CaseLight         CI(1,ICON_Motion)
@@ -180,6 +183,7 @@
 #define BTN_Print             90
 #define BTN_Save              91
 #define BTN_Purge             92
+#define BTN_Repeat            98
 
 // Extended and default UI Colors
 #define Color_Black           0

@@ -23,3 +23,10 @@
 
 void custom_gcode(const int16_t codenum);
 void custom_gcode_report(const bool forReplay=true);
+
+    void C120();
+    void C120_report(const bool forReplay=true);
+  #if ENABLED(LASER_FAN_SHARING)
+    void C3();
+    void C3_report(const bool forReplay=true);
+  #endif

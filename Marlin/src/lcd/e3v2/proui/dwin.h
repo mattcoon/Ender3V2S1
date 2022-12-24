@@ -26,19 +26,17 @@
 #include "dwinui.h"
 #include "../common/encoder.h"
 #include "../../../libs/BL24CXX.h"
+#include "../../../feature/pause.h"
 
 #if HAS_CGCODE
   #include "custom_gcodes.h"
 #endif
 
 namespace GET_LANG(LCD_LANGUAGE) {
-  #define _MSG_PREHEAT(N) \
-    LSTR MSG_PREHEAT_##N                  = _UxGT("Preheat ") PREHEAT_## N ##_LABEL; \
-    LSTR MSG_PREHEAT_## N ##_SETTINGS     = _UxGT("Preheat ") PREHEAT_## N ##_LABEL _UxGT(" Conf");
-  #if PREHEAT_COUNT > 3
-    REPEAT_S(4, PREHEAT_COUNT, _MSG_PREHEAT)
-  #endif
 }
+
+  constexpr bool DEF_FAN_SPEED_PERCENT = FAN_SPEED_PERCENT_DEF;
+  constexpr bool DEF_TIME_HMS_FORMAT = TIME_HMS_FORMAT;
 
 extern char DateTime[16+1];
 
@@ -137,6 +135,15 @@ typedef struct {
   #if ENABLED(ADAPTIVE_STEP_SMOOTHING)
     bool AdaptiveStepSmoothing = true;
   #endif
+  bool fan_percent = DEF_FAN_SPEED_PERCENT;
+  bool time_format_textual = DEF_TIME_HMS_FORMAT;
+  bool TBShowCaption = true;
+  uint8_t baseIcon = ICON;
+  uint8_t filamentType;
+#if ENABLED(LASER_FAN_SHARING)
+  uint8_t laser_off_pwr = SPEED_POWER_LOW;
+  uint8_t target_laser_height = Z_AFTER_HOMING_LASER;
+#endif
 } HMI_data_t;
 
 extern HMI_data_t HMI_data;
@@ -191,9 +198,13 @@ void RebootPrinter();
 void DisableMotors();
 void AutoLev();
 void AutoHome();
+void HomeXY();
 #if HAS_PREHEAT
   #define _DOPREHEAT(N) void DoPreheat##N();
   REPEAT_1(PREHEAT_COUNT, _DOPREHEAT)
+
+  #define _DOPREHEATHOTEND(N) void DoPreheatHotEnd##N();
+  REPEAT_1(PREHEAT_COUNT, _DOPREHEATHOTEND)
 #endif
 void DoCoolDown();
 #if HAS_HOTEND  && ENABLED(PIDTEMP)
@@ -209,6 +220,20 @@ void DoCoolDown();
 #if HAS_LCD_BRIGHTNESS
   void TurnOffBacklight();
 #endif
+#if HAS_FILAMENT_SENSOR
+  void SetRunoutEnable();
+  void ToggleRunout();
+#endif
+#if ENABLED(LASER_FAN_SHARING)
+  void ToggleLaserMode();
+  void SetLaserMode(bool lasermode);
+  void ApplyLaserTest(bool test);
+  void Draw_Popup_LaserTest();
+  void Draw_PrepareLaser_Menu();
+  void onClick_LaserTest();
+  void SetLaserTest();
+#endif
+
 void ApplyExtMinT();
 void ParkHead();
 #if HAS_ONESTEP_LEVELING
@@ -236,7 +261,7 @@ void Goto_Main_Menu();
 void Goto_Info_Menu();
 void Goto_PowerLossRecovery();
 void Goto_ConfirmToPrint();
-void DWIN_Draw_Dashboard(const bool with_update); // Status Area
+void DWIN_Draw_Dashboard(); // Status Area
 void Draw_Main_Area();      // Redraw main area
 void DWIN_DrawStatusLine(const char *text = ""); // Draw simple status text
 void DWIN_RedrawDash();    // Redraw Dash and Status line
@@ -312,6 +337,8 @@ void Draw_AdvancedSettings_Menu();
 void Draw_Prepare_Menu();
 void Draw_Move_Menu();
 void Draw_Tramming_Menu();
+void Draw_Preheat_Menu();
+void Draw_PreheatHotend_Menu();
 #if HAS_HOME_OFFSET
   void Draw_HomeOffset_Menu();
 #endif
@@ -338,6 +365,9 @@ void Draw_Motion_Menu();
 #endif
 #if ENABLED(MESH_BED_LEVELING)
   void Draw_ManualMesh_Menu();
+#endif
+#if ENABLED(LASER_FAN_SHARING)
+  void Draw_LaserSettings_Menu();
 #endif
 void Draw_Temperature_Menu();
 void Draw_MaxSpeed_Menu();

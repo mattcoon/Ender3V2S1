@@ -77,7 +77,7 @@ void GcodeSuite::G0_G1(TERN_(HAS_FAST_MOVES, const bool fast_move/*=false*/)) {
     get_destination_from_command();                 // Get X Y [Z[I[J[K]]]] [E] F (and set cutter power)
 
     #ifdef G0_FEEDRATE
-      if (fast_move) {
+      if (fast_move) { // also indicates G0 or unpowered move
         #if ENABLED(VARIABLE_G0_FEEDRATE)
           fast_move_feedrate = feedrate_mm_s;       // Save feedrate for the next G0
         #else
