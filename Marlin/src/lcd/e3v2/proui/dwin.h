@@ -247,7 +247,7 @@ void Goto_Main_Menu();
 void Goto_Info_Menu();
 void Goto_PowerLossRecovery();
 void Goto_ConfirmToPrint();
-void DWIN_Draw_Dashboard(const bool with_update); // Status Area
+void DWIN_Draw_Dashboard(); // Status Area
 void Draw_Main_Area();      // Redraw main area
 void DWIN_DrawStatusLine(const char *text = ""); // Draw simple status text
 void DWIN_RedrawDash();    // Redraw Dash and Status line

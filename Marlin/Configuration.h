@@ -72,18 +72,19 @@ TODO: implement laser mode and fan sharing G3-5 on fan output
 TODO: add Laser position check/ low-power strobe to find the 0 point, only in laser mode
 TODO: in laser vs fan, change fan icon in status bar
 TODO: add laser mode toggle for toolbar
-TODO: add icon,hms,fan% Gcode to allow configuration by gcode
 
 Test: 
 ------
 TODO: LCD assets
-TODO: allow movement in laser mode
-TODO: home X and Y only
-TODO: add XY home to toolbar
-TODO: eliminate bowden/direct use config files
 
 Done:
 -------
+add icon,hms,fan% Gcode C120 to allow configuration by gcode
+add laser mode fan mode by gcode C3 L or F
+allow movement in laser mode
+home X and Y only
+add XY home to toolbar
+eliminate bowden/direct use config files
 filament management toolbar shortcut changed description
 V2.1.3.4
 filament change toolbar

@@ -29,7 +29,7 @@ C412 S1 D200           ; enable filament sensor with 200mm runout
 ; Exttruder settings
 ; C562 E1              ; invert the Extruder (E1 to invert)
 M92 E424.9             ; set extruder steps / mm
-M603 L25.0 U30.0      ; Configure Filament Change load 410, unload 550mm
+M603 L25.0 U30.0       ; Configure Filament Change load 410, unload 550mm
 ; fwretraction
 M207 F2400 S0.8 Z0     ; feedrate of 40*60 retract distance 5 and z hop 0
 M208 F2400 S0          ; feedrate of 40*60 de-retract extra distance 0
@@ -58,6 +58,7 @@ C810 A0 B13 C6 D13 E14    ; sets up the toolbar shortcuts A..E to funtions 0..16
 ;
 M256 B127              ; Set LCD Brightness 
 M413 S0                ; Disable Powerloss recovery
+C120 I9 T1 F1          ; iconset 9 (default), time in HMS format and fanspeed in percent
 ; C11 En Rn Gn Bn      : colorize UI elements (C11 E0 to update the screen)
 
 M500                   ; Save all settings

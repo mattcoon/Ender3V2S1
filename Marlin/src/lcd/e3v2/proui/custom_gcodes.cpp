@@ -37,6 +37,7 @@
 #if ENABLED(POWER_LOSS_RECOVERY)
   #include "../../../feature/powerloss.h"
 #endif
+#include "../../../module/planner.h"
 
 //=============================================================================
 // Extended G-CODES 
@@ -131,6 +132,8 @@ void custom_gcode(const int16_t codenum) {
       #if HAS_TOOLBAR
         case 810: ProEx.C810(); break;      // Config toolbar
       #endif
+      case 120: C120(); break;              // visual setting T = hms, F = fan%, I = iconset
+      case 3:   C3(); break;                // set L = laser mode, F = fan mode
     #endif
     default: CError(); break;
   }
@@ -155,7 +158,58 @@ void custom_gcode_report(const bool forReplay/*=true*/) {
     #if HAS_BED_PROBE
       ProEx.C851_report(forReplay);
     #endif
+    C120_report();
+    C3_report();
   #endif
+}
+
+void C3 () {
+  /* C3 - Laser Mode enable/disable 
+        L - enable Laser mode. commands G3-5 enabled and fan changes sync with movement
+        F - enable Fan mode. G3-5 disabled. fan changes immediately
+        fan has priority if both selected
+  */
+  if (parser.seen("FL")) {
+    if (parser.seen("F")) planner.laserMode = false;
+    else if (parser.seen("L")) planner.laserMode = true;
+    return;
+  }
+  C3_report();
+}
+
+void C3_report(const bool forReplay/*=true*/) {
+  gcode.report_heading(forReplay, F("Laser/Fan Configuration"));
+  gcode.report_echo_start(forReplay);
+  SERIAL_ECHOPGM("  C3");
+  if (planner.laserMode)
+    SERIAL_ECHOPGM(" L  ; Laser Mode enabled");
+  else
+    SERIAL_ECHOPGM(" F  ; Fan Mode enabled");
+  SERIAL_EOL();
+}
+
+void C120 () {
+  /* C120 - Display cofiguration settings 
+          In - set icon set n. stock and default is 9 
+          Tn - n : 1 - enable time in hms format. 0 - use : formate for time
+          Fn - n : 1 - display fan speed in percent. 0 - display raw fan speed value 
+  */
+  if (parser.seen("ITF")) {
+    if (parser.seenval('I')) { HMI_data.baseIcon = parser.byteval('I'); DWIN_RedrawScreen(); }
+    if (parser.seenval('T')) HMI_data.time_format_textual = parser.boolval('T');
+    if (parser.seenval('F')) { HMI_data.fan_percent = parser.boolval('F'); DWIN_Draw_Dashboard(); }
+    return;
+  }
+  C120_report(true);
+}
+
+void C120_report(const bool forReplay/*=true*/) {
+  gcode.report_heading(forReplay, F("Display Config Settings"));
+  gcode.report_echo_start(forReplay);
+  SERIAL_ECHOPGM("  C120 I", HMI_data.baseIcon);
+  SERIAL_ECHOPGM(" T", HMI_data.time_format_textual? 1:0);
+  SERIAL_ECHOPGM(" F", HMI_data.fan_percent? 1:0);
+  SERIAL_EOL();
 }
 
 #endif
