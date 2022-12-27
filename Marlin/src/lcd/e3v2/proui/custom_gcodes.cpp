@@ -170,8 +170,8 @@ void C3 () {
         fan has priority if both selected
   */
   if (parser.seen("FL")) {
-    if (parser.seen("F")) planner.laserMode = false;
-    else if (parser.seen("L")) planner.laserMode = true;
+    if (parser.seen("F")) SetLaserMode(false);
+    else if (parser.seen("L")) SetLaserMode(true);
     return;
   }
   C3_report();

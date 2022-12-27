@@ -471,6 +471,8 @@ namespace Language_en {
   LSTR MSG_ICON_SET                       = _UxGT("ICON Selection");
   LSTR MSG_PROGRESS_IN_HHMM               = _UxGT("Progress in __h__m");
   LSTR MSG_FAN_SPEED_PERCENT              = _UxGT("Fan Speed Percent");
+  LSTR MSG_LASER_PERCENT                  = _UxGT("Laser Percent");
+  LSTR MSG_TOGGLE_LASER                   = _UxGT("Toggle LaserMode");
   LSTR MSG_BRIGHTNESS_OFF                 = _UxGT("Turn Off LCD");
   LSTR MSG_STORE_EEPROM                   = _UxGT("Store Settings");
   LSTR MSG_LOAD_EEPROM                    = _UxGT("Load Settings");

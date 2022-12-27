@@ -162,7 +162,9 @@
 #define ICON_UBLTiltGrid       CI(1,ICON_PrintSize)
 #define ICON_UBLSmartFill      CI(1,ICON_StockConfiguration)
 #define ICON_ZAfterHome        CI(1,ICON_SetEndTemp)
-#define ICON_LaserMode         CI(1,ICON_SetCustomPreheat)
+#define ICON_LaserMode         CI(1,ICON_StockConfiguration)
+#define ICON_ICON_SET          CI(1,ICON_Contact)
+
 //LED Lights
 #define ICON_CaseLight         CI(1,ICON_Motion)
 #define ICON_LedControl        CI(1,ICON_Motion)

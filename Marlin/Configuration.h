@@ -64,18 +64,15 @@
 
 TODO: Host commands
 TODO: filament loading setting - keep track of filament
-TODO: automatic first setup
-      calibration MPC, PID, Z-offset
-      tram wizard, mesh
-TODO: fix z offset wizard toolbar
+TODO: automatic first setup: z offset, tram wizard, mesh
 TODO: implement laser mode and fan sharing G3-5 on fan output
 TODO: add Laser position check/ low-power strobe to find the 0 point, only in laser mode
-TODO: in laser vs fan, change fan icon in status bar
-TODO: add laser mode toggle for toolbar
 
 Test: 
 ------
 TODO: LCD assets
+TODO: in laser vs fan, change fan icon in status bar
+TODO: add laser mode toggle for toolbar
 
 Done:
 -------

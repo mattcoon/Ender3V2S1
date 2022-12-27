@@ -220,6 +220,8 @@ void DoCoolDown();
   void SetRunoutEnable();
   void ToggleRunout();
 #endif
+void ToggleLaserMode();
+void SetLaserMode(bool lasermode);
 void ApplyExtMinT();
 void ParkHead();
 #if HAS_ONESTEP_LEVELING
