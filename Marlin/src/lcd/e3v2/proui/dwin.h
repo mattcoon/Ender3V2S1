@@ -140,6 +140,7 @@ typedef struct {
   bool TBShowCaption = true;
   uint8_t baseIcon = ICON;
   uint8_t filamentType;
+  uint8_t laser_off_pwr = SPEED_POWER_LOW;
 } HMI_data_t;
 
 extern HMI_data_t HMI_data;

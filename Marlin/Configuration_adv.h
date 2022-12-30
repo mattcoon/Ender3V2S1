@@ -3404,7 +3404,6 @@
       #define SPEED_POWER_INTERCEPT       0    // (%) 0-100 i.e., Minimum power percentage
       #define SPEED_POWER_MIN             0    // (%) 0-100
       #define SPEED_POWER_MAX           100    // (%) 0-100
-      #define SPEED_POWER_STARTUP        80    // (%) M3/M4 speed/power default (with no arguments)
     #endif
 
     // Define the minimum and maximum test pulse time values for a laser test fire function
@@ -3494,6 +3493,10 @@
  *
  * NOTE: This option sacrifices some cooling fan speed options.
  */
+#define SPEED_POWER_STARTUP        80    // (%) M3/M4 speed/power default (with no arguments)
+#define SPEED_POWER_LOW            15    //  % off State for laser off tokeep running but not burning
+#define LASER_FAN_SHARING  // implement G3-G5 and M3-M5 as redirect of M106 and M107
+
 #define LASER_SYNCHRONOUS_M106_M107
 #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
   #define LASER_MODE_DEFAULT false
@@ -3709,9 +3712,9 @@
 //#define GCODE_MOTION_MODES  // Remember the motion mode (G0 G1 G2 G3 G5 G38.X) and apply for X Y Z E F, etc.
 
 // Enable and set a (default) feedrate for all G0 moves
-//#define G0_FEEDRATE 3000 // (mm/min)
+#define G0_FEEDRATE 800 // (mm/min)
 #ifdef G0_FEEDRATE
-  //#define VARIABLE_G0_FEEDRATE // The G0 feedrate is set by F in G0 motion mode
+  #define VARIABLE_G0_FEEDRATE // The G0 feedrate is set by F in G0 motion mode
 #endif
 
 // @section gcode

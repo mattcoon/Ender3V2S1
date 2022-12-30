@@ -65,17 +65,20 @@
 TODO: Host commands
 TODO: filament loading setting - keep track of filament
 TODO: automatic first setup: z offset, tram wizard, mesh
-TODO: implement laser mode and fan sharing G3-5 on fan output
-TODO: add Laser position check/ low-power strobe to find the 0 point, only in laser mode
+TODO: add Laser position check/ low-power strobe to find the 0 point, only in laser mode. set 0,0 position. 
+TODO: add auto laser lift to target focus when homing in laser mode
+TODO: cancel does not move in laser mode
 
 Test: 
 ------
 TODO: LCD assets
-TODO: in laser vs fan, change fan icon in status bar
-TODO: add laser mode toggle for toolbar
+TODO: implement laser mode and fan sharing G3-5 on fan output
+TODO: G0 move no power
 
 Done:
 -------
+in laser vs fan, change fan icon in status bar
+add laser mode toggle for toolbar
 add icon,hms,fan% Gcode C120 to allow configuration by gcode
 add laser mode fan mode by gcode C3 L or F
 allow movement in laser mode

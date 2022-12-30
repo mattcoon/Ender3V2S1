@@ -208,6 +208,8 @@ skew_factor_t Planner::skew_factor; // Initialized by settings.load()
 #endif
 
 bool Planner::laserMode = LASER_MODE_DEFAULT;
+bool Planner::laser_is_powered = false; //mmm makeshift solution for G0
+uint8_t Planner::laser_power = SPEED_POWER_STARTUP * 100 / 255; // mmm current power setting from M3-M4
 // private:
 
 xyze_long_t Planner::position{0};

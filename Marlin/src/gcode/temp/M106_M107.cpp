@@ -92,6 +92,7 @@ void GcodeSuite::M106() {
 
   // mmmm only in laser mode
   #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
+   planner.laser_power = speed;
    if (planner.laserMode == true)
       planner.buffer_sync_block(BLOCK_BIT_SYNC_FANS);
   #endif
@@ -117,6 +118,7 @@ void GcodeSuite::M107() {
 
   // mmmm only in laser mode
   #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
+   planner.laser_power = 0;
    if (planner.laserMode == true)
       planner.buffer_sync_block(BLOCK_BIT_SYNC_FANS);
   #endif

@@ -1769,6 +1769,7 @@ void DWIN_SetDataDefaults() {
     HMI_data.baseIcon = ICON;
     HMI_data.fan_percent = DEF_FAN_SPEED_PERCENT;
     HMI_data.time_format_textual = DEF_TIME_HMS_FORMAT;
+    HMI_data.laser_off_pwr = SPEED_POWER_LOW;
     #if HAS_TOOLBAR
       const uint8_t _def[] = DEF_TBOPT;
       LOOP_L_N(i,TBMaxOpt) PRO_data.TBopt[i] = _def[i];
@@ -2207,9 +2208,13 @@ void SetPID(celsius_t t, heater_id_t h) {
   void TurnOffBacklight() { HMI_SaveProcessID(WaitResponse); ui.set_brightness(0); DWIN_RedrawScreen(); }
 #endif
 
-  void ApplyBaseIcon() {HMI_data.baseIcon =  MenuData.Value; DWIN_RedrawScreen(); }
-  void SetBaseIcon() { SetIntOnClick(0,10,HMI_data.baseIcon,ApplyBaseIcon); }
+  void ApplyBaseIcon() { HMI_data.baseIcon =  MenuData.Value; DWIN_RedrawScreen(); }
+  void SetBaseIcon()   { SetIntOnClick(0,10,HMI_data.baseIcon,ApplyBaseIcon); }
   
+#if ENABLED(LASER_SYNCHRONOUS_M106_M107)
+  void ApplyLaserLowLimit() { HMI_data.laser_off_pwr = MenuData.Value; }
+  void SetLaserLowLimit()   { SetIntOnClick(0,255,HMI_data.laser_off_pwr,ApplyLaserLowLimit);}
+#endif
 #if ENABLED(CASE_LIGHT_MENU)
   void SetCaseLight() {
     Toogle_Chkb_Line(caselight.on);
@@ -2953,7 +2958,7 @@ void Draw_Control_Menu() {
 
 void Draw_AdvancedSettings_Menu() {
   checkkey = Menu;
-  if (SET_MENU(AdvancedSettings, MSG_ADVANCED_SETTINGS, 25)) {
+  if (SET_MENU(AdvancedSettings, MSG_ADVANCED_SETTINGS, 26)) {
     BACK_ITEM(Goto_Main_Menu);
     #if ENABLED(EEPROM_SETTINGS)
       MENU_ITEM(ICON_WriteEEPROM, MSG_STORE_EEPROM, onDrawMenuItem, WriteEeprom);
@@ -3011,8 +3016,10 @@ void Draw_AdvancedSettings_Menu() {
       MENU_ITEM(ICON_Brightness, MSG_BRIGHTNESS_OFF, onDrawMenuItem, TurnOffBacklight);
     #endif
     EDIT_ITEM(ICON_ICON_SET, MSG_ICON_SET, onDrawPInt8Menu, SetBaseIcon, &HMI_data.baseIcon);
-    if (planner.laserMode)
+    if (planner.laserMode) {
+      EDIT_ITEM(ICON_LaserMode,MSG_LASERLOW_LIMIT, onDrawPInt8Menu, SetLaserLowLimit, &HMI_data.laser_off_pwr);
       EDIT_ITEM(ICON_LaserMode, MSG_LASER_PERCENT, onDrawChkbMenu, SetFanPercent, &HMI_data.fan_percent);
+    }
     else
       EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, SetFanPercent, &HMI_data.fan_percent);
     EDIT_ITEM(ICON_PrintTime, MSG_PROGRESS_IN_HHMM, onDrawChkbMenu, SetTimeFormat, &HMI_data.time_format_textual);

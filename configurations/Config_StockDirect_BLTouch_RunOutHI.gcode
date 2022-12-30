@@ -59,6 +59,7 @@ C810 A0 B1 C2 D3 E4    ; sets up the toolbar shortcuts A..E to funtions 0..16
 M256 B127              ; Set LCD Brightness 
 M413 S0                ; Disable Powerloss recovery
 C120 I9 T1 F1          ; iconset 9 (default), time in HMS format and fanspeed in percent
+C3 F O20               ; set to fan mode and laser off limit to 20
 ; C11 En Rn Gn Bn      : colorize UI elements (C11 E0 to update the screen)
 
 M500                   ; Save all settings
