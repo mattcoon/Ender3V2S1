@@ -72,11 +72,11 @@ TODO: cancel does not move in laser mode
 Test: 
 ------
 TODO: LCD assets
-TODO: implement laser mode and fan sharing G3-5 on fan output
-TODO: G0 move no power
 
 Done:
 -------
+implement laser mode and fan sharing G3-5 on fan output
+G0 move no power. Configured by menu / C3
 in laser vs fan, change fan icon in status bar
 add laser mode toggle for toolbar
 add icon,hms,fan% Gcode C120 to allow configuration by gcode
