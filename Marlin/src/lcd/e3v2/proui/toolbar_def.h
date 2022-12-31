@@ -52,5 +52,7 @@ TBItem_t TBItemA[] = {
   {ICON_Reboot, GET_TEXT_F(MSG_RESET_PRINTER), RebootPrinter},
   {ICON_Brightness, GET_TEXT_F(MSG_BRIGHTNESS_OFF), TurnOffBacklight},
   {ICON_WriteEEPROM, GET_TEXT_F(MSG_STORE_EEPROM), WriteEeprom},
-  {ICON_LaserMode, GET_TEXT_F(MSG_TOGGLE_LASER),ToggleLaserMode}  
+  #if ENABLED(LASER_FAN_SHARING)
+    {ICON_LaserMode, GET_TEXT_F(MSG_TOGGLE_LASER),ToggleLaserMode}  
+  #endif
 };

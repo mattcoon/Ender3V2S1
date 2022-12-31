@@ -1014,9 +1014,11 @@ void DWIN_Draw_Dashboard() {
   DWINUI::Draw_String(DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 116 + 5 * STAT_CHR_W + 2, 384, F("%"));
 
   #if HAS_FAN
+    #if ENABLED(LASER_FAN_SHARING)
     if (planner.laserMode)
       DWINUI::Draw_Icon(ICON_LaserMode, 187, 383);
     else
+    #endif
       DWINUI::Draw_Icon(ICON_FanSpeed, 187, 383);
     DWINUI::Draw_Int(DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 3, 195 + 2 * STAT_CHR_W, 384, (HMI_data.fan_percent) ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
     DWIN_Draw_String( false, DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 195 + 5 * STAT_CHR_W + 2, 384, (HMI_data.fan_percent) ? F("%") : F(" "));
@@ -1772,8 +1774,10 @@ void DWIN_SetDataDefaults() {
     HMI_data.baseIcon = ICON;
     HMI_data.fan_percent = DEF_FAN_SPEED_PERCENT;
     HMI_data.time_format_textual = DEF_TIME_HMS_FORMAT;
-    HMI_data.laser_off_pwr = SPEED_POWER_LOW;
-    HMI_data.target_laser_height = Z_AFTER_HOMING_LASER;
+    #if ENABLED(LASER_FAN_SHARING)
+      HMI_data.laser_off_pwr = SPEED_POWER_LOW;
+      HMI_data.target_laser_height = Z_AFTER_HOMING_LASER;
+    #endif
     #if HAS_TOOLBAR
       const uint8_t _def[] = DEF_TBOPT;
       LOOP_L_N(i,TBMaxOpt) PRO_data.TBopt[i] = _def[i];
@@ -2298,19 +2302,21 @@ void SetPID(celsius_t t, heater_id_t h) {
 
 #endif
 
-void ToggleLaserMode() {
-  SetLaserMode(!planner.laserMode);
-}
+#if ENABLED(LASER_FAN_SHARING)
+  void ToggleLaserMode() {
+    SetLaserMode(!planner.laserMode);
+  }
 
-void MenuToggleLaserMode() {
-  ToggleLaserMode();
-  Show_Chkb_Line(planner.laserMode);
-}
+  void MenuToggleLaserMode() {
+    ToggleLaserMode();
+    Show_Chkb_Line(planner.laserMode);
+  }
 
-void SetLaserMode(bool lasermode) {
-  planner.laserMode = lasermode;
-  DWIN_Draw_Dashboard();
-}
+  void SetLaserMode(bool lasermode) {
+    planner.laserMode = lasermode;
+    DWIN_Draw_Dashboard();
+  }
+#endif
 
 #if ProUIex && ENABLED(NOZZLE_PARK_FEATURE)
   void SetParkPosX()   { SetPIntOnClick(X_MIN_POS, X_MAX_POS); }
@@ -2895,7 +2901,9 @@ void Draw_Prepare_Menu() {
     #endif
     MENU_ITEM(ICON_CustomPreheat, MSG_PREHEAT, onDrawSubMenu, Draw_Preheat_Menu);
     MENU_ITEM(ICON_Cool, MSG_COOLDOWN, onDrawMenuItem, DoCoolDown);
-    EDIT_ITEM(ICON_LaserMode, MSG_ENABLE_LASERMODE, onDrawChkbMenu, MenuToggleLaserMode, &planner.laserMode);
+    #if ENABLED(LASER_FAN_SHARING)
+      EDIT_ITEM(ICON_LaserMode, MSG_ENABLE_LASERMODE, onDrawChkbMenu, MenuToggleLaserMode, &planner.laserMode);
+    #endif
   }
   ui.reset_status(true);
   UpdateMenu(PrepareMenu);
@@ -3287,8 +3295,12 @@ void Draw_Tune_Menu() {
       BedTargetItem = EDIT_ITEM(ICON_BedTemp, MSG_UBL_SET_TEMP_BED, onDrawPIntMenu, SetBedTemp, &thermalManager.temp_bed.target);
     #endif
     #if HAS_FAN
-    if (!planner.laserMode)
+    #if ENABLED(LASER_FAN_SHARING)
+      if (!planner.laserMode)
+        FanSpeedItem = EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED, onDrawPInt8Menu, SetFanSpeed, &thermalManager.fan_speed[0]);
+    #else
       FanSpeedItem = EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED, onDrawPInt8Menu, SetFanSpeed, &thermalManager.fan_speed[0]);
+    #endif
     #endif
     #if ALL(HAS_ZOFFSET_ITEM, HAS_BED_PROBE, BABYSTEPPING)
       EDIT_ITEM(ICON_Zoffset, MSG_ZPROBE_ZOFFSET, onDrawPFloat2Menu, SetZOffset, &BABY_Z_VAR);
@@ -3561,8 +3573,12 @@ void Draw_Temperature_Menu() {
       BedTargetItem = EDIT_ITEM(ICON_SetBedTemp, MSG_UBL_SET_TEMP_BED, onDrawPIntMenu, SetBedTemp, &thermalManager.temp_bed.target);
     #endif
     #if HAS_FAN
-      if (!planner.laserMode)
-        FanSpeedItem = EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED, onDrawPInt8Menu, SetFanSpeed, &thermalManager.fan_speed[0]);
+      #if ENABLED(LASER_FAN_SHARING)
+        if (!planner.laserMode)
+          FanSpeedItem = EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED, onDrawPInt8Menu, SetFanSpeed, &thermalManager.fan_speed[0]);
+      #else
+          FanSpeedItem = EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED, onDrawPInt8Menu, SetFanSpeed, &thermalManager.fan_speed[0]);
+      #endif
     #endif
     #if HAS_PREHEAT
       #define _ITEM_SETPREHEAT(N) MENU_ITEM(ICON_SetPreheat##N, MSG_PREHEAT_## N ##_SETTINGS, onDrawSubMenu, Draw_Preheat## N ##_Menu);

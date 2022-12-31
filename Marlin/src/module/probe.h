@@ -166,7 +166,9 @@ public:
       do_z_clearance(HMI_data.z_after_homing, true);
     #elif Z_AFTER_HOMING
       float_t home_height = Z_AFTER_HOMING;
-      if (planner.laserMode) home_height = HMI_data.target_laser_height;
+      #if ENABLED(LASER_FAN_SHARING)
+        if (planner.laserMode) home_height = HMI_data.target_laser_height;
+      #endif
       do_z_clearance(home_height, true);
     #elif BOTH(Z_AFTER_PROBING, HAS_BED_PROBE)
       move_z_after_probing();

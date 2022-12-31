@@ -132,8 +132,10 @@ void custom_gcode(const int16_t codenum) {
       #if HAS_TOOLBAR
         case 810: ProEx.C810(); break;      // Config toolbar
       #endif
-      case 120: C120(); break;              // visual setting T = hms, F = fan%, I = iconset
-      case 3:   C3(); break;                // set L = laser mode, F = fan mode
+        case 120: C120(); break;              // visual setting T = hms, F = fan%, I = iconset
+      #if ENABLED(LASER_FAN_SHARING)
+        case 3:   C3(); break;                // set L = laser mode, F = fan mode
+      #endif
     #endif
     default: CError(); break;
   }
@@ -158,42 +160,47 @@ void custom_gcode_report(const bool forReplay/*=true*/) {
     #if HAS_BED_PROBE
       ProEx.C851_report(forReplay);
     #endif
-    C120_report();
-    C3_report();
+      C120_report();
+    #if ENABLED(LASER_FAN_SHARING)
+      C3_report();
+    #endif
   #endif
 }
 
-void C3 () {
-  /* C3 - Laser Mode enable/disable 
-        L - enable Laser mode. commands G3-5 enabled and fan changes sync with movement
-        F - enable Fan mode. G3-5 disabled. fan changes immediately
-        fan has priority if both selected
-  */
-  if (parser.seen("FHLO")) {
-    // set to fan mode
-    if (parser.seen("F")) SetLaserMode(false);
-    // Set to Laser mode
-    else if (parser.seen("L")) SetLaserMode(true);
-    // Set Laser Off Limit. used in G0 moves to keep laser active but not burning.
-    if (parser.seenval('O')) HMI_data.laser_off_pwr = parser.byteval('O');
-    if (parser.seenval('H')) HMI_data.target_laser_height = parser.byteval('H');
-    return;
+#if ENABLED(LASER_FAN_SHARING)
+  void C3 () {
+    /* C3 - Laser Mode enable/disable 
+          L - enable Laser mode. commands G3-5 enabled and fan changes sync with movement
+          F - enable Fan mode. G3-5 disabled. fan changes immediately
+          fan has priority if both selected
+    */
+    if (parser.seen("FHLO")) {
+      // set to fan mode
+      if (parser.seen("F")) SetLaserMode(false);
+      // Set to Laser mode
+      else if (parser.seen("L")) SetLaserMode(true);
+      // Set Laser Off Limit. used in G0 moves to keep laser active but not burning.
+      if (parser.seenval('O')) HMI_data.laser_off_pwr = parser.byteval('O');
+      if (parser.seenval('H')) HMI_data.target_laser_height = parser.byteval('H');
+      return;
+    }
+    C3_report();
   }
-  C3_report();
-}
 
-void C3_report(const bool forReplay/*=true*/) {
-  gcode.report_heading(forReplay, F("Laser/Fan Configuration"));
-  gcode.report_echo_start(forReplay);
-  SERIAL_ECHOPGM("  C3");
-  SERIAL_ECHOPGM(" O", HMI_data.laser_off_pwr);
-  SERIAL_ECHOPGM(" H", HMI_data.target_laser_height);
-  if (planner.laserMode)
-    SERIAL_ECHOPGM(" L  ; Laser Mode enabled");
-  else
-    SERIAL_ECHOPGM(" F  ; Fan Mode enabled");
-  SERIAL_EOL();
-}
+  void C3_report(const bool forReplay/*=true*/) {
+    gcode.report_heading(forReplay, F("Laser/Fan Configuration"));
+    gcode.report_echo_start(forReplay);
+    SERIAL_ECHOPGM("  C3");
+    SERIAL_ECHOPGM(" O", HMI_data.laser_off_pwr);
+    SERIAL_ECHOPGM(" H", HMI_data.target_laser_height);
+    if (planner.laserMode)
+      SERIAL_ECHOPGM(" L  ; Laser Mode enabled");
+    else
+      SERIAL_ECHOPGM(" F  ; Fan Mode enabled");
+    SERIAL_EOL();
+  }
+#endif
+
 
 void C120 () {
   /* C120 - Display cofiguration settings 

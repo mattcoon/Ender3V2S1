@@ -91,7 +91,7 @@ void GcodeSuite::M106() {
   thermalManager.set_fan_speed(pfan, speed);
 
   // mmmm only in laser mode
-  #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
+  #if ENABLED(LASER_FAN_SHARING)
    planner.laser_power = speed;
    if (planner.laserMode == true)
       planner.buffer_sync_block(BLOCK_BIT_SYNC_FANS);
@@ -117,7 +117,7 @@ void GcodeSuite::M107() {
     thermalManager.set_fan_speed(1 - pfan, 0);
 
   // mmmm only in laser mode
-  #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
+  #if ENABLED(LASER_FAN_SHARING)
    planner.laser_power = 0;
    if (planner.laserMode == true)
       planner.buffer_sync_block(BLOCK_BIT_SYNC_FANS);

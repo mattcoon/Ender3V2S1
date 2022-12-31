@@ -2364,7 +2364,11 @@ uint32_t Stepper::block_phase_isr() {
 
         TERN_(LASER_SYNCHRONOUS_M106_M107, if (current_block->is_fan_sync()) planner.sync_fan_speeds(current_block->fan_speed));
 
-        if (!(current_block->is_fan_sync() || !planner.laserMode || current_block->is_pwr_sync())) _set_position(current_block->position); // mmm
+        if (!(current_block->is_fan_sync() 
+        #if ENABLED(LASER_FAN_SHARING)
+          || !planner.laserMode
+        #endif
+        || current_block->is_pwr_sync())) _set_position(current_block->position); // mmm
 
         discard_current_block();
 

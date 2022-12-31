@@ -207,9 +207,11 @@ skew_factor_t Planner::skew_factor; // Initialized by settings.load()
   bool Planner::autotemp_enabled = false;
 #endif
 
-bool Planner::laserMode = LASER_MODE_DEFAULT;
-bool Planner::laser_is_powered = false; //mmm makeshift solution for G0
-uint8_t Planner::laser_power = SPEED_POWER_STARTUP * 100 / 255; // mmm current power setting from M3-M4
+#if ENABLED(LASER_FAN_SHARING)
+  bool Planner::laserMode = LASER_MODE_DEFAULT;
+  bool Planner::laser_is_powered = false; //mmm makeshift solution for G0
+  uint8_t Planner::laser_power = SPEED_POWER_STARTUP * 100 / 255; // mmm current power setting from M3-M4
+#endif
 // private:
 
 xyze_long_t Planner::position{0};
@@ -1350,13 +1352,16 @@ void Planner::check_axes_activity() {
     #endif
 
     #if HAS_TAIL_FAN_SPEED
-    if (!planner.laserMode) {
-      FANS_LOOP(i) {
-        const uint8_t spd = thermalManager.scaledFanSpeed(i, block->fan_speed[i]);
-        if (tail_fan_speed[i] != spd) {
-          fans_need_update = true;
-          tail_fan_speed[i] = spd;
-        }
+    #if ENABLED(LASER_FAN_SHARING)
+      if (!planner.laserMode)
+    #endif
+      {
+        FANS_LOOP(i) {
+          const uint8_t spd = thermalManager.scaledFanSpeed(i, block->fan_speed[i]);
+          if (tail_fan_speed[i] != spd) {
+            fans_need_update = true;
+            tail_fan_speed[i] = spd;
+          }
         }
       }
     #endif
@@ -1389,7 +1394,10 @@ void Planner::check_axes_activity() {
     TERN_(HAS_CUTTER, if (cutter.cutter_mode == CUTTER_MODE_STANDARD) cutter.refresh());
 
     #if HAS_TAIL_FAN_SPEED
-    if (!planner.laserMode) {
+    #if ENABLED(LASER_FAN_SHARING)
+    if (!planner.laserMode) 
+    #endif
+    {
       FANS_LOOP(i) {
         const uint8_t spd = thermalManager.scaledFanSpeed(i);
         if (tail_fan_speed[i] != spd) {
