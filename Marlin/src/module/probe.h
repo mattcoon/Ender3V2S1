@@ -31,6 +31,7 @@
 
 #if ENABLED(DWIN_LCD_PROUI)
   #include "../lcd/e3v2/proui/dwin.h"
+  #include "../module/planner.h"
 #endif
 
 #if HAS_BED_PROBE
@@ -164,7 +165,9 @@ public:
     #if ALL(DWIN_LCD_PROUI, INDIVIDUAL_AXIS_HOMING_SUBMENU, MESH_BED_LEVELING)
       do_z_clearance(HMI_data.z_after_homing, true);
     #elif Z_AFTER_HOMING
-      do_z_clearance(Z_AFTER_HOMING, true);
+      float_t home_height = Z_AFTER_HOMING;
+      if (planner.laserMode) home_height = HMI_data.target_laser_height;
+      do_z_clearance(home_height, true);
     #elif BOTH(Z_AFTER_PROBING, HAS_BED_PROBE)
       move_z_after_probing();
     #endif

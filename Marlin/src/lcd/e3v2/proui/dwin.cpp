@@ -1770,6 +1770,7 @@ void DWIN_SetDataDefaults() {
     HMI_data.fan_percent = DEF_FAN_SPEED_PERCENT;
     HMI_data.time_format_textual = DEF_TIME_HMS_FORMAT;
     HMI_data.laser_off_pwr = SPEED_POWER_LOW;
+    HMI_data.target_laser_height = Z_AFTER_HOMING_LASER;
     #if HAS_TOOLBAR
       const uint8_t _def[] = DEF_TBOPT;
       LOOP_L_N(i,TBMaxOpt) PRO_data.TBopt[i] = _def[i];
@@ -2215,6 +2216,12 @@ void SetPID(celsius_t t, heater_id_t h) {
   void ApplyLaserLowLimit() { HMI_data.laser_off_pwr = MenuData.Value; }
   void SetLaserLowLimit()   { SetIntOnClick(0,255,HMI_data.laser_off_pwr,ApplyLaserLowLimit);}
 #endif
+
+#ifdef Z_AFTER_HOMING_LASER
+  void ApplyLaserHeight() { HMI_data.target_laser_height = MenuData.Value; }
+  void SetLaserHeight()   { SetIntOnClick(0,100,HMI_data.target_laser_height,ApplyLaserHeight);}
+#endif
+
 #if ENABLED(CASE_LIGHT_MENU)
   void SetCaseLight() {
     Toogle_Chkb_Line(caselight.on);
@@ -2958,7 +2965,7 @@ void Draw_Control_Menu() {
 
 void Draw_AdvancedSettings_Menu() {
   checkkey = Menu;
-  if (SET_MENU(AdvancedSettings, MSG_ADVANCED_SETTINGS, 26)) {
+  if (SET_MENU(AdvancedSettings, MSG_ADVANCED_SETTINGS, 27)) {
     BACK_ITEM(Goto_Main_Menu);
     #if ENABLED(EEPROM_SETTINGS)
       MENU_ITEM(ICON_WriteEEPROM, MSG_STORE_EEPROM, onDrawMenuItem, WriteEeprom);
@@ -3017,8 +3024,9 @@ void Draw_AdvancedSettings_Menu() {
     #endif
     EDIT_ITEM(ICON_ICON_SET, MSG_ICON_SET, onDrawPInt8Menu, SetBaseIcon, &HMI_data.baseIcon);
     if (planner.laserMode) {
-      EDIT_ITEM(ICON_LaserMode,MSG_LASERLOW_LIMIT, onDrawPInt8Menu, SetLaserLowLimit, &HMI_data.laser_off_pwr);
+      EDIT_ITEM(ICON_LaserMode, MSG_LASERLOW_LIMIT, onDrawPInt8Menu, SetLaserLowLimit, &HMI_data.laser_off_pwr);
       EDIT_ITEM(ICON_LaserMode, MSG_LASER_PERCENT, onDrawChkbMenu, SetFanPercent, &HMI_data.fan_percent);
+      EDIT_ITEM(ICON_LaserMode, MSG_LASER_HEIGHT, onDrawPInt8Menu, SetLaserHeight, &HMI_data.target_laser_height);
     }
     else
       EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, SetFanPercent, &HMI_data.fan_percent);

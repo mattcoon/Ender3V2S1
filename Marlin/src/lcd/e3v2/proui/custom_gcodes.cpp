@@ -169,13 +169,14 @@ void C3 () {
         F - enable Fan mode. G3-5 disabled. fan changes immediately
         fan has priority if both selected
   */
-  if (parser.seen("FLO")) {
+  if (parser.seen("FHLO")) {
     // set to fan mode
     if (parser.seen("F")) SetLaserMode(false);
     // Set to Laser mode
     else if (parser.seen("L")) SetLaserMode(true);
     // Set Laser Off Limit. used in G0 moves to keep laser active but not burning.
     if (parser.seenval('O')) HMI_data.laser_off_pwr = parser.byteval('O');
+    if (parser.seenval('H')) HMI_data.target_laser_height = parser.byteval('H');
     return;
   }
   C3_report();
@@ -185,11 +186,12 @@ void C3_report(const bool forReplay/*=true*/) {
   gcode.report_heading(forReplay, F("Laser/Fan Configuration"));
   gcode.report_echo_start(forReplay);
   SERIAL_ECHOPGM("  C3");
+  SERIAL_ECHOPGM(" O", HMI_data.laser_off_pwr);
+  SERIAL_ECHOPGM(" H", HMI_data.target_laser_height);
   if (planner.laserMode)
     SERIAL_ECHOPGM(" L  ; Laser Mode enabled");
   else
     SERIAL_ECHOPGM(" F  ; Fan Mode enabled");
-  SERIAL_ECHOPGM(" O", HMI_data.laser_off_pwr);
   SERIAL_EOL();
 }
 
