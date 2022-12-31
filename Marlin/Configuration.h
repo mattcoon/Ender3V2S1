@@ -71,10 +71,12 @@ TODO: cancel does not move in laser mode
 Test: 
 ------
 TODO: LCD assets
-TODO: add auto laser lift to target focus when homing in laser mode
+TODO: Laser submenu on advanced
 
 Done:
 -------
+add auto laser lift to target focus when homing in laser mode
+V2.1.2.7
 implement laser mode and fan sharing G3-5 on fan output
 G0 move no power. Configured by menu / C3
 in laser vs fan, change fan icon in status bar

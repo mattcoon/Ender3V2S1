@@ -275,6 +275,9 @@ MenuClass *AdvancedSettings = nullptr;
 #if HAS_BED_PROBE
   MenuClass *ProbeSetMenu = nullptr;
 #endif
+#if ENABLED(LASER_FAN_SHARING)
+  MenuClass *LaserSettingsMenu = nullptr;
+#endif
 MenuClass *FilSetMenu = nullptr;
 MenuClass *SelectColorMenu = nullptr;
 MenuClass *GetColorMenu = nullptr;
@@ -2965,7 +2968,7 @@ void Draw_Control_Menu() {
 
 void Draw_AdvancedSettings_Menu() {
   checkkey = Menu;
-  if (SET_MENU(AdvancedSettings, MSG_ADVANCED_SETTINGS, 27)) {
+  if (SET_MENU(AdvancedSettings, MSG_ADVANCED_SETTINGS, 25)) {
     BACK_ITEM(Goto_Main_Menu);
     #if ENABLED(EEPROM_SETTINGS)
       MENU_ITEM(ICON_WriteEEPROM, MSG_STORE_EEPROM, onDrawMenuItem, WriteEeprom);
@@ -3023,19 +3026,36 @@ void Draw_AdvancedSettings_Menu() {
       MENU_ITEM(ICON_Brightness, MSG_BRIGHTNESS_OFF, onDrawMenuItem, TurnOffBacklight);
     #endif
     EDIT_ITEM(ICON_ICON_SET, MSG_ICON_SET, onDrawPInt8Menu, SetBaseIcon, &HMI_data.baseIcon);
-    if (planner.laserMode) {
-      EDIT_ITEM(ICON_LaserMode, MSG_LASERLOW_LIMIT, onDrawPInt8Menu, SetLaserLowLimit, &HMI_data.laser_off_pwr);
-      EDIT_ITEM(ICON_LaserMode, MSG_LASER_PERCENT, onDrawChkbMenu, SetFanPercent, &HMI_data.fan_percent);
-      EDIT_ITEM(ICON_LaserMode, MSG_LASER_HEIGHT, onDrawPInt8Menu, SetLaserHeight, &HMI_data.target_laser_height);
-    }
-    else
-      EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, SetFanPercent, &HMI_data.fan_percent);
+    #if ENABLED(LASER_FAN_SHARING)
+      MENU_ITEM(ICON_LaserMode,MSG_LASER_SETTINGS, onDrawSubMenu, Draw_LaserSettings_Menu);
+      if (!planner.laserMode)
+    #endif
+        EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, SetFanPercent, &HMI_data.fan_percent);
     EDIT_ITEM(ICON_PrintTime, MSG_PROGRESS_IN_HHMM, onDrawChkbMenu, SetTimeFormat, &HMI_data.time_format_textual);
     MENU_ITEM(ICON_Scolor, MSG_COLORS_SELECT, onDrawSubMenu, Draw_SelectColors_Menu);
   }
   ui.reset_status(true);
   UpdateMenu(AdvancedSettings);
 }
+
+#if ENABLED(LASER_FAN_SHARING)
+  void Draw_LaserSettings_Menu() {
+    if (SET_MENU(LaserSettingsMenu, MSG_LASER_SETTINGS, 5)) {
+      BACK_ITEM(Draw_AdvancedSettings_Menu);
+      BACK_HOME();
+        EDIT_ITEM(ICON_LaserMode, MSG_ENABLE_LASERMODE, onDrawChkbMenu, MenuToggleLaserMode, &planner.laserMode);
+      if (planner.laserMode)
+        EDIT_ITEM(ICON_LaserMode, MSG_LASER_PERCENT, onDrawChkbMenu, SetFanPercent, &HMI_data.fan_percent);
+      else
+        EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, SetFanPercent, &HMI_data.fan_percent);
+      EDIT_ITEM(ICON_LaserMode, MSG_LASERLOW_LIMIT, onDrawPInt8Menu, SetLaserLowLimit, &HMI_data.laser_off_pwr);
+      EDIT_ITEM(ICON_LaserMode, MSG_LASER_HEIGHT, onDrawPInt8Menu, SetLaserHeight, &HMI_data.target_laser_height);
+    }
+    UpdateMenu(LaserSettingsMenu);
+    if (!planner.laserMode) LCD_MESSAGE_F("WARNING: not in laser Mode");
+    else LCD_MESSAGE_F("Laser Mode Ready!");
+  }
+#endif
 
 void Draw_Move_Menu() {
   checkkey = Menu;

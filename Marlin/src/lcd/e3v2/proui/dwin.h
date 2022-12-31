@@ -356,6 +356,9 @@ void Draw_Motion_Menu();
 #if ENABLED(MESH_BED_LEVELING)
   void Draw_ManualMesh_Menu();
 #endif
+#if ENABLED(LASER_FAN_SHARING)
+  void Draw_LaserSettings_Menu();
+#endif
 void Draw_Temperature_Menu();
 void Draw_MaxSpeed_Menu();
 void Draw_MaxAccel_Menu();
