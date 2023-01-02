@@ -209,6 +209,7 @@ skew_factor_t Planner::skew_factor; // Initialized by settings.load()
 
 #if ENABLED(LASER_FAN_SHARING)
   bool Planner::laserMode = LASER_MODE_DEFAULT;
+  bool Planner::laserTest = false;
   bool Planner::laser_is_powered = false; //mmm makeshift solution for G0
   uint8_t Planner::laser_power = SPEED_POWER_STARTUP; // mmm current power setting from M3-M4
 #endif
@@ -1353,7 +1354,7 @@ void Planner::check_axes_activity() {
 
     #if HAS_TAIL_FAN_SPEED
     #if ENABLED(LASER_FAN_SHARING)
-      if (!planner.laserMode)
+      if (!laserMode || laserTest)
     #endif
       {
         FANS_LOOP(i) {
@@ -1395,7 +1396,7 @@ void Planner::check_axes_activity() {
 
     #if HAS_TAIL_FAN_SPEED
     #if ENABLED(LASER_FAN_SHARING)
-    if (!planner.laserMode) 
+    if (!laserMode || laserTest) 
     #endif
     {
       FANS_LOOP(i) {
@@ -2979,7 +2980,7 @@ void Planner::buffer_sync_block(const BlockFlagBit sync_flag/*=BLOCK_BIT_SYNC_PO
     LOOP_NUM_AXES(axis) block->position[axis] += backlash.get_applied_steps((AxisEnum)axis);
   #endif
   #if BOTH(HAS_FAN, LASER_SYNCHRONOUS_M106_M107)
-    if (planner.laserMode) // mmm
+    if (laserMode) // mmm
       FANS_LOOP(i) block->fan_speed[i] = thermalManager.fan_speed[i];
   #endif
 

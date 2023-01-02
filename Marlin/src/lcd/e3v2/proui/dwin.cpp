@@ -225,6 +225,7 @@ constexpr float max_acceleration_edit_values[] =
   #define E_MAX_POS (last_E + (EXTRUDE_MAXLENGTH))
 #endif
 
+
 bool hash_changed = true; // Flag to know if message status was changed
 uint8_t _percent_done = 0;
 uint32_t _remain_time = 0;
@@ -232,6 +233,9 @@ bool blink = false;
 millis_t dwin_heat_time = 0;
 uint8_t checkkey = 255, last_checkkey = MainMenu;
 static uint8_t _unloadDelay = fc_settings[0].unload_predelay/1000;
+#if ENABLED(LASER_FAN_SHARING)
+  static millis_t laserTimer = 0; // laser safety timer
+#endif
 
 
 char DateTime[16+1] =
@@ -1257,6 +1261,10 @@ void EachMomentUpdate() {
     #endif
   }
 
+  #if ENABLED(LASER_FAN_SHARING)
+    if (ELAPSED(ms, laserTimer)) ApplyLaserTest(false);
+  #endif
+
   #if HAS_STATUS_MESSAGE_TIMEOUT
     bool did_expire = ui.status_reset_callback && (*ui.status_reset_callback)();
     did_expire |= ui.status_message_expire_ms && ELAPSED(ms, ui.status_message_expire_ms);
@@ -1730,7 +1738,7 @@ void DWIN_SetDataDefaults() {
   TERN_(BAUD_RATE_GCODE, HMI_data.Baud115K = (BAUDRATE == 115200));
   HMI_data.FullManualTramming = false;
   HMI_data.MediaAutoMount = ENABLED(HAS_SD_EXTENDER);
-  #if ENABLED(INDIVIDUAL_AXIS_HOMING_SUBMENU)
+  #if BOTH(INDIVIDUAL_AXIS_HOMING_SUBMENU, MESH_BED_LEVELING)
     HMI_data.z_after_homing = DEF_Z_AFTER_HOMING;
   #endif
   #if DISABLED(HAS_BED_PROBE)
@@ -2080,13 +2088,32 @@ void AutoLev() {   // Always reacquire the Z "home" position
   queue.inject(F(TERN(AUTO_BED_LEVELING_UBL, "G28Z\nG29P1", "G28XYO\nG28Z\nG29")));
 }
 
-void AutoHome() { queue.inject_P(G28_STR); }
+void AutoHome() {  
+  char cmd[54], str_1[5];
+  if (planner.laserMode) {
+    sprintf_P(cmd, PSTR("G28\nG0Z%sF300"),
+      dtostrf(HMI_data.target_laser_height, 2, 1, str_1));
+  }
+  else
+      sprintf_P(cmd, PSTR("G28"));
+  gcode.process_subcommands_now(cmd);
+
+}
 void HomeXY()   { queue.inject_P("G28XY"); }
 #if ENABLED(INDIVIDUAL_AXIS_HOMING_SUBMENU)
   void HomeX() { queue.inject(F("G28X")); }
   void HomeY() { queue.inject(F("G28Y")); }
-  void HomeZ() { queue.inject(F("G28Z")); }
-  #if ENABLED(INDIVIDUAL_AXIS_HOMING_SUBMENU)
+  void HomeZ() {       
+    char cmd[54], str_1[5];
+    if (planner.laserMode) {
+      sprintf_P(cmd, PSTR("G28Z\nG0Z%s\n"),
+        dtostrf(HMI_data.target_laser_height, 2, 1, str_1));
+    }
+    else
+      sprintf_P(cmd, PSTR("G28Z")); 
+    gcode.process_subcommands_now(cmd);
+  }
+  #if BOTH(INDIVIDUAL_AXIS_HOMING_SUBMENU, MESH_BED_LEVELING)
     void ApplyZAfterHoming() { HMI_data.z_after_homing = MenuData.Value; };
     void SetZAfterHoming() { SetIntOnClick(0, 20, HMI_data.z_after_homing, ApplyZAfterHoming); }
   #endif
@@ -2227,8 +2254,32 @@ void SetPID(celsius_t t, heater_id_t h) {
 #ifdef Z_AFTER_HOMING_LASER
   void ApplyLaserHeight() { HMI_data.target_laser_height = MenuData.Value; }
   void SetLaserHeight()   { SetIntOnClick(0,100,HMI_data.target_laser_height,ApplyLaserHeight);}
+  
 #endif
+#if ENABLED(LASER_FAN_SHARING)
+  void ApplyLaserTest(bool test) {
+    if (test) {
+      // safety timer runs in the backgroud based on test status
+      laserTimer = millis() + LASER_TEST_TIMEOUT_MS;
+      // disable steppers to allow movement
+      DisableMotors();
+      // turn on laser at lowest setting to avoid burn
+      thermalManager.set_fan_speed(0, SPEED_TEST_PULSE);
+    }
+    else {
+      // turn off laser and stop timer
+      queue.inject(F("M107"));
+    }
+    planner.laserTest = test;
+  }
 
+  void SetLaserTest() { 
+    if(planner.laserMode) {
+      ApplyLaserTest(!planner.laserTest);
+      Show_Chkb_Line(planner.laserTest);
+    }
+  }
+#endif
 #if ENABLED(CASE_LIGHT_MENU)
   void SetCaseLight() {
     Toogle_Chkb_Line(caselight.on);
@@ -2310,6 +2361,8 @@ void SetPID(celsius_t t, heater_id_t h) {
   void MenuToggleLaserMode() {
     ToggleLaserMode();
     Show_Chkb_Line(planner.laserMode);
+    if (planner.laserMode)
+      HomeZ();
   }
 
   void SetLaserMode(bool lasermode) {
@@ -2872,7 +2925,7 @@ void onDrawPIDd(MenuItemClass* menuitem, int8_t line) { onDrawFloatMenu(menuitem
 
 void Draw_Prepare_Menu() {
   checkkey = Menu;
-  if (SET_MENU(PrepareMenu, MSG_PREPARE, 11)) {
+  if (SET_MENU(PrepareMenu, MSG_PREPARE, 12)) {
     BACK_ITEM(Goto_Main_Menu);
     #if ENABLED(ADVANCED_PAUSE_FEATURE)
       MENU_ITEM(ICON_FilMan, MSG_FILAMENT_MAN, onDrawSubMenu, Draw_FilamentMan_Menu);
@@ -2903,6 +2956,8 @@ void Draw_Prepare_Menu() {
     MENU_ITEM(ICON_Cool, MSG_COOLDOWN, onDrawMenuItem, DoCoolDown);
     #if ENABLED(LASER_FAN_SHARING)
       EDIT_ITEM(ICON_LaserMode, MSG_ENABLE_LASERMODE, onDrawChkbMenu, MenuToggleLaserMode, &planner.laserMode);
+      EDIT_ITEM(ICON_LaserMode, MSG_LASER_TEST, onDrawChkbMenu, SetLaserTest, &planner.laserTest);
+
     #endif
   }
   ui.reset_status(true);
@@ -3048,7 +3103,7 @@ void Draw_AdvancedSettings_Menu() {
 
 #if ENABLED(LASER_FAN_SHARING)
   void Draw_LaserSettings_Menu() {
-    if (SET_MENU(LaserSettingsMenu, MSG_LASER_SETTINGS, 5)) {
+    if (SET_MENU(LaserSettingsMenu, MSG_LASER_SETTINGS, 6)) {
       BACK_ITEM(Draw_AdvancedSettings_Menu);
       BACK_HOME();
         EDIT_ITEM(ICON_LaserMode, MSG_ENABLE_LASERMODE, onDrawChkbMenu, MenuToggleLaserMode, &planner.laserMode);
@@ -3058,6 +3113,7 @@ void Draw_AdvancedSettings_Menu() {
         EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, SetFanPercent, &HMI_data.fan_percent);
       EDIT_ITEM(ICON_LaserMode, MSG_LASERLOW_LIMIT, onDrawPInt8Menu, SetLaserLowLimit, &HMI_data.laser_off_pwr);
       EDIT_ITEM(ICON_LaserMode, MSG_LASER_HEIGHT, onDrawPInt8Menu, SetLaserHeight, &HMI_data.target_laser_height);
+      EDIT_ITEM(ICON_LaserMode, MSG_LASER_TEST, onDrawChkbMenu, SetLaserTest, &planner.laserTest);
     }
     UpdateMenu(LaserSettingsMenu);
     if (!planner.laserMode) LCD_MESSAGE_F("WARNING: not in laser Mode");
@@ -3753,9 +3809,9 @@ void Draw_Steps_Menu() {
       MENU_ITEM(ICON_HomeY, MSG_AUTO_HOME_Y, onDrawMenuItem, HomeY);
       MENU_ITEM(ICON_HomeZ, MSG_AUTO_HOME_Z, onDrawMenuItem, HomeZ);
       #endif
-      // #if ENABLED(MESH_BED_LEVELING)
+      #if ENABLED(MESH_BED_LEVELING)
         EDIT_ITEM(ICON_ZAfterHome, MSG_Z_AFTER_HOME, onDrawPInt8Menu, SetZAfterHoming, &HMI_data.z_after_homing);
-      // #endif
+      #endif
     }
     UpdateMenu(HomingMenu);
   }

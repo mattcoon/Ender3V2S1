@@ -2366,7 +2366,7 @@ uint32_t Stepper::block_phase_isr() {
 
         if (!(current_block->is_fan_sync() 
         #if ENABLED(LASER_FAN_SHARING)
-          || !planner.laserMode
+          || !planner.laserMode || planner.laserTest
         #endif
         || current_block->is_pwr_sync())) _set_position(current_block->position); // mmm
 

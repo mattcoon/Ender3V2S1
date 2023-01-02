@@ -264,8 +264,11 @@ void GcodeSuite::get_destination_from_command() {
     }
     else if (parser.codenum == 0) {
       /* Turn off laser power */
+      uint8_t targetFanspeed = 0;
       planner.laser_is_powered = false;
-      thermalManager.set_fan_speed( 0 , HMI_data.laser_off_pwr);
+      if (printingIsActive())
+        targetFanspeed = HMI_data.laser_off_pwr;
+      thermalManager.set_fan_speed( 0 , targetFanspeed);
     }
     planner.buffer_sync_block(BLOCK_BIT_SYNC_FANS);
   #endif

@@ -3498,6 +3498,7 @@
   #define SPEED_POWER_STARTUP       255    // M3/M4 speed/power default (with no arguments)
   #define SPEED_POWER_LOW            15    // value for laser off tokeep running but not burning
   #define SPEED_TEST_PULSE            3    // value to just turn on laser for test pulse
+  #define LASER_TEST_TIMEOUT_MS    3000    // (ms) to 
   #define Z_AFTER_HOMING_LASER       20    // height for laser after homing
   #define LASER_SYNCHRONOUS_M106_M107
   #define LASER_MODE_DEFAULT false

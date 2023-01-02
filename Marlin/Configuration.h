@@ -65,18 +65,17 @@
 TODO: Host commands
 TODO: filament loading setting - keep track of filament
 TODO: automatic first setup: z offset, tram wizard, mesh
-TODO: add Laser position check/ low-power strobe to find the 0 point, only in laser mode. set 0,0 position. 
 TODO: cancel does not move in laser mode
+TODO: laser check service popup
 
 Test: 
 ------
 TODO: LCD assets
-TODO: Laser submenu on advanced
-TODO: probe error. why?
-TODO: make home Z raise modifiable
 
 Done:
 -------
+add Laser position check/ low-power strobe to find the 0 point, only in laser mode. set 0,0 position. 
+Laser submenu on advanced
 add auto laser lift to target focus when homing in laser mode
 V2.1.2.7
 implement laser mode and fan sharing G3-5 on fan output
@@ -1775,7 +1774,7 @@ Flex mesh size
 //#define Z_HOMING_HEIGHT  10      // (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...  // MRiscoC Crearance over the bed
                                   // Be sure to have this much clearance over your Z_MAX_POS to prevent grinding.
 
-#define Z_AFTER_HOMING  5      // (mm) Height to move to after homing Z  // MRiscoC Crearance over the bed
+//#define Z_AFTER_HOMING  5      // (mm) Height to move to after homing Z  // MRiscoC Crearance over the bed
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
