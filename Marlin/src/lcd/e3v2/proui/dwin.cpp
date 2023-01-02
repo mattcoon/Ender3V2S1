@@ -1730,7 +1730,7 @@ void DWIN_SetDataDefaults() {
   TERN_(BAUD_RATE_GCODE, HMI_data.Baud115K = (BAUDRATE == 115200));
   HMI_data.FullManualTramming = false;
   HMI_data.MediaAutoMount = ENABLED(HAS_SD_EXTENDER);
-  #if BOTH(INDIVIDUAL_AXIS_HOMING_SUBMENU, MESH_BED_LEVELING)
+  #if ENABLED(INDIVIDUAL_AXIS_HOMING_SUBMENU)
     HMI_data.z_after_homing = DEF_Z_AFTER_HOMING;
   #endif
   #if DISABLED(HAS_BED_PROBE)
@@ -2086,7 +2086,7 @@ void HomeXY()   { queue.inject_P("G28XY"); }
   void HomeX() { queue.inject(F("G28X")); }
   void HomeY() { queue.inject(F("G28Y")); }
   void HomeZ() { queue.inject(F("G28Z")); }
-  #if BOTH(INDIVIDUAL_AXIS_HOMING_SUBMENU, MESH_BED_LEVELING)
+  #if ENABLED(INDIVIDUAL_AXIS_HOMING_SUBMENU)
     void ApplyZAfterHoming() { HMI_data.z_after_homing = MenuData.Value; };
     void SetZAfterHoming() { SetIntOnClick(0, 20, HMI_data.z_after_homing, ApplyZAfterHoming); }
   #endif
@@ -3753,9 +3753,9 @@ void Draw_Steps_Menu() {
       MENU_ITEM(ICON_HomeY, MSG_AUTO_HOME_Y, onDrawMenuItem, HomeY);
       MENU_ITEM(ICON_HomeZ, MSG_AUTO_HOME_Z, onDrawMenuItem, HomeZ);
       #endif
-      #if ENABLED(MESH_BED_LEVELING)
+      // #if ENABLED(MESH_BED_LEVELING)
         EDIT_ITEM(ICON_ZAfterHome, MSG_Z_AFTER_HOME, onDrawPInt8Menu, SetZAfterHoming, &HMI_data.z_after_homing);
-      #endif
+      // #endif
     }
     UpdateMenu(HomingMenu);
   }

@@ -122,7 +122,7 @@ typedef struct {
   TERN_(BAUD_RATE_GCODE, bool Baud115K = (BAUDRATE == 115200));
   bool FullManualTramming = false;
   bool MediaAutoMount = ENABLED(HAS_SD_EXTENDER);
-  #if BOTH(INDIVIDUAL_AXIS_HOMING_SUBMENU, MESH_BED_LEVELING)
+  #if ENABLED(INDIVIDUAL_AXIS_HOMING_SUBMENU)
     uint8_t z_after_homing = DEF_Z_AFTER_HOMING;
   #endif
   #if DISABLED(HAS_BED_PROBE)

@@ -72,6 +72,8 @@ Test:
 ------
 TODO: LCD assets
 TODO: Laser submenu on advanced
+TODO: probe error. why?
+TODO: make home Z raise modifiable
 
 Done:
 -------

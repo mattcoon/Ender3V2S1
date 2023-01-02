@@ -50,7 +50,7 @@
   #define PROBE_TRIGGERED() (READ(Z_MIN_PIN) != Z_MIN_ENDSTOP_INVERTING)
 #endif
 
-#if ALL(DWIN_LCD_PROUI, INDIVIDUAL_AXIS_HOMING_SUBMENU, MESH_BED_LEVELING)
+#if ALL(DWIN_LCD_PROUI, INDIVIDUAL_AXIS_HOMING_SUBMENU)
   #define Z_POST_CLEARANCE HMI_data.z_after_homing;
 #elif defined(Z_AFTER_HOMING)
   #define Z_POST_CLEARANCE Z_AFTER_HOMING
@@ -162,14 +162,15 @@ public:
   #endif
 
   static void move_z_after_homing() {
-    #if ALL(DWIN_LCD_PROUI, INDIVIDUAL_AXIS_HOMING_SUBMENU, MESH_BED_LEVELING)
-      do_z_clearance(HMI_data.z_after_homing, true);
-    #elif Z_AFTER_HOMING
-      float_t home_height = Z_AFTER_HOMING;
+    #if BOTH(DWIN_LCD_PROUI, INDIVIDUAL_AXIS_HOMING_SUBMENU)
       #if ENABLED(LASER_FAN_SHARING)
-        if (planner.laserMode) home_height = HMI_data.target_laser_height;
+      if(planner.laserMode)
+        do_z_clearance(HMI_data.target_laser_height,true);
+      else
       #endif
-      do_z_clearance(home_height, true);
+        do_z_clearance(HMI_data.z_after_homing, true);
+    #elif Z_AFTER_HOMING
+      do_z_clearance(Z_AFTER_HOMING, true);
     #elif BOTH(Z_AFTER_PROBING, HAS_BED_PROBE)
       move_z_after_probing();
     #endif

@@ -3495,13 +3495,12 @@
  */
 #define LASER_FAN_SHARING  // implement G3-G5 and M3-M5 as redirect of M106 and M107
 #ifdef LASER_FAN_SHARING
-  #define SPEED_POWER_STARTUP        80    // (%) M3/M4 speed/power default (with no arguments)
-  #define SPEED_POWER_LOW            15    //  % off State for laser off tokeep running but not burning
-  #define Z_AFTER_HOMING_LASER  20  // height for laser after homing
+  #define SPEED_POWER_STARTUP       255    // M3/M4 speed/power default (with no arguments)
+  #define SPEED_POWER_LOW            15    // value for laser off tokeep running but not burning
+  #define SPEED_TEST_PULSE            3    // value to just turn on laser for test pulse
+  #define Z_AFTER_HOMING_LASER       20    // height for laser after homing
   #define LASER_SYNCHRONOUS_M106_M107
-  #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
-    #define LASER_MODE_DEFAULT false
-  #endif
+  #define LASER_MODE_DEFAULT false
 #endif
 /**
  * Coolant Control
