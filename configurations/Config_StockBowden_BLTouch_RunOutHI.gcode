@@ -29,7 +29,7 @@ C412 S1 D200           ; enable filament sensor with 200mm runout
 ; Exttruder settings
 ; C562 E1              ; invert the Extruder (E1 to invert)
 M92 E93                ; set extruder steps / mm
-M603 L410.00 U550.00   ; Configure Filament Change load 410, unload 550mm
+M603 L410.00 U550.00 P1.0 D5000  ; Configure Filament Change load 410, unload 550mm, pre unload 1mm, unload delay 5000ms
 ; fwretraction
 M207 F2400 S5 Z0       ; feedrate of 40*60 retract distance 5 and z hop 0
 M208 F2400 S0          ; feedrate of 40*60 de-retract extra distance 0

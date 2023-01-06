@@ -14,7 +14,7 @@ C125 X230 Y221 Z20     ; setup the park position
 
 ; Bed and Hotend specific changes
 C104 U1 T300           ; Set Max Hotend Temperature
-M306 C9.11 R0.2741 A0.0505 F0.0583 ; set MPC parameters for hotend
+M306 C9.23 R0.2201 A0.0522 F0.0611 ; set MPC parameters for hotend
 M304 P462.10 I85.47 D624.59  ; set PID parameters for BED
 
 ; Probe settings
@@ -29,9 +29,9 @@ C412 S1 D200           ; enable filament sensor with 200mm runout
 ; Exttruder settings
 ; C562 E1              ; invert the Extruder (E1 to invert)
 M92 E424.9             ; set extruder steps / mm
-M603 L25.0 U30.0       ; Configure Filament Change load 410, unload 550mm
+M603 L25.0 U40.0 P1.0 D5000 ; Configure Filament Change load 25, unload 40mm, pre unload 1mm, unload delay 5000ms
 ; fwretraction
-M207 F2400 S0.8 Z0     ; feedrate of 40*60 retract distance 5 and z hop 0
+M207 F2400 S0.8 Z0     ; feedrate of 40*60 retract distance 0.8 and z hop 0
 M208 F2400 S0          ; feedrate of 40*60 de-retract extra distance 0
 
 ; customization

@@ -66,14 +66,15 @@ TODO: Host commands
 TODO: filament loading setting - keep track of filament
 TODO: automatic first setup: z offset, tram wizard, mesh
 TODO: cancel does not move in laser mode
-TODO: laser check service popup
 
 Test: 
 ------
 TODO: LCD assets
+TODO: laser check service popup
 
 Done:
 -------
+add M603 options for P-preunload length (mm) and D preunload delay (ms)
 add Laser position check/ low-power strobe to find the 0 point, only in laser mode. set 0,0 position. 
 Laser submenu on advanced
 add auto laser lift to target focus when homing in laser mode
@@ -214,6 +215,7 @@ Flex mesh size
 
 // Enable the Bluetooth serial interface on AT90USB devices
 //#define BLUETOOTH
+#define NO_CREALITY_422_DRIVER_WARNING
 
 #ifndef CREALITY_STOCK
 
