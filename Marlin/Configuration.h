@@ -72,13 +72,14 @@ TODO: LCD assets
 
 Done:
 -------
+V2.1.3.8
 cancel does not move in laser mode
 laser Test service popup
 add M603 options for P-preunload length (mm) and D preunload delay (ms)
 add Laser position check/ low-power strobe to find the 0 point, only in laser mode. set 0,0 position. 
 Laser submenu on advanced
 add auto laser lift to target focus when homing in laser mode
-V2.1.2.7
+V2.1.3.7
 implement laser mode and fan sharing G3-5 on fan output
 G0 move no power. Configured by menu / C3
 in laser vs fan, change fan icon in status bar
