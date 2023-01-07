@@ -1262,7 +1262,12 @@ void EachMomentUpdate() {
   }
 
   #if ENABLED(LASER_FAN_SHARING)
-    if (ELAPSED(ms, laserTimer)) ApplyLaserTest(false);
+  if (planner.laserTest) {
+    if (ELAPSED(ms, laserTimer)) {
+      laserTimer = 0;
+      ApplyLaserTest(false);
+    }
+  }
   #endif
 
   #if HAS_STATUS_MESSAGE_TIMEOUT
@@ -1672,8 +1677,10 @@ void DWIN_Print_Aborted() {
   TERN_(DEBUG_DWIN, SERIAL_ECHOLNPGM("DWIN_Print_Aborted"));
   #if ProUIex
     char cmd[21] = "";
-    sprintf_P(cmd, PSTR("G0 F3000 Y%i\nM84"), PRO_data.Park_point.y);
-    queue.inject(cmd);
+    if (!planner.laserMode) {
+      sprintf_P(cmd, PSTR("G0 F3000 Y%i\nM84"), PRO_data.Park_point.y);
+      queue.inject(cmd);
+    }
   #endif
   DWIN_Print_Finished();
 }
@@ -2091,6 +2098,7 @@ void AutoLev() {   // Always reacquire the Z "home" position
 void AutoHome() {  
   char cmd[54], str_1[5];
   if (planner.laserMode) {
+    // Home and move to correct height and x,y at 0
     sprintf_P(cmd, PSTR("G28\nG0Z%sF300"),
       dtostrf(HMI_data.target_laser_height, 2, 1, str_1));
   }
@@ -2099,7 +2107,7 @@ void AutoHome() {
   gcode.process_subcommands_now(cmd);
 
 }
-void HomeXY()   { queue.inject_P("G28XY"); }
+void HomeXY()  { queue.inject_P("G28XY"); }
 #if ENABLED(INDIVIDUAL_AXIS_HOMING_SUBMENU)
   void HomeX() { queue.inject(F("G28X")); }
   void HomeY() { queue.inject(F("G28Y")); }
@@ -2258,28 +2266,39 @@ void SetPID(celsius_t t, heater_id_t h) {
 #endif
 #if ENABLED(LASER_FAN_SHARING)
   void ApplyLaserTest(bool test) {
+    char cmd[15] = {0};
     if (test) {
       // safety timer runs in the backgroud based on test status
       laserTimer = millis() + LASER_TEST_TIMEOUT_MS;
       // disable steppers to allow movement
       DisableMotors();
       // turn on laser at lowest setting to avoid burn
-      thermalManager.set_fan_speed(0, SPEED_TEST_PULSE);
+      sprintf_P(cmd, PSTR("M106S%i"),LASER_TEST_PULSE);
     }
     else {
       // turn off laser and stop timer
-      queue.inject(F("M107"));
+      laserTimer = 0;
+      sprintf(cmd, PSTR("M107"));
     }
+    gcode.process_subcommands_now(cmd);
     planner.laserTest = test;
+    HMI_SaveProcessID(NothingToDo);
+    HMI_ReturnScreen();
+
   }
 
-  void SetLaserTest() { 
-    if(planner.laserMode) {
-      ApplyLaserTest(!planner.laserTest);
-      Show_Chkb_Line(planner.laserTest);
-    }
+  void Draw_Popup_LaserTest() {
+    DWIN_Popup_ConfirmCancel(ICON_LaserMode, GET_TEXT_F(MSG_LASER_TEST)); 
   }
+
+  void onClick_LaserTest() {
+    ApplyLaserTest(HMI_flag.select_flag);
+  }
+
+  void SetLaserTest() { Goto_Popup(Draw_Popup_LaserTest, onClick_LaserTest); }
+
 #endif
+
 #if ENABLED(CASE_LIGHT_MENU)
   void SetCaseLight() {
     Toogle_Chkb_Line(caselight.on);
@@ -2363,6 +2382,7 @@ void SetPID(celsius_t t, heater_id_t h) {
     Show_Chkb_Line(planner.laserMode);
     if (planner.laserMode)
       HomeZ();
+    ReDrawMenu();
   }
 
   void SetLaserMode(bool lasermode) {
@@ -2956,8 +2976,8 @@ void Draw_Prepare_Menu() {
     MENU_ITEM(ICON_Cool, MSG_COOLDOWN, onDrawMenuItem, DoCoolDown);
     #if ENABLED(LASER_FAN_SHARING)
       EDIT_ITEM(ICON_LaserMode, MSG_ENABLE_LASERMODE, onDrawChkbMenu, MenuToggleLaserMode, &planner.laserMode);
-      EDIT_ITEM(ICON_LaserMode, MSG_LASER_TEST, onDrawChkbMenu, SetLaserTest, &planner.laserTest);
-
+      if (planner.laserMode)
+        MENU_ITEM(ICON_LaserMode, MSG_LASER_TEST, onDrawMenuItem, SetLaserTest);
     #endif
   }
   ui.reset_status(true);
@@ -3103,7 +3123,7 @@ void Draw_AdvancedSettings_Menu() {
 
 #if ENABLED(LASER_FAN_SHARING)
   void Draw_LaserSettings_Menu() {
-    if (SET_MENU(LaserSettingsMenu, MSG_LASER_SETTINGS, 6)) {
+    if (SET_MENU(LaserSettingsMenu, MSG_LASER_SETTINGS, 7)) {
       BACK_ITEM(Draw_AdvancedSettings_Menu);
       BACK_HOME();
         EDIT_ITEM(ICON_LaserMode, MSG_ENABLE_LASERMODE, onDrawChkbMenu, MenuToggleLaserMode, &planner.laserMode);
@@ -3113,7 +3133,7 @@ void Draw_AdvancedSettings_Menu() {
         EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, SetFanPercent, &HMI_data.fan_percent);
       EDIT_ITEM(ICON_LaserMode, MSG_LASERLOW_LIMIT, onDrawPInt8Menu, SetLaserLowLimit, &HMI_data.laser_off_pwr);
       EDIT_ITEM(ICON_LaserMode, MSG_LASER_HEIGHT, onDrawPInt8Menu, SetLaserHeight, &HMI_data.target_laser_height);
-      EDIT_ITEM(ICON_LaserMode, MSG_LASER_TEST, onDrawChkbMenu, SetLaserTest, &planner.laserTest);
+      MENU_ITEM(ICON_LaserMode, MSG_LASER_TEST, onDrawMenuItem, SetLaserTest);
     }
     UpdateMenu(LaserSettingsMenu);
     if (!planner.laserMode) LCD_MESSAGE_F("WARNING: not in laser Mode");

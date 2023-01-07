@@ -228,6 +228,9 @@ void DoCoolDown();
   void ToggleLaserMode();
   void SetLaserMode(bool lasermode);
   void ApplyLaserTest(bool test);
+  void Draw_Popup_LaserTest();
+  void onClick_LaserTest();
+  void SetLaserTest();
 #endif
 
 void ApplyExtMinT();

@@ -1376,7 +1376,6 @@
 // LCD Backlight Timeout
 //
 #define LCD_BACKLIGHT_TIMEOUT_MINS 0  // (minutes) Timeout before turning off the backlight
-#define DEF_LCD_BACKLIGHT_TIMEOUT_MINS 0 
 
 #if HAS_BED_PROBE && EITHER(HAS_MARLINUI_MENU, HAS_TFT_LVGL_UI)
   //#define PROBE_OFFSET_WIZARD       // Add a Probe Z Offset calibration option to the LCD menu
@@ -1656,7 +1655,7 @@
 
   //#define SD_REPRINT_LAST_SELECTED_FILE // On print completion open the LCD Menu and select the same file
 
-  //#define AUTO_REPORT_SD_STATUS         // Auto-report media status with 'M27 S<seconds>'
+  #define AUTO_REPORT_SD_STATUS         // Auto-report media status with 'M27 S<seconds>'
 
   /**
    * Support for USB thumb drives using an Arduino USB Host Shield or
@@ -3497,11 +3496,11 @@
 #ifdef LASER_FAN_SHARING
   #define SPEED_POWER_STARTUP       255    // M3/M4 speed/power default (with no arguments)
   #define SPEED_POWER_LOW            15    // value for laser off tokeep running but not burning
-  #define SPEED_TEST_PULSE            3    // value to just turn on laser for test pulse
-  #define LASER_TEST_TIMEOUT_MS    3000    // (ms) to 
-  #define Z_AFTER_HOMING_LASER       20    // height for laser after homing
+  #define LASER_TEST_PULSE            3    // value to just turn on laser for test pulse
+  #define LASER_TEST_TIMEOUT_MS    5000    // (ms) to 
+  #define Z_AFTER_HOMING_LASER       20    // (mm) height for laser after homing
   #define LASER_SYNCHRONOUS_M106_M107
-  #define LASER_MODE_DEFAULT false
+  #define LASER_MODE_DEFAULT false         // startup in fan mode for printing
 #endif
 /**
  * Coolant Control
