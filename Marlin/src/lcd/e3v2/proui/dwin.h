@@ -125,6 +125,7 @@ typedef struct {
   #if ENABLED(ADAPTIVE_STEP_SMOOTHING)
     bool AdaptiveStepSmoothing = true;
   #endif
+  bool haspreview = true;
   bool fan_percent = DEF_FAN_SPEED_PERCENT;
   bool time_format_textual = DEF_TIME_HMS_FORMAT;
   bool TBShowCaption = true;
