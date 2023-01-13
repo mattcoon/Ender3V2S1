@@ -21,7 +21,7 @@
 
 #include "../../../inc/MarlinConfigPre.h"
 
-#if ENABLED(DWIN_LCD_PROUI)
+#if BOTH(DWIN_LCD_PROUI, HAS_CGCODE)
 
 #include "../../../MarlinCore.h" // for wait_for_user
 #include "../../../core/types.h"
