@@ -65,16 +65,18 @@
 TODO: Host commands
 TODO: filament loading setting - keep track of filament
 TODO: automatic first setup: z offset, tram wizard, mesh
-TODO: toolbar short cuts over 12 stopped at 12 for setting
 
 Test: 
 ------
 TODO: LCD assets
+TODO: toolbar short cuts over 12 stopped at 12 for setting
 
 Done:
 -------
+Store ColorScheme
+Store Full 9x9 mesh
 V2.1.3.9
-TODO: add save config gcode to SD
+add save config gcode to SD
 V2.1.3.8
 cancel does not move in laser mode
 laser Test service popup

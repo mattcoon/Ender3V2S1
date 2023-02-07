@@ -33,6 +33,8 @@
 #include "dwinui.h"
 #include "dwin_lcd.h"
 #include "custom_gcodes.h"
+#include "toolbar.h"
+#include "../../../core/macros.h"
 
 #if ENABLED(POWER_LOSS_RECOVERY)
   #include "../../../feature/powerloss.h"
@@ -115,6 +117,7 @@ void custom_gcode(const int16_t codenum) {
     #if ProUIex
       #if HAS_MESH
         case 29: ProEx.C29(); break;        // Set probing area and mesh leveling settings
+        
       #endif
       case 100: ProEx.C100(); break;        // Change Physical minimums
       case 101: ProEx.C101(); break;        // Change Physical maximums
@@ -130,7 +133,7 @@ void custom_gcode(const int16_t codenum) {
       case 562: ProEx.C562(); break;        // Invert Extruder
       case 851: ProEx.C851(); break;        // If has a probe set z feed rate and multiprobe, if not, set manual z-offset
       #if HAS_TOOLBAR
-        case 810: ProEx.C810(); break;      // Config toolbar
+        case 810: C810(); break;      // Config toolbar
       #endif
         case 120: C120(); break;              // visual setting T = hms, F = fan%, I = iconset
       #if ENABLED(LASER_FAN_SHARING)
@@ -223,6 +226,31 @@ void C120_report(const bool forReplay/*=true*/) {
   SERIAL_ECHOPGM("  C120 I", HMI_data.baseIcon);
   SERIAL_ECHOPGM(" T", HMI_data.time_format_textual? 1:0);
   SERIAL_ECHOPGM(" F", HMI_data.fan_percent? 1:0);
+  SERIAL_EOL();
+}
+
+void C810 () {
+  /* C810 - ToolbarSetup
+  */
+  if (parser.seen("ABCDE")) {
+    uint8_t tbMax = ToolBar.OptCount();
+    if (parser.seenval('A'))  PRO_data.TBopt[0] = _MIN(parser.intval('A'),tbMax); 
+    if (parser.seenval('B'))  PRO_data.TBopt[1] = _MIN(parser.intval('B'),tbMax); 
+    if (parser.seenval('C'))  PRO_data.TBopt[2] = _MIN(parser.intval('C'),tbMax); 
+    if (parser.seenval('D'))  PRO_data.TBopt[3] = _MIN(parser.intval('D'),tbMax); 
+    if (parser.seenval('E'))  PRO_data.TBopt[4] = _MIN(parser.intval('E'),tbMax);
+    return;
+  }
+  C810_report(true);
+}
+void C810_report(const bool forReplay/*=true*/) {
+  gcode.report_heading(forReplay, F("Display Config Settings"));
+  gcode.report_echo_start(forReplay);
+  SERIAL_ECHOPGM("  C810 A", PRO_data.TBopt[0]);
+  SERIAL_ECHOPGM(" B", PRO_data.TBopt[1]);
+  SERIAL_ECHOPGM(" C", PRO_data.TBopt[2]);
+  SERIAL_ECHOPGM(" D", PRO_data.TBopt[3]);
+  SERIAL_ECHOPGM(" E", PRO_data.TBopt[4]);
   SERIAL_EOL();
 }
 
