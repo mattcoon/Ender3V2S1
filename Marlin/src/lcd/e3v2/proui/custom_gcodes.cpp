@@ -117,7 +117,6 @@ void custom_gcode(const int16_t codenum) {
     #if ProUIex
       #if HAS_MESH
         case 29: ProEx.C29(); break;        // Set probing area and mesh leveling settings
-        
       #endif
       case 100: ProEx.C100(); break;        // Change Physical minimums
       case 101: ProEx.C101(); break;        // Change Physical maximums
@@ -126,6 +125,9 @@ void custom_gcode(const int16_t codenum) {
       case 115: ProEx.C115(); break;        // ProUI Info
       #if ENABLED(NOZZLE_PARK_FEATURE)
         case 125: ProEx.C125(); break;      // Set park position
+      #endif
+      #if ANY(PIDTEMP,PIDTEMPBED)
+        case 303: C303(); break;            // set PID temp and cycles for Bed or Hotend
       #endif
       #if HAS_FILAMENT_SENSOR
         case 412: ProEx.C412(); break;      // Set runout sensor active mode
@@ -156,6 +158,9 @@ void custom_gcode_report(const bool forReplay/*=true*/) {
     #if ENABLED(NOZZLE_PARK_FEATURE)
       ProEx.C125_report(forReplay);
     #endif
+      #if ANY(PIDTEMP,PIDTEMPBED)
+        C303_report();
+      #endif
     #if HAS_FILAMENT_SENSOR
       ProEx.C412_report(forReplay);
     #endif
@@ -169,6 +174,30 @@ void custom_gcode_report(const bool forReplay/*=true*/) {
     #endif
   #endif
 }
+
+#if ANY(PIDTEMP,PIDTEMPBED)
+  void C303() {
+    if (parser.seen("CES")) {
+      // set heater
+      uint8_t heater = 0;
+      if (parser.seenval('E')) heater = parser.byteval('E');
+      if (parser.seenval('S')) (heater==-1 ? HMI_data.BedPidT : HMI_data.HotendPidT)= parser.byteval('O');
+      if (parser.seenval('C')) HMI_data.PidCycles = parser.byteval('C');
+      return;
+    }
+    C3_report();
+  }
+
+  void C303_report(const bool forReplay/*=true*/) {
+    gcode.report_heading(forReplay, F("PID Configuration"));
+    gcode.report_echo_start(forReplay);
+    SERIAL_ECHOPGM("  C303");
+    SERIAL_ECHOPGM(" E-1", HMI_data.BedPidT);
+    SERIAL_ECHOPGM(" C", HMI_data.PidCycles);
+    SERIAL_EOL();
+  }
+#endif
+
 
 #if ENABLED(LASER_FAN_SHARING)
   void C3 () {

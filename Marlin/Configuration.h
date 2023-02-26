@@ -65,12 +65,13 @@
 TODO: Host commands
 TODO: filament loading setting - keep track of filament
 TODO: automatic first setup: z offset, tram wizard, mesh
-TODO: use conditionals for store and restore settings
 TODO: auto request store SD
 TODO: Increment config.gcode to create a new file
 
 Test: 
 ------
+TODO: use conditionals for store and restore settings
+TODO: add material settings, min extrusion temp, jerk/junction, PID tune settings
 TODO: LCD assets
 TODO: toolbar short cuts over 12 stopped at 12 for setting
 
