@@ -28,8 +28,8 @@
 
 typedef struct {
   float unload_length, load_length;
-  float unload_prelength;
-  millis_t unload_predelay;
+  float unload_prelength;  // mmm
+  millis_t unload_predelay; // mmm
 } fil_change_settings_t;
 
 #include "../inc/MarlinConfigPre.h"

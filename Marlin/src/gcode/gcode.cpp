@@ -256,7 +256,7 @@ void GcodeSuite::get_destination_from_command() {
     else if (parser.codenum == 0)
       cutter.apply_power(0);
   #endif // LASER_FEATURE
-  #if ENABLED(LASER_FAN_SHARING)
+  #if ENABLED(LASER_FAN_SHARING)  // mmm
     if (WITHIN(parser.codenum, 1, TERN(ARC_SUPPORT, 3, 1)) || TERN0(BEZIER_CURVE_SUPPORT, parser.codenum == 5)) {
       /* Turn on Laser power */
       planner.laser_is_powered = true;
@@ -516,7 +516,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 4: M3_M4(true ); break;                              // M4: Turn ON Laser | Spindle (counter-clockwise), set Power | Speed
         case 5: M5(); break;                                      // M5: Turn OFF Laser | Spindle
       #endif
-      #if ENABLED(LASER_FAN_SHARING)
+      #if ENABLED(LASER_FAN_SHARING) // mmm
         case 3: M106(); break;                                   // M3: Turn ON Laser | Spindle (clockwise), set Power | Speed
         case 4: M106(); break;                                    // M4: Turn ON Laser | Spindle (counter-clockwise), set Power | Speed
         case 5: M107(); break;                                      // M5: Turn OFF Laser | Spindle
@@ -1111,7 +1111,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 1001: M1001(); break;                                // M1001: [INTERNAL] Handle SD completion
       #endif
 
-      #if ENABLED(DGUS_LCD_UI_MKS)
+      #if DGUS_LCD_UI_MKS
         case 1002: M1002(); break;                                // M1002: [INTERNAL] Tool-change and Relative E Move
       #endif
 

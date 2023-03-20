@@ -88,7 +88,7 @@ void WriteSDConfig() {
     buffer += "M302S" + String(HMI_data.ExtMinT) + "\n";
 
     #if ENABLED(MPCTEMP)
-      MPC_t *pMpc = &thermalManager.temp_hotend[0].constants;
+      MPC_t *pMpc = &thermalManager.temp_hotend[0].mpc;
       buffer += "M306C" + String(pMpc->block_heat_capacity) +"R"+ String(pMpc->sensor_responsiveness,4) + "A"+ String(pMpc->ambient_xfer_coeff_fan0,4) + "F" + String(pMpc->ambient_xfer_coeff_fan0+pMpc->fan255_adjustment,4) + "\n";
     #endif
     #if ENABLED(PIDTEMP)

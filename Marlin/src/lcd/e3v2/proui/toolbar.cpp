@@ -23,11 +23,12 @@
 
 #if BOTH(DWIN_LCD_PROUI, HAS_TOOLBAR)
 
+#include "dwin.h"
 #include "toolbar.h"
 #include "toolbar_def.h"
 #include "menus.h"
 
-TBItem_t TBItem;
+const TBItem_t *TBItem;
 ToolBarClass ToolBar;
 
 uint8_t ToolBarClass::OptCount() {
@@ -42,8 +43,8 @@ void onDrawTBItem(MenuItemClass* menuitem, int8_t line) {
   const uint8_t xp = xoff + line * B_XPos + (line > sel ? tw : 0);
   if (focused && (line == sel)) {
     DWIN_Draw_Box(1, Color_Bg_Window, xp - 2, TBYPos, B_XPos, TBHeight);
-    if (HMI_data.TBShowCaption)
-    DWINUI::Draw_String(xp + B_XPos, B_YPos + 1, menuitem->caption);
+    if (HMI_data.TBShowCaption) // mmm
+      DWINUI::Draw_String(xp + B_XPos, B_YPos + 1, menuitem->caption);
   }
   DWINUI::Draw_Icon(menuitem->icon, xp, B_YPos);
 };
@@ -54,7 +55,7 @@ void Draw_ToolBar(bool force /*=false*/) {
     MenuItemsPrepare(TBMaxOpt);
     LOOP_L_N(i,TBMaxOpt) {
       TBGetItem(PRO_data.TBopt[i]);
-      if (TBItem.icon) MENU_ITEM_F(TBItem.icon, TBItem.caption, onDrawTBItem, TBItem.onClick);
+      if (TBItem->icon) MENU_ITEM_F(TBItem->icon, TBItem->caption, onDrawTBItem, TBItem->onClick);
     }
     ToolBar.onExit = &Exit_ToolBar;
   }
@@ -63,24 +64,24 @@ void Draw_ToolBar(bool force /*=false*/) {
 
 void UpdateTBSetupItem(MenuItemClass* menuitem, uint8_t val) {
   TBGetItem(val);
-  menuitem->icon = TBItem.icon ?: ICON_Info;
-  strcpy_P(menuitem->caption, FTOP(TBItem.caption));
+  menuitem->icon = TBItem->icon ?: ICON_Info;
+  strcpy_P(menuitem->caption, FTOP(TBItem->caption));
 }
 
 void DrawTBSetupItem(bool focused) {
   const uint8_t line = CurrentMenu->line();
-  const uint16_t ypos = MYPOS(line);
-  DWINUI::Draw_Box(1, focused ? Color_Bg_Black : HMI_data.Background_Color, {15, ypos, DWIN_WIDTH - 15, MLINE - 1});
+  const uint16_t ypos = MYPOS(line) + 1;
+  DWINUI::Draw_Box(1, focused ? Color_Bg_Black : HMI_data.Background_Color, { 15, ypos, DWIN_WIDTH - 15, MLINE - 1 });
   onDrawMenuItem(static_cast<MenuItemClass*>(CurrentMenu->SelectedItem()), line);
   if (focused) DWINUI::Draw_Char(VALX + 24, MBASE(line), 18);
 }
 
 void TBGetItem(uint8_t item) {
   const uint8_t N = ToolBar.OptCount() - 1;
-  if (WITHIN(item, 0, N))
-    TBItem = TBItemA[item];
+  if (WITHIN(item, 1, N))
+    TBItem = &TBItemA[item];
   else
-    TBItem = {0, GET_TEXT_F(MSG_OPTION_DISABLED), nullptr};
+    TBItem = &TBItemA[0];
 }
 
 #endif // BOTH(DWIN_LCD_PROUI, HAS_TOOLBAR)

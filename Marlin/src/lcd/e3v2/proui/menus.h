@@ -23,7 +23,10 @@
 #include "dwinui.h"
 
 #define MENU_CHAR_LIMIT  24
-#define MENU_MAX_ITEMS   TERN(SDSORT_LIMIT, SDSORT_LIMIT, 64)
+
+#ifndef MENU_MAX_ITEMS
+  #define MENU_MAX_ITEMS 100
+#endif
 
 typedef struct {
   int32_t MaxValue     = 0;        // Auxiliar max integer/scaled float value
@@ -46,7 +49,7 @@ extern MenuData_t MenuData;
 #define SET_MENU_R(I,R,L,V) SetMenu(I, R, GET_TEXT_F(L), V)
 
 #define BACK_ITEM(H) MenuItemAdd(ICON_Back, GET_TEXT_F(MSG_BUTTON_BACK), onDrawMenuItem, H)
-#define BACK_HOME()  MenuItemAdd(ICON_Back, GET_TEXT_F(MSG_BUTTON_MAIN), onDrawMenuItem, Goto_Main_Menu)
+#define BACK_HOME()  MenuItemAdd(ICON_Back, GET_TEXT_F(MSG_BUTTON_MAIN), onDrawMenuItem, Goto_Main_Menu) // mmm
 #define MENU_ITEM(I,L,V...) MenuItemAdd(I, GET_TEXT_F(L), V)
 #define EDIT_ITEM(I,L,V...) EditItemAdd(I, GET_TEXT_F(L), V)
 #define MENU_ITEM_F(I,L,V...) MenuItemAdd(I, F(L), V)
@@ -124,7 +127,7 @@ void Draw_Menu_Line(const uint8_t line, const uint8_t icon=0, const char * const
 void Draw_Menu_Line(const uint8_t line, const uint8_t icon=0, FSTR_P label=nullptr, bool more=false, bool selected=false);
 void Draw_Chkb_Line(const uint8_t line, const bool checked);
 void Show_Chkb_Line(const bool checked);
-void Toogle_Chkb_Line(bool &checked);
+void Toggle_Chkb_Line(bool &checked);
 void Draw_Menu_IntValue(uint16_t bcolor, const uint8_t line, uint8_t iNum, const int32_t value=0);
 void onDrawMenuItem(MenuItemClass* menuitem, int8_t line);
 void onDrawSubMenu(MenuItemClass* menuitem, int8_t line);

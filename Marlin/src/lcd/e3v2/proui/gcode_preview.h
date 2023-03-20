@@ -1,8 +1,8 @@
 /**
- * DWIN g-code thumbnail preview
+ * DWIN G-code thumbnail preview
  * Author: Miguel A. Risco-Castillo
- * version: 3.2.3
- * Date: 2022/12/02
+ * version: 3.3.3
+ * Date: 2023/03/05
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as

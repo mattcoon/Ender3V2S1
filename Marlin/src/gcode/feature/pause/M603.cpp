@@ -42,7 +42,7 @@
  */
 void GcodeSuite::M603() {
 
-  if (!parser.seen("DPTUL")) return M603_report();
+  if (!parser.seen("DPTUL")) return M603_report(); // mmm
 
   const int8_t target_extruder = get_target_extruder_from_command();
   if (target_extruder < 0) return;
@@ -63,7 +63,7 @@ void GcodeSuite::M603() {
     #endif
   }
 
-  // PreUnload Length
+  // mmm PreUnload Length
   if (parser.seenval('P')) {
     fc_settings[target_extruder].unload_prelength = ABS(parser.value_axis_units(E_AXIS));
     #if ENABLED(PREVENT_LENGTHY_EXTRUDE)
@@ -71,7 +71,7 @@ void GcodeSuite::M603() {
     #endif
   }
 
-  // PreUnload Length
+  // mmm PreUnload Length
   if (parser.seenval('D')) {
     fc_settings[target_extruder].unload_predelay = parser.value_millis();
   }

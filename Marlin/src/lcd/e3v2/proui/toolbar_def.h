@@ -26,11 +26,14 @@
 #include "dwin.h"
 #include "toolbar.h"
 
-TBItem_t TBItemA[] = {
+const TBItem_t TBItemA[] = {
+  {0, GET_TEXT_F(MSG_OPTION_DISABLED), nullptr},
   {ICON_Homing, GET_TEXT_F(MSG_AUTO_HOME), AutoHome},
-  {ICON_HomeXY, GET_TEXT_F(MSG_AUTO_HOME_XY), HomeXY},
+  {ICON_HomeXY, GET_TEXT_F(MSG_AUTO_HOME_XY), HomeXY}, // mmm
   #if HAS_BED_PROBE
-    {ICON_BedTramming, GET_TEXT_F(MSG_TRAMMING_WIZARD), Trammingwizard},
+    #if ENABLED(LCD_BED_TRAMMING)
+      {ICON_BedTramming, GET_TEXT_F(MSG_TRAMMING_WIZARD), Trammingwizard},
+    #endif
     {ICON_SetZOffset, GET_TEXT_F(MSG_PROBE_WIZARD), Draw_ZOffsetWiz_Menu},
     {ICON_Level, GET_TEXT_F(MSG_AUTO_MESH), AutoLev},
   #else
@@ -42,16 +45,16 @@ TBItem_t TBItemA[] = {
     #define _TBPREHEAT(N) {ICON_Preheat##N, GET_TEXT_F(MSG_PREHEAT_##N), DoPreheat##N},
     REPEAT_1(PREHEAT_COUNT, _TBPREHEAT)
   #endif
-  #if HAS_FILAMENT_SENSOR
+  #if HAS_FILAMENT_SENSOR // mmm
     {ICON_Runout, GET_TEXT_F(MSG_RUNOUT_TOGGLE), ToggleRunout},
   #endif
     {ICON_FilUnload,GET_TEXT_F(MSG_FILAMENT_MGT), Draw_FilamentMan_Menu},
   #if ENABLED(HOST_SHUTDOWN_MENU_ITEM) && defined(SHUTDOWN_ACTION)
     {ICON_Host, GET_TEXT_F(MSG_HOST_SHUTDOWN), HostShutDown},
   #endif
-  {ICON_Reboot, GET_TEXT_F(MSG_RESET_PRINTER), RebootPrinter},
   {ICON_Brightness, GET_TEXT_F(MSG_BRIGHTNESS_OFF), TurnOffBacklight},
-  {ICON_WriteEEPROM, GET_TEXT_F(MSG_STORE_EEPROM), WriteEeprom},
+  {ICON_Reboot, GET_TEXT_F(MSG_RESET_PRINTER), RebootPrinter},
+  {ICON_WriteEEPROM, GET_TEXT_F(MSG_STORE_EEPROM), WriteEeprom}, // mmm
   #if ENABLED(LASER_FAN_SHARING)
     {ICON_LaserMode, GET_TEXT_F(MSG_TOGGLE_LASER),ToggleLaserMode}  
   #endif

@@ -29,10 +29,8 @@
 #include "../../../MarlinCore.h"
 #include "../../marlinui.h"
 #include "../../../module/printcounter.h"
-#include "dwin_lcd.h"
-#include "dwinui.h"
-#include "dwin_popup.h"
 #include "dwin.h"
+#include "dwin_popup.h"
 
 PrintStatsClass PrintStats;
 
@@ -71,7 +69,7 @@ void Goto_PrintStats() {
   HMI_SaveProcessID(WaitResponse);
 }
 
-//Print Stats Reset popup
+// Print Stats Reset popup
 void Popup_ResetStats() { DWIN_Popup_ConfirmCancel(ICON_Info_0, GET_TEXT_F(MSG_RESET_STATS)); }
 void OnClick_ResetStats() { 
   if (HMI_flag.select_flag) PrintStatsClass::Reset();

@@ -1,8 +1,8 @@
 /**
  * Custom G-code implementation for PRO UI
  * Author: Miguel A. Risco-Castillo (MRISCOC)
- * Version: 1.1.0
- * Date: 2022/05/22
+ * Version: 1.3.0
+ * Date: 2023/03/06
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -35,11 +35,15 @@
 #include "custom_gcodes.h"
 #include "toolbar.h"
 #include "../../../core/macros.h"
+#include "../../../module/planner.h"
 
 #if ENABLED(POWER_LOSS_RECOVERY)
   #include "../../../feature/powerloss.h"
 #endif
-#include "../../../module/planner.h"
+
+#if ENABLED(SDSUPPORT)
+  #include "file_header.h"
+#endif
 
 //=============================================================================
 // Extended G-CODES 
@@ -50,13 +54,15 @@ void CError() {
   SERIAL_ECHOLNPGM(" This G-code is not implemented in firmware");
 }
 
+#if ENABLED(SDSUPPORT)
 // Mark the G-code file as a Configuration file
 void C10() {
-  HMI_flag.config_flag = true;
+  fileprop.isConfig = true;
   TERN_(POWER_LOSS_RECOVERY, if (card.isPrinting()) recovery.cancel());
   ui.reset_alert_level();
   if (checkkey == PrintProcess) Goto_Main_Menu();
 }
+#endif
 
 // C11 Set color for UI element E
 void C11() {
@@ -70,7 +76,7 @@ void C11() {
 }
 
 // Cancel a Wait for User without an Emergecy Parser
-void C108() { 
+void C108() {
   #if DEBUG_DWIN
     SERIAL_ECHOLNPGM(F("wait_for_user was "), wait_for_user);
     SERIAL_ECHOLNPGM(F("checkkey was "), checkkey);
@@ -78,6 +84,16 @@ void C108() {
   wait_for_user = false;
   DONE_BUZZ(true);
 }
+
+// Enable or disable preview screen
+#if ENABLED(HAS_GCODE_PREVIEW)
+void C250() {
+  if (parser.seenval('P')) {
+    HMI_data.EnablePreview = !!parser.value_byte();
+  }
+  SERIAL_ECHOLNPGM(F("PREVIEW:"), HMI_data.EnablePreview);
+}
+#endif
 
 // lock/unlock screen
 #if HAS_LOCKSCREEN
@@ -90,12 +106,6 @@ void C108() {
 #if DEBUG_DWIN
   #include "../../../module/planner.h"
   void C997() {
-    #if ENABLED(POWER_LOSS_RECOVERY)
-      if (IS_SD_PRINTING() && recovery.enabled) {
-        planner.synchronize();
-        recovery.save(true);
-      }
-    #endif
     DWIN_RebootScreen();
     SERIAL_ECHOLNPGM("Simulating a printer freeze");
     while (1) {};
@@ -105,9 +115,14 @@ void C108() {
 // Special Creality DWIN GCodes
 void custom_gcode(const int16_t codenum) {
   switch(codenum) {
+    #if ENABLED(SDSUPPORT)
     case 10: C10(); break;             // Mark the G-code file as a Configuration file
+    #endif
     case 11: C11(); break;             // Set color for UI element E
     case 108: C108(); break;           // Cancel a Wait for User without an Emergecy Parser
+    #if ENABLED(HAS_GCODE_PREVIEW)
+      case 250: C250(); break;         // Enable or disable preview screen
+    #endif
     #if HAS_LOCKSCREEN
       case 510: C510(); break;         // lock screen
     #endif
@@ -135,7 +150,7 @@ void custom_gcode(const int16_t codenum) {
       case 562: ProEx.C562(); break;        // Invert Extruder
       case 851: ProEx.C851(); break;        // If has a probe set z feed rate and multiprobe, if not, set manual z-offset
       #if HAS_TOOLBAR
-        case 810: C810(); break;      // Config toolbar
+        case 810: C810(); break;            // mmm Config toolbar
       #endif
         case 120: C120(); break;              // visual setting T = hms, F = fan%, I = iconset
       #if ENABLED(LASER_FAN_SHARING)
@@ -148,12 +163,12 @@ void custom_gcode(const int16_t codenum) {
 
 void custom_gcode_report(const bool forReplay/*=true*/) {
   #if ProUIex
-    #if HAS_MESH
-      ProEx.C29_report(forReplay);
-    #endif
     ProEx.C100_report(forReplay);
     ProEx.C101_report(forReplay);
     ProEx.C102_report(forReplay);
+    #if HAS_MESH
+      ProEx.C29_report(forReplay);
+    #endif
     ProEx.C104_report(forReplay);
     #if ENABLED(NOZZLE_PARK_FEATURE)
       ProEx.C125_report(forReplay);
@@ -168,7 +183,7 @@ void custom_gcode_report(const bool forReplay/*=true*/) {
     #if HAS_BED_PROBE
       ProEx.C851_report(forReplay);
     #endif
-      C120_report();
+      C120_report(); // mmm
     #if ENABLED(LASER_FAN_SHARING)
       C3_report();
     #endif
