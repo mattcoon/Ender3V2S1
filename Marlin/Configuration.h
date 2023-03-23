@@ -67,10 +67,10 @@ TODO: filament loading setting - keep track of filament
 TODO: automatic first setup: z offset, tram wizard, mesh
 TODO: auto request store SD
 TODO: Increment config.gcode to create a new file
-TODO: Add Preview config storage
 
 Test: 
 ------
+TODO: Add Preview config storage
 TODO: use conditionals for store and restore settings
 TODO: add material settings, min extrusion temp, jerk/junction, PID tune settings
 TODO: LCD assets

@@ -140,6 +140,9 @@ void WriteSDConfig() {
     #if ENABLED(LASER_FAN_SHARING)
       buffer += "C3FO" + String(HMI_data.laser_off_pwr) + "H" + String(HMI_data.target_laser_height) + "\n";
     #endif
+    #if ENABLED(HAS_GCODE_PREVIEW)
+      buffer += "C250P" + String(HMI_data.EnablePreview?1:0) + "\n";
+    #endif
 
     // store current mesh as M421 commands
     WriteMeshConfig(&buffer);
