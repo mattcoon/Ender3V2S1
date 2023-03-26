@@ -150,4 +150,3 @@ extern "C" {
 
 #endif /* _VARIANT_ARDUINO_STM32_ */
 
-#endif /* _VARIANT_ARDUINO_STM32_ */

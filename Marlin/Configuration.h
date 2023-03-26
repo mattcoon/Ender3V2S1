@@ -1852,7 +1852,7 @@ Flex mesh size
 //#define Z_HOMING_HEIGHT  10      // (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...  // MRiscoC Crearance over the bed
                                   // Be sure to have this much clearance over your Z_MAX_POS to prevent grinding.
 
-#define Z_AFTER_HOMING  5      // (mm) Height to move to after homing Z  // MRiscoC Crearance over the bed
+//#define Z_AFTER_HOMING  5      // (mm) Height to move to after homing Z  // MRiscoC Crearance over the bed
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
@@ -1998,7 +1998,7 @@ Flex mesh size
   // After a runout is detected, continue printing this length of filament
   // before executing the runout script. Useful for a sensor at the end of
   // a feed tube. Requires 4 bytes SRAM per sensor, plus 4 bytes overhead.
-  #define FILAMENT_RUNOUT_DISTANCE_MM 10  // MRiscoC Customizable by menu
+  #define FILAMENT_RUNOUT_DISTANCE_MM 25  // MRiscoC Customizable by menu
 
   #ifdef FILAMENT_RUNOUT_DISTANCE_MM
     // Enable this option to use an encoder disc that toggles the runout pin
@@ -3399,12 +3399,12 @@ Flex mesh size
 //#define HAS_SD_EXTENDER 1  // Enable to support SD card extender cables
 #define MESH_EDIT_MENU
 #define SHOW_REAL_POS
-//#define ACTIVATE_MESH_ITEM  // Allows temporary enabling of mesh leveling
+#define ACTIVATE_MESH_ITEM  // Allows temporary enabling of mesh leveling
 #define RUNOUT_TUNE_ITEM
 #define PLR_TUNE_ITEM
 //#define JD_TUNE_ITEM  // Enable only if Juntion Deviation is enabled
 //#define ADVK_TUNE_ITEM  // Enable only if Linear Advance is enabled
-//#define MEDIASORT_MENU_ITEM  // Allows enable/disable file list sorting
+#define MEDIASORT_MENU_ITEM  // Allows enable/disable file list sorting
 
 //#define DWIN_CREALITY_LCD_JYERSUI   // Jyers UI by Jacob Myers
 //#define DWIN_MARLINUI_PORTRAIT      // MarlinUI (portrait orientation)
