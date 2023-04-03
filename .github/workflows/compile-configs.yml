@@ -41,8 +41,8 @@ jobs:
       run: |
         if [ "$BOARD" = V4 ]; then BOARDTMP=v4.2.2; else BOARDTMP=v4.2.7; fi;
         echo "::set-output name=filename::E3V2-Default-${BOARDTMP}-${VERSION}.bin"
-        cp Configuration\ Files/E3V2\ Templates/Default-NoProbe/Configuration.h Marlin/Configuration.h
-        cp Configuration\ Files/E3V2\ Templates/Default-NoProbe/Configuration_adv.h Marlin/Configuration_adv.h
+        cp configurations/Default/Configuration.h Marlin/Configuration.h
+        cp configurations/Default/Configuration_adv.h Marlin/Configuration_adv.h
         sed -i "s/#define MOTHERBOARD.*/#define MOTHERBOARD BOARD_CREALITY_$BOARD/g" Marlin/Configuration.h
         pio run
         mkdir temp
@@ -101,8 +101,8 @@ jobs:
         if ($HS); then HSTMP=-HS; else HSTMP=; fi;
         if [ "$BOARD" = V4 ]; then BOARDTMP=v4.2.2; else BOARDTMP=v4.2.7; fi;
         echo "::set-output name=filename::E3V2-BLTouch-${GRID}x${GRID}${HSTMP}-${BOARDTMP}-${VERSION}.bin"
-        cp Configuration\ Files/E3V2\ Templates/BLTouch-3x3/Configuration.h Marlin/Configuration.h
-        cp Configuration\ Files/E3V2\ Templates/BLTouch-3x3/Configuration_adv.h Marlin/Configuration_adv.h
+        cp configurations/BLTouch-3x3/Configuration.h Marlin/Configuration.h
+        cp configurations/BLTouch-3x3/Configuration_adv.h Marlin/Configuration_adv.h
         sed -i "s/#define MOTHERBOARD.*/#define MOTHERBOARD BOARD_CREALITY_$BOARD/g" Marlin/Configuration.h
         sed -i "s/#define GRID_MAX_POINTS_X.*/#define GRID_MAX_POINTS_X $GRID/g" Marlin/Configuration.h
         if ($HS); then TEMP=; else TEMP='\/\/'; fi;
@@ -164,8 +164,8 @@ jobs:
       run: |
         if [ "$BOARD" = V4 ]; then BOARDTMP=v4.2.2; else BOARDTMP=v4.2.7; fi;
         echo "::set-output name=filename::E3V2-ManualMesh-${GRID}x${GRID}-${BOARDTMP}-${VERSION}.bin"
-        cp Configuration\ Files/E3V2\ Templates/ManualMesh-3x3/Configuration.h Marlin/Configuration.h
-        cp Configuration\ Files/E3V2\ Templates/ManualMesh-3x3/Configuration_adv.h Marlin/Configuration_adv.h
+        cp configurations/ManualMesh-3x3/Configuration.h Marlin/Configuration.h
+        cp configurations/ManualMesh-3x3/Configuration_adv.h Marlin/Configuration_adv.h
         sed -i "s/#define MOTHERBOARD.*/#define MOTHERBOARD BOARD_CREALITY_$BOARD/g" Marlin/Configuration.h
         sed -i "s/#define GRID_MAX_POINTS_X.*/#define GRID_MAX_POINTS_X $GRID/g" Marlin/Configuration.h
         pio run
@@ -226,8 +226,8 @@ jobs:
         if ($HS); then HSTMP=-HS; else HSTMP=; fi;
         if [ "$BOARD" = V4 ]; then BOARDTMP=v4.2.2; else BOARDTMP=v4.2.7; fi;
         echo "::set-output name=filename::E3V2-UBL-BLTouch-${GRID}x${GRID}${HSTMP}-${BOARDTMP}-${VERSION}.bin"
-        cp Configuration\ Files/E3V2\ Templates/UBL-BLTouch-10x10/Configuration.h Marlin/Configuration.h
-        cp Configuration\ Files/E3V2\ Templates/UBL-BLTouch-10x10/Configuration_adv.h Marlin/Configuration_adv.h
+        cp configurations/UBL-BLTouch-10x10/Configuration.h Marlin/Configuration.h
+        cp configurations/UBL-BLTouch-10x10/Configuration_adv.h Marlin/Configuration_adv.h
         sed -i "s/#define MOTHERBOARD.*/#define MOTHERBOARD BOARD_CREALITY_$BOARD/g" Marlin/Configuration.h
         sed -i "s/#define GRID_MAX_POINTS_X.*/#define GRID_MAX_POINTS_X $GRID/g" Marlin/Configuration.h
         if ($HS); then TEMP=; else TEMP='\/\/'; fi;
@@ -289,8 +289,8 @@ jobs:
       run: |
         if [ "$BOARD" = V4 ]; then BOARDTMP=v4.2.2; else BOARDTMP=v4.2.7; fi;
         echo "::set-output name=filename::E3V2-UBL-NoProbe-${GRID}x${GRID}-${BOARDTMP}-${VERSION}.bin"
-        cp Configuration\ Files/E3V2\ Templates/UBL-NoProbe-3x3/Configuration.h Marlin/Configuration.h
-        cp Configuration\ Files/E3V2\ Templates/UBL-NoProbe-3x3/Configuration_adv.h Marlin/Configuration_adv.h
+        cp configurations/UBL-NoProbe-3x3/Configuration.h Marlin/Configuration.h
+        cp configurations/UBL-NoProbe-3x3/Configuration_adv.h Marlin/Configuration_adv.h
         sed -i "s/#define MOTHERBOARD.*/#define MOTHERBOARD BOARD_CREALITY_$BOARD/g" Marlin/Configuration.h
         sed -i "s/#define GRID_MAX_POINTS_X.*/#define GRID_MAX_POINTS_X $GRID/g" Marlin/Configuration.h
         pio run
