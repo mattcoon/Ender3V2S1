@@ -46,7 +46,7 @@ jobs:
         sed -i "s/#define MOTHERBOARD.*/#define MOTHERBOARD BOARD_CREALITY_$BOARD/g" Marlin/Configuration.h
         pio run
         mkdir temp
-        mv .pio/build/STM32F103RC_creality_${BOARD}/*.bin temp/build.bin
+        mv .pio/build/STM32F103RC_creality_V427/*.bin temp/build.bin
       env:
         BOARD: ${{ matrix.board }}
         VERSION: ${{ env.RELEASE_VERSION }}
