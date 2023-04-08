@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        board: [V4,V427]
+        board: [V422,V427]
     steps:
     - uses: actions/checkout@v2
     - name: Set env
@@ -39,14 +39,14 @@ jobs:
     - name: Run PlatformIO BL-Touch
       id: build_configs
       run: |
-        if [ "$BOARD" = V4 ]; then BOARDTMP=v4.2.2; else BOARDTMP=v4.2.7; fi;
+        if [ "$BOARD" = V422 ]; then BOARDTMP=v4.2.2; else BOARDTMP=v4.2.7; fi;
         echo "::set-output name=filename::E3V2-Default-${BOARDTMP}-${VERSION}.bin"
         cp configurations/Default/Configuration.h Marlin/Configuration.h
         cp configurations/Default/Configuration_adv.h Marlin/Configuration_adv.h
         sed -i "s/#define MOTHERBOARD.*/#define MOTHERBOARD BOARD_CREALITY_$BOARD/g" Marlin/Configuration.h
         pio run
         mkdir temp
-        mv .pio/build/STM32F103RET6_creality_maple/*.bin temp/build.bin
+        mv .pio/build/STM32F103RC_creality_${BOARD}/*.bin temp/build.bin
       env:
         BOARD: ${{ matrix.board }}
         VERSION: ${{ env.RELEASE_VERSION }}
