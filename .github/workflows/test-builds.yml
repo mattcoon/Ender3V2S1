@@ -61,50 +61,28 @@ jobs:
         # STM32F1 (Maple) Environments
 
         #- STM32F103RC_btt_maple
-        - STM32F103RC_btt_USB_maple
-        - STM32F103RC_fysetc_maple
-        - STM32F103RC_meeb_maple
+        # - STM32F103RC_btt_USB_maple
+        # - STM32F103RC_fysetc_maple
+        # - STM32F103RC_meeb_maple
         # - jgaurora_a5s_a1_maple
         # - STM32F103VE_longer_maple
         #- mks_robin_maple
         # - mks_robin_lite_maple
         # - mks_robin_pro_maple
-        #- mks_robin_nano_v1v2_maple
-        - STM32F103RE_creality_maple
+        # - mks_robin_nano_v1v2_maple
+        # - STM32F103RE_creality_maple
         # - STM32F103VE_ZM3E4V2_USB_maple
 
         # STM32 (ST) Environments
 
-        - STM32F103RC_btt
-        #- STM32F103RC_btt_USB
+        # - STM32F103RC_btt
+        # - STM32F103RC_btt_USB
         # - STM32F103RE_btt
         # - STM32F103RE_btt_USB
         # - STM32F103RE_creality
-        - STM32F401RC_creality_V427
-        - STM32F401RC_creality_V422
-        # - STM32F103VE_longer
-        # - STM32F407VE_black
-        # - BIGTREE_BTT002
-        # - BIGTREE_SKR_PRO
-        # - BIGTREE_GTR_V1_0
-        # - mks_robin
-        # - ARMED
-        # - FYSETC_S6
-        # - STM32F070CB_malyan
-        # - STM32F070RB_malyan
-        # - malyan_M300
-        # - FLYF407ZG
-        # - rumba32
-        # - LERDGEX
-        # - LERDGEK
-        # - mks_robin_nano_v1v2
-        #- mks_robin_nano_v1v2_usbmod
-        #- mks_robin_nano_v1_3_f4_usbmod
-        # - NUCLEO_F767ZI
-        # - REMRAM_V1
-        # - BTT_SKR_SE_BX
-        # - chitu_f103
-        # - Opulo_Lumen_REV3
+        - STM32F103RC_creality_V427
+        - STM32F103RC_creality_V422
+
 
         # ESP32 environments
         # - mks_tinybee
