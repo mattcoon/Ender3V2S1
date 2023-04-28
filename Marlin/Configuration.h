@@ -62,22 +62,25 @@
 
 /*
 
-TODO: Host commands
 TODO: filament loading setting - keep track of filament
 TODO: automatic first setup: z offset, tram wizard, mesh
-TODO: auto request store SD
 TODO: Increment config.gcode to create a new file
+FIXME: Tramming windows on repeat is a little flacky
+TODO: autoload config with prompt from config.gcode
 
 Test: 
 ------
-TODO: Add Preview config storage
-TODO: use conditionals for store and restore settings
-TODO: add material settings, min extrusion temp, jerk/junction, PID tune settings
 TODO: LCD assets
-TODO: toolbar short cuts over 12 stopped at 12 for setting
 
 Done:
 -------
+Auto request store SD or simply store
+Select autostore setting or confirm
+update github workflows to auto build after release
+toolbar short cuts over 12 store setting correctly
+Add Preview config storage
+add material settings, min extrusion temp, jerk/junction, PID tune settings to write config
+use conditionals for store and restore settings
 V2.1.3.10
 merge spring 2.1.3 code
 Store ColorScheme

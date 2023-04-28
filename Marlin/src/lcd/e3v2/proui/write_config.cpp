@@ -136,7 +136,7 @@ void WriteSDConfig() {
     #if ENABLED(POWER_LOSS_RECOVERY)
       buffer += "M413S" + String(recovery.enabled) + "\n";
     #endif
-    buffer += "C120I" + String(HMI_data.baseIcon) + "T" + String(HMI_data.time_format_textual? 1:0) + "F" + String(HMI_data.fan_percent? 1:0) + "\n";
+    buffer += "C120I" + String(HMI_data.baseIcon) + "T" + String(HMI_data.time_format_textual? 1:0) + "F" + String(HMI_data.fan_percent? 1:0) + "S" + String(HMI_data.AutoStoreSD? 1:0) + "\n";
     #if ENABLED(LASER_FAN_SHARING)
       buffer += "C3FO" + String(HMI_data.laser_off_pwr) + "H" + String(HMI_data.target_laser_height) + "\n";
     #endif

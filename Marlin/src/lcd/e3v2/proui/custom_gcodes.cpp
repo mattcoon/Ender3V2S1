@@ -255,10 +255,11 @@ void C120 () {
           Tn - n : 1 - enable time in hms format. 0 - use : formate for time
           Fn - n : 1 - display fan speed in percent. 0 - display raw fan speed value 
   */
-  if (parser.seen("ITF")) {
+  if (parser.seen("ITFS")) {
     if (parser.seenval('I')) { HMI_data.baseIcon = parser.byteval('I'); DWIN_RedrawScreen(); }
     if (parser.seenval('T')) HMI_data.time_format_textual = parser.boolval('T');
     if (parser.seenval('F')) { HMI_data.fan_percent = parser.boolval('F'); DWIN_Draw_Dashboard(); }
+    if (parser.seenval('S')) { HMI_data.AutoStoreSD = parser.boolval('S'); }
     return;
   }
   C120_report(true);
@@ -270,6 +271,7 @@ void C120_report(const bool forReplay/*=true*/) {
   SERIAL_ECHOPGM("  C120 I", HMI_data.baseIcon);
   SERIAL_ECHOPGM(" T", HMI_data.time_format_textual? 1:0);
   SERIAL_ECHOPGM(" F", HMI_data.fan_percent? 1:0);
+  SERIAL_ECHOPGM(" S", HMI_data.AutoStoreSD? 1:0);
   SERIAL_EOL();
 }
 

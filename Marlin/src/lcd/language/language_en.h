@@ -485,6 +485,7 @@ namespace Language_en {
   LSTR MSG_LOAD_EEPROM                    = _UxGT("Load Settings");
   LSTR MSG_RESTORE_DEFAULTS               = _UxGT("Restore Defaults");
   LSTR MSG_STORE_SD_CONFIG                = _UxGT("Store SD Configuration"); // mmm
+  LSTR MSG_AUTO_STORE_SD                  = _UxGT("AutoStore to SD"); // mmm
   LSTR MSG_INIT_EEPROM                    = _UxGT("Initialize EEPROM");
   LSTR MSG_ERR_EEPROM_CRC                 = _UxGT("EEPROM CRC Error");
   LSTR MSG_ERR_EEPROM_INDEX               = _UxGT("EEPROM Index Error");

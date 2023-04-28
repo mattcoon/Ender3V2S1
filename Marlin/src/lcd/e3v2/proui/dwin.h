@@ -125,6 +125,7 @@ typedef struct {
   bool fan_percent = DEF_FAN_SPEED_PERCENT; // mmm
   bool time_format_textual = DEF_TIME_HMS_FORMAT;
   bool TBShowCaption = true;
+  bool AutoStoreSD = false;
   uint8_t baseIcon = ICON;
 #if ENABLED(LASER_FAN_SHARING)
   uint8_t laser_off_pwr = SPEED_POWER_LOW;
@@ -177,6 +178,7 @@ uint32_t GetHash(char * str);
   void ReadEeprom();
   void ResetEeprom();
   void WriteSDConfig();
+  void ConfirmWriteSDConfig();
   #if HAS_MESH
     void SaveMesh();
   #endif
