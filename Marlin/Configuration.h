@@ -63,7 +63,6 @@
 /*
 
 TODO: filament loading setting - keep track of filament
-TODO: automatic first setup: z offset, tram wizard, mesh
 TODO: Increment config.gcode to create a new file
 FIXME: Tramming windows on repeat is a little flacky
 TODO: autoload config with prompt from config.gcode
@@ -74,6 +73,7 @@ TODO: LCD assets
 
 Done:
 -------
+V2.1.3.11
 Auto request store SD or simply store
 Select autostore setting or confirm
 update github workflows to auto build after release
