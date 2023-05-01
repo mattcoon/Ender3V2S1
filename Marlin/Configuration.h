@@ -65,7 +65,6 @@
 TODO: filament loading setting - keep track of filament
 TODO: Increment config.gcode to create a new file
 FIXME: Tramming windows on repeat is a little flacky
-TODO: autoload config with prompt from config.gcode
 
 Test: 
 ------
@@ -73,6 +72,10 @@ TODO: LCD assets
 
 Done:
 -------
+autoload config with prompt from config.gcode
+Load SD Config menu item
+Add runout distance to tune menu
+correct workflows to the right repository
 V2.1.3.11
 Auto request store SD or simply store
 Select autostore setting or confirm

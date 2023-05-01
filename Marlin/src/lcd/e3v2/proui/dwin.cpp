@@ -2104,6 +2104,13 @@ void Draw_Popup_RepeatTramming() { // mmm
   }
   void ConfirmWriteSDConfig() { Goto_Popup(PopUp_WriteSDConfig, onClick_WriteSDConfig); }
 
+  void PopUp_LoadSDConfig() { DWIN_Popup_ConfirmCancel(ICON_Info_1, GET_TEXT_F(MSG_LOAD_SD_CONFIG)); }
+
+  void onClick_LoadSDConfig() {
+    if (HMI_flag.select_flag) card.openAndPrintFile("config.gcode");
+    HMI_ReturnScreen();
+  }
+  void ConfirmLoadSDConfig() { Goto_Popup(PopUp_LoadSDConfig, onClick_LoadSDConfig);}
 
   #if HAS_MESH
     void SaveMesh() { TERN(AUTO_BED_LEVELING_UBL, UBLMeshSave(), WriteEeprom()); }
@@ -3088,7 +3095,7 @@ void Draw_Prepare_Menu() {
 
 void Draw_Control_Menu() {
   checkkey = Menu;
-  if (SET_MENU(ControlMenu, MSG_CONTROL, 11)) {
+  if (SET_MENU(ControlMenu, MSG_CONTROL, 14)) {
     BACK_ITEM(Goto_Main_Menu);
     MENU_ITEM(ICON_Temperature, MSG_TEMPERATURE, onDrawSubMenu, Draw_Temperature_Menu);
     MENU_ITEM(ICON_Motion, MSG_MOTION, onDrawSubMenu, Draw_Motion_Menu);
@@ -3096,9 +3103,10 @@ void Draw_Control_Menu() {
       MENU_ITEM(ICON_WriteEEPROM, MSG_STORE_EEPROM, onDrawMenuItem, WriteEeprom);
       MENU_ITEM(ICON_ReadEEPROM, MSG_LOAD_EEPROM, onDrawMenuItem, ReadEeprom);
       MENU_ITEM(ICON_ResumeEEPROM, MSG_RESTORE_DEFAULTS, onDrawMenuItem, ResetEeprom);
+      MENU_ITEM(ICON_WriteEEPROM, MSG_LOAD_SD_CONFIG, onDrawMenuItem, ConfirmLoadSDConfig);
+      MENU_ITEM(ICON_WriteEEPROM, MSG_STORE_SD_CONFIG, onDrawMenuItem, WriteSDConfig);
+      EDIT_ITEM(ICON_WriteEEPROM, MSG_AUTO_STORE_SD, onDrawChkbMenu, MenuToggleSDConfirm, &HMI_data.AutoStoreSD);
     #endif
-    MENU_ITEM(ICON_WriteEEPROM, MSG_STORE_SD_CONFIG, onDrawMenuItem, WriteSDConfig);
-    EDIT_ITEM(ICON_WriteEEPROM, MSG_AUTO_STORE_SD, onDrawChkbMenu, MenuToggleSDConfirm, &HMI_data.AutoStoreSD);
     MENU_ITEM(ICON_Reboot, MSG_RESET_PRINTER, onDrawMenuItem, RebootPrinter);
     #if ENABLED(HOST_SHUTDOWN_MENU_ITEM) && defined(SHUTDOWN_ACTION)
       MENU_ITEM(ICON_Host, MSG_HOST_SHUTDOWN, onDrawMenuItem, HostShutDown);
@@ -3446,7 +3454,7 @@ void Draw_GetColor_Menu() {
 
 void Draw_Tune_Menu() {
   checkkey = Menu;
-  if (SET_MENU(TuneMenu, MSG_TUNE, 17)) {
+  if (SET_MENU(TuneMenu, MSG_TUNE, 18)) {
     BACK_ITEM(Goto_PrintProcess);
     EDIT_ITEM(ICON_Speed, MSG_SPEED, onDrawPIntMenu, SetSpeed, &feedrate_percentage);
     #if HAS_HOTEND
@@ -3474,6 +3482,7 @@ void Draw_Tune_Menu() {
     #endif
     #if ENABLED(RUNOUT_TUNE_ITEM)
       EDIT_ITEM(ICON_Runout, MSG_RUNOUT_ENABLE, onDrawChkbMenu, SetRunoutEnable, &runout.enabled);
+      EDIT_ITEM(ICON_Runout, MSG_RUNOUT_DISTANCE_MM, onDrawPFloatMenu, SetRunoutDistance, &runout.runout_distance());
     #endif
     #if ENABLED(PLR_TUNE_ITEM)
       EDIT_ITEM(ICON_Pwrlossr, MSG_OUTAGE_RECOVERY, onDrawChkbMenu, SetPwrLossr, &recovery.enabled);

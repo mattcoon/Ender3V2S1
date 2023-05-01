@@ -2769,6 +2769,7 @@ void MarlinSettings::postprocess() {
       (void)save();
       SERIAL_ECHO_MSG("EEPROM Initialized");
       #if ProUIex
+        ConfirmLoadSDConfig(); // mmm if config on SD use those settings
         safe_delay(200);
         RebootPrinter();
       #endif

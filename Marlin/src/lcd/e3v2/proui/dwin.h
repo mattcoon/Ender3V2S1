@@ -179,6 +179,7 @@ uint32_t GetHash(char * str);
   void ResetEeprom();
   void WriteSDConfig();
   void ConfirmWriteSDConfig();
+  void ConfirmLoadSDConfig();
   #if HAS_MESH
     void SaveMesh();
   #endif
