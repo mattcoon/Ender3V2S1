@@ -1805,15 +1805,16 @@ void DWIN_SetDataDefaults() {
     #endif
     PRO_data.hotend_maxtemp = HEATER_0_MAXTEMP;
     HMI_data.baseIcon = ICON; // mmm
-    HMI_data.fan_percent = DEF_FAN_SPEED_PERCENT;
-    HMI_data.time_format_textual = DEF_TIME_HMS_FORMAT;
+    HMI_data.fan_percent = DEF_FAN_SPEED_PERCENT; // mmm
+    HMI_data.time_format_textual = DEF_TIME_HMS_FORMAT; // mmm
     #if ENABLED(LASER_FAN_SHARING)
-      HMI_data.laser_off_pwr = SPEED_POWER_LOW;
-      HMI_data.target_laser_height = Z_AFTER_HOMING_LASER;
-    #endif
+      HMI_data.laser_off_pwr = SPEED_POWER_LOW; // mmm
+      HMI_data.target_laser_height = Z_AFTER_HOMING_LASER; // mmm
+   #endif
     #if HAS_TOOLBAR
       const uint8_t _def[] = DEF_TBOPT;
       LOOP_L_N(i,TBMaxOpt) PRO_data.TBopt[i] = _def[i];
+      HMI_data.TBShowCaption = true; // mmm show toolbar captions along with icons
     #endif
     ProEx.SetData();
   #endif

@@ -122,14 +122,14 @@ typedef struct {
   uint32_t Led_Color;
   bool AdaptiveStepSmoothing;
   bool EnablePreview;
-  bool fan_percent = DEF_FAN_SPEED_PERCENT; // mmm
-  bool time_format_textual = DEF_TIME_HMS_FORMAT;
-  bool TBShowCaption = true;
-  bool AutoStoreSD = false;
-  uint8_t baseIcon = ICON;
+  bool fan_percent; // mmm
+  bool time_format_textual; // mmm format time in HH:MM:SS or HHhMMmSSs
+  bool TBShowCaption; // mmm show toolbar captions along with icons
+  bool AutoStoreSD; // mmmm when true store EEPROM triggers write SD Config file
+  uint8_t baseIcon; // mmm base Icon offset for LCD
 #if ENABLED(LASER_FAN_SHARING)
-  uint8_t laser_off_pwr = SPEED_POWER_LOW;
-  uint8_t target_laser_height = Z_AFTER_HOMING_LASER;
+  uint8_t laser_off_pwr; // mmmm PWM output for laser to not burn
+  uint8_t target_laser_height; // mmm height to move laser after homing
 #endif
 } HMI_data_t;
 
