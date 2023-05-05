@@ -1958,13 +1958,11 @@ void Draw_Popup_RepeatTramming() { // mmm
     Draw_Select_Highlight(true);
   }
 
-  void onClick_RepeatTramming() {
-    if (HMI_flag.select_flag)
+  void onClick_RepeatTramming() { // mmm
+    if (HMI_flag.select_flag) 
       Trammingwizard();
-    else {
-      HMI_SaveProcessID(Menu);
-      Draw_Tramming_Menu();
-    }
+    else
+      HMI_ReturnScreen();
   }
 
   void Draw_Popup_FilamentPurge() {
@@ -2716,6 +2714,7 @@ void SetFlow() { SetPIntOnClick(MIN_PRINT_FLOW, MAX_PRINT_FLOW, []{ planner.refr
         return;
       }
       bed_mesh_t zval = {0};
+
       zval[0][0] = Tram(0);             // First tram point can do Homing
       checkkey = NothingToDo;           // After home disable user input
       MeshViewer.margin = 50;
@@ -2730,7 +2729,7 @@ void SetFlow() { SetPIntOnClick(MIN_PRINT_FLOW, MAX_PRINT_FLOW, []{ planner.refr
 
       DWINUI::Draw_CenteredString(140, F("Calculating average"));
       DWINUI::Draw_CenteredString(160, F("and relative heights"));
-      safe_delay(1000);
+      safe_delay(500);
       float avg = 0.0f;
       LOOP_L_N(x, 2) LOOP_L_N(y, 2) avg += zval[x][y];
       avg /= 4.0f;
@@ -3020,15 +3019,15 @@ void Draw_Prepare_Menu() {
     #if ENABLED(ADVANCED_PAUSE_FEATURE)
       MENU_ITEM(ICON_FilMan, MSG_FILAMENT_MAN, onDrawSubMenu, Draw_FilamentMan_Menu);
     #endif
-    MENU_ITEM(ICON_Axis, MSG_MOVE_AXIS, onDrawSubMenu, Draw_Move_Menu);
-    #if ENABLED(LCD_BED_TRAMMING)
-      MENU_ITEM(ICON_Tram, MSG_BED_TRAMMING, onDrawSubMenu, Draw_Tramming_Menu);
-    #endif
-    MENU_ITEM(ICON_CloseMotor, MSG_DISABLE_STEPPERS, onDrawMenuItem, DisableMotors);
     #if ENABLED(INDIVIDUAL_AXIS_HOMING_SUBMENU)
       MENU_ITEM(ICON_Homing, MSG_HOMING, onDrawSubMenu, Draw_Homing_Menu);
     #else
       MENU_ITEM(ICON_Homing, MSG_AUTO_HOME, onDrawMenuItem, AutoHome);
+    #endif
+    MENU_ITEM(ICON_Axis, MSG_MOVE_AXIS, onDrawSubMenu, Draw_Move_Menu);
+    MENU_ITEM(ICON_CloseMotor, MSG_DISABLE_STEPPERS, onDrawMenuItem, DisableMotors);
+    #if ENABLED(LCD_BED_TRAMMING)
+      MENU_ITEM(ICON_Tram, MSG_BED_TRAMMING, onDrawSubMenu, Draw_Tramming_Menu);
     #endif
     #if ENABLED(MESH_BED_LEVELING)
       MENU_ITEM(ICON_ManualMesh, MSG_MANUAL_MESH, onDrawSubMenu, Draw_ManualMesh_Menu);
