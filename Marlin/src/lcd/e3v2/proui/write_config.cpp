@@ -45,7 +45,7 @@ void WriteMeshConfig (String *lBuffer) {
 void WriteMaterialConfig(String *lBuffer) {
   uint8_t i = 0;
   for(i = 0; i < PREHEAT_COUNT; i++) {
-    *lBuffer += "M145 S" + String(i) + "H" + String(ui.material_preset[i].hotend_temp) + "B" + String(ui.material_preset[i].bed_temp) + "F" + String(ui.material_preset[i].fan_speed) + "\n";
+    *lBuffer += "M145S" + String(i) + "H" + String(ui.material_preset[i].hotend_temp) + "B" + String(ui.material_preset[i].bed_temp) + "F" + String(ui.material_preset[i].fan_speed) + "\n";
   }
 }
 
@@ -185,5 +185,4 @@ void WriteSDConfig() {
   // bool AdaptiveStepSmoothing = true;
   // int16_t BedLevT = LEVELING_BED_TEMP;
   // TERN_(BAUD_RATE_GCODE, HMI_data.Baud115K = (BAUDRATE == 115200));
-  // HMI_data.FullManualTramming = false;
   // HMI_data.MediaAutoMount = ENABLED(HAS_SD_EXTENDER);
