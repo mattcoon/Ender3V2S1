@@ -101,7 +101,7 @@ jobs:
         cp configurations/CNC/Configuration.h Marlin/Configuration.h
         cp configurations/CNC/Configuration_adv.h Marlin/Configuration_adv.h
         sed -i "s/#define MOTHERBOARD.*/#define MOTHERBOARD BOARD_BTT_SKR_PRO_V1_2/g" Marlin/Configuration.h
-        pio run
+        pio run -e BIGTREE_SKR_PRO
         mkdir temp
         mv .pio/build/BIGTREE_SKR_PRO/*.bin temp/build.bin
       env:
