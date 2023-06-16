@@ -239,7 +239,7 @@ Flex mesh size
 //#define BLUETOOTH
 
 // Name displayed in the LCD "Ready" message and Info menu
-#define CUSTOM_MACHINE_NAME "V1CNC 515D" // "3D Printer"
+#define CUSTOM_MACHINE_NAME "V1CNC 515DL" // "3D Printer"
 
 // Printer's unique ID, used by some programs to differentiate between machines.
 // Choose your own or use a service like https://www.uuidgenerator.net/version4
@@ -265,9 +265,9 @@ Flex mesh size
 #define X_DRIVER_TYPE TMC2209 // TMC2209 // A4988
 #define Y_DRIVER_TYPE TMC2209 // TMC2209 // A4988
 #define Z_DRIVER_TYPE TMC2209 // TMC2209 // A4988
-#define X2_DRIVER_TYPE TMC2209 // A4988
+//#define X2_DRIVER_TYPE A4988
 #define Y2_DRIVER_TYPE TMC2209 // A4988
-//#define Z2_DRIVER_TYPE A4988
+#define Z2_DRIVER_TYPE TMC2209 // A4988
 //#define Z3_DRIVER_TYPE A4988
 //#define Z4_DRIVER_TYPE A4988
 //#define I_DRIVER_TYPE  A4988
@@ -1210,7 +1210,7 @@ Flex mesh size
 //#define USE_WMIN_PLUG
 #define USE_XMAX_PLUG
 #define USE_YMAX_PLUG
-//#define USE_ZMAX_PLUG
+#define USE_ZMAX_PLUG
 //#define USE_IMAX_PLUG
 //#define USE_JMAX_PLUG
 //#define USE_KMAX_PLUG
@@ -1441,7 +1441,7 @@ Flex mesh size
  * The probe replaces the Z-MIN endstop and is used for Z homing.
  * (Automatically enables USE_PROBE_FOR_Z_HOMING.)
  */
-#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+//#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
 
 // Force the use of the probe for Z-axis homing
 //#define USE_PROBE_FOR_Z_HOMING
@@ -1461,7 +1461,7 @@ Flex mesh size
  *      - normally-closed switches to GND and D32.
  *      - normally-open switches to 5V and D32.
  */
-//#define Z_MIN_PROBE_PIN 32 // Pin 32 is the RAMPS default
+#define Z_MIN_PROBE_PIN Z_MIN_PIN // 32 // Pin 32 is the RAMPS default
 
 /**
  * Probe Type
@@ -1481,7 +1481,7 @@ Flex mesh size
  * A Fix-Mounted Probe either doesn't deploy or needs manual deployment.
  *   (e.g., an inductive probe or a nozzle-based probe-switch.)
  */
-//#define FIX_MOUNTED_PROBE
+#define FIX_MOUNTED_PROBE
 
 /**
  * Use the nozzle as the probe, as with a conductive
@@ -1850,7 +1850,7 @@ Flex mesh size
 // :[-1,1]
 #define X_HOME_DIR -1
 #define Y_HOME_DIR -1
-#define Z_HOME_DIR -1
+#define Z_HOME_DIR +1 // -1
 //#define I_HOME_DIR -1
 //#define J_HOME_DIR -1
 //#define K_HOME_DIR -1
@@ -1898,7 +1898,7 @@ Flex mesh size
 #if ENABLED(MIN_SOFTWARE_ENDSTOPS)
   #define MIN_SOFTWARE_ENDSTOP_X
   #define MIN_SOFTWARE_ENDSTOP_Y
-  //#define MIN_SOFTWARE_ENDSTOP_Z
+  #define MIN_SOFTWARE_ENDSTOP_Z
   #define MIN_SOFTWARE_ENDSTOP_I
   #define MIN_SOFTWARE_ENDSTOP_J
   #define MIN_SOFTWARE_ENDSTOP_K
@@ -3602,3 +3602,6 @@ Flex mesh size
 
 // Disable servo with M282 to reduce power consumption, noise, and heat when not in use
 //#define SERVO_DETACH_GCODE
+// #define SHORT_BUILD_VERSION "515DL 2.1.1"
+#define USER_DESC_4 "Probe Z min"
+#define USER_GCODE_4 "G38.2 Z0"
