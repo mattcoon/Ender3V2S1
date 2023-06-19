@@ -37,7 +37,7 @@
 bool meshredraw;                            // Redraw mesh points
 uint8_t sizex, sizey;                       // Mesh XY size
 uint8_t rmax;                               // Maximum radius
-#define margin 25                           // XY Margins
+// mmm #define margin 25                           // XY Margins
 #define rmin 5                              // Minimum radius
 #define zmin -20                            // rmin at z=-0.20
 #define zmax  20                            // rmax at z= 0.20

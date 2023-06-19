@@ -136,7 +136,7 @@
 #define MAX_PRINT_FLOW   299
 
 // Load and Unload limits
-#define MAX_LOAD_UNLOAD  500
+#define MAX_LOAD_UNLOAD  600 // mmm
 
 // Juntion deviation limits
 #define MIN_JD_MM             0.001
@@ -216,6 +216,10 @@ select_t select_page{0}, select_print{0};
 bool hash_changed = true; // Flag to know if message status was changed
 bool blink = false;
 uint8_t checkkey = 255, last_checkkey = MainMenu;
+static uint8_t _unloadDelay = fc_settings[0].unload_predelay/1000; // mmm
+#if ENABLED(LASER_FAN_SHARING)
+  static millis_t laserTimer = 0; // laser safety timer
+#endif
 
 char DateTime[16+1] =
 {
@@ -257,6 +261,10 @@ MenuClass *AdvancedSettings = nullptr;
 #endif
 #if HAS_BED_PROBE
   MenuClass *ProbeSetMenu = nullptr;
+#endif
+#if ENABLED(LASER_FAN_SHARING) // mmm
+  MenuClass *LaserSettingsMenu = nullptr;
+  MenuClass *PrepareLaserMenu = nullptr;
 #endif
 MenuClass *FilSetMenu = nullptr;
 MenuClass *SelectColorMenu = nullptr;
@@ -527,15 +535,19 @@ void Draw_Print_ProgressBar() {
 
 void Draw_Print_ProgressElapsed() {
   char buf[10];
+  const char *timestr = "%02i:%02i "; // mmm
+  if (HMI_data.time_format_textual) timestr = "%02ih%02im";
   duration_t elapsed = print_job_timer.duration(); // print timer
-  sprintf_P(buf, PSTR("%02i:%02i "), (uint16_t)(elapsed.value / 3600), ((uint16_t)elapsed.value % 3600) / 60);
+  sprintf_P(buf, PSTR(timestr), (uint16_t)(elapsed.value / 3600), ((uint16_t)elapsed.value % 3600) / 60);
   DWINUI::Draw_String(HMI_data.Text_Color, HMI_data.Background_Color, 47, 192, buf);
 }
 
 void Draw_Print_ProgressRemain() {
   const uint32_t _remain_time = ui.get_remaining_time();
   char buf[10];
-  sprintf_P(buf, PSTR("%02i:%02i "), (uint16_t)(_remain_time / 3600), ((uint16_t)_remain_time % 3600) / 60);
+  const char *timestr = "%02i:%02i "; // mmm
+  if (HMI_data.time_format_textual) timestr = "%02ih%02im";
+  sprintf_P(buf, PSTR(timestr), (uint16_t)(_remain_time / 3600), ((uint16_t)_remain_time % 3600) / 60);
   DWINUI::Draw_String(HMI_data.Text_Color, HMI_data.Background_Color, 181, 192, buf);
 }
 
@@ -1029,8 +1041,14 @@ void DWIN_Draw_Dashboard() {
   IF_DISABLED(SHOW_SPEED_IND, DWINUI::Draw_String(DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 116 + 5 * STAT_CHR_W + 2, 384, F("%")));
 
   #if HAS_FAN
-    DWINUI::Draw_Icon(ICON_FanSpeed, 187, 383);
-    DWINUI::Draw_Int(DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 3, 195 + 2 * STAT_CHR_W, 384, thermalManager.fan_speed[0]);
+    #if ENABLED(LASER_FAN_SHARING) // mmm
+    if (planner.laserMode)
+      DWINUI::Draw_Icon(ICON_LaserMode, 187, 383);
+    else
+    #endif
+      DWINUI::Draw_Icon(ICON_FanSpeed, 187, 383);
+    DWINUI::Draw_Int(DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 3, 195 + 2 * STAT_CHR_W, 384, (HMI_data.fan_percent) ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
+    DWIN_Draw_String( false, DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 195 + 5 * STAT_CHR_W + 2, 384, (HMI_data.fan_percent) ? F("%") : F(" "));
   #endif
 
   #if HAS_ZOFFSET_ITEM
@@ -1049,7 +1067,7 @@ void Draw_Info_Menu() {
   sprintf_P(machine_size, PSTR("%ix%ix%i"), (int16_t)X_BED_SIZE, (int16_t)Y_BED_SIZE, (int16_t)Z_MAX_POS);
 
   DWINUI::Draw_CenteredString(92,  GET_TEXT_F(MSG_INFO_MACHINENAME));
-  DWINUI::Draw_CenteredString(112, F(TERN_(CF,"CF ") MACHINE_NAME));
+  DWINUI::Draw_CenteredString(112, F(MACHINE_NAME SHORT_BUILD_VERSION)); // mmm
   DWINUI::Draw_CenteredString(145, GET_TEXT_F(MSG_INFO_SIZE));
   DWINUI::Draw_CenteredString(165, machine_size);
 
@@ -1257,6 +1275,15 @@ void EachMomentUpdate() {
       IF_ENABLED(MPCTEMP, if (checkkey == MPCProcess) plot.Update(thermalManager.wholeDegHotend(0)));
     #endif
   }
+
+  #if ENABLED(LASER_FAN_SHARING) // mmm
+  if (planner.laserTest) {
+    if (ELAPSED(ms, laserTimer)) {
+      laserTimer = 0;
+      ApplyLaserTest(false);
+    }
+  }
+  #endif
 
   #if HAS_STATUS_MESSAGE_TIMEOUT
     bool did_expire = ui.status_reset_callback && (*ui.status_reset_callback)();
@@ -1666,6 +1693,8 @@ void DWIN_Print_Started() {
   TERN_(HAS_GCODE_PREVIEW, if (Host_Printing()) Preview_Invalidate());
   ui.progress_reset();
   ui.reset_remaining_time();
+  HMI_flag.percent_flag = false; // mmm
+  HMI_flag.remain_flag = false;
   HMI_flag.pause_flag = false;
   HMI_flag.abort_flag = false;
   select_print.reset();
@@ -1708,9 +1737,11 @@ void DWIN_Print_Aborted() {
   #if PROUI_EX
     if (all_axes_homed()) {
       char cmd[25] = "";
-      const int16_t zpos = current_position.z + PRO_data.Park_point.z;
-      sprintf_P(cmd, PSTR("G0Z%i\nG0F2000Y%i"), zpos, PRO_data.Park_point.y);
-      queue.inject(cmd);
+	  if (!planner.laserMode) { // mmm
+        const int16_t zpos = current_position.z + PRO_data.Park_point.z;
+        sprintf_P(cmd, PSTR("G0Z%i\nG0F2000Y%i"), zpos, PRO_data.Park_point.y);
+        queue.inject(cmd);
+	  }
     }
   #endif
   hostui.notify("Print Aborted");
@@ -1816,9 +1847,17 @@ void DWIN_SetDataDefaults() {
       PRO_data.FilamentMotionSensor = DEF_FIL_MOTION_SENSOR;
     #endif
     PRO_data.hotend_maxtemp = HEATER_0_MAXTEMP;
+    HMI_data.baseIcon = ICON; // mmm
+    HMI_data.fan_percent = DEF_FAN_SPEED_PERCENT; // mmm
+    HMI_data.time_format_textual = DEF_TIME_HMS_FORMAT; // mmm
+    #if ENABLED(LASER_FAN_SHARING)
+      HMI_data.laser_off_pwr = SPEED_POWER_LOW; // mmm
+      HMI_data.target_laser_height = Z_AFTER_HOMING_LASER; // mmm
+   #endif
     #if HAS_TOOLBAR
       const uint8_t _def[] = DEF_TBOPT;
       LOOP_L_N(i,TBMaxOpt) PRO_data.TBopt[i] = _def[i];
+      HMI_data.TBShowCaption = true; // mmm show toolbar captions along with icons
     #endif
     ProEx.SetData();
   #endif
@@ -1853,6 +1892,7 @@ void DWIN_CopySettingsFrom(const char * const buff) {
     );
   #endif
   TERN_(PROUI_EX, ProEx.LoadSettings());
+  _unloadDelay = fc_settings[0].unload_predelay/1000; // mmm
 }
 
 // Initialize or re-initialize the LCD
@@ -1954,6 +1994,19 @@ void DWIN_RedrawScreen() {
       case PAUSE_MESSAGE_STATUS:   HMI_ReturnScreen(); break;                                                      // Exit from Pause, Load and Unload
       default: break;
     }
+  }
+
+void Draw_Popup_RepeatTramming() { // mmm
+    DWINUI::Draw_Button(BTN_Repeat, 26, 280);
+    DWINUI::Draw_Button(BTN_Cancel, 146, 280);
+    Draw_Select_Highlight(true);
+  }
+
+  void onClick_RepeatTramming() { // mmm
+    if (HMI_flag.select_flag) 
+      Trammingwizard();
+    else
+      HMI_ReturnScreen();
   }
 
   void Draw_Popup_FilamentPurge() {
@@ -2068,6 +2121,10 @@ void Goto_ConfirmToPrint() {
 #if ENABLED(EEPROM_SETTINGS)
   void WriteEeprom() {
     DWIN_DrawStatusLine(GET_TEXT_F(MSG_STORE_EEPROM));
+    if (HMI_data.AutoStoreSD) // mmm
+      WriteSDConfig();
+    else
+      ConfirmWriteSDConfig();
     DWIN_UpdateLCD();
     DONE_BUZZ(settings.save());
   }
@@ -2083,6 +2140,22 @@ void Goto_ConfirmToPrint() {
     DWIN_RedrawScreen();
     DONE_BUZZ(true);
   }
+
+  // mmm
+  void PopUp_WriteSDConfig() { DWIN_Popup_ConfirmCancel(ICON_Info_1, GET_TEXT_F(MSG_STORE_SD_CONFIG)); }
+  void onClick_WriteSDConfig() {
+    if (HMI_flag.select_flag) WriteSDConfig();
+    HMI_ReturnScreen();
+  }
+  void ConfirmWriteSDConfig() { Goto_Popup(PopUp_WriteSDConfig, onClick_WriteSDConfig); }
+
+  void PopUp_LoadSDConfig() { DWIN_Popup_ConfirmCancel(ICON_Info_1, GET_TEXT_F(MSG_LOAD_SD_CONFIG)); }
+
+  void onClick_LoadSDConfig() {
+    if (HMI_flag.select_flag) card.openAndPrintFile("config.gcode");
+    HMI_ReturnScreen();
+  }
+  void ConfirmLoadSDConfig() { Goto_Popup(PopUp_LoadSDConfig, onClick_LoadSDConfig);}
 
   #if HAS_MESH
     void SaveMesh() { TERN(AUTO_BED_LEVELING_UBL, UBLMeshSave(), WriteEeprom()); }
@@ -2110,12 +2183,34 @@ void AutoLev() {   // Always reacquire the Z "home" position
   queue.inject(F(TERN(AUTO_BED_LEVELING_UBL, "G29P1", "G29")));
 }
 
-void AutoHome() { queue.inject_P(G28_STR); }
+// mmm
+void AutoHome() {  
+  char cmd[54], str_1[5];
+  if (planner.laserMode) {
+    // Home and move to correct height and x,y at 0
+    sprintf_P(cmd, PSTR("G28\nG0Z%sF300"),
+      dtostrf(HMI_data.target_laser_height, 2, 1, str_1));
+  }
+  else
+      sprintf_P(cmd, PSTR("G28_STR"));
+  gcode.process_subcommands_now(cmd);
+
+}
+void HomeXY()  { queue.inject_P("G28XY"); }
 
 #if ENABLED(INDIVIDUAL_AXIS_HOMING_SUBMENU)
   void HomeX() { queue.inject(F("G28X")); }
   void HomeY() { queue.inject(F("G28Y")); }
-  void HomeZ() { queue.inject(F("G28Z")); }
+  void HomeZ() {       // mmm
+    char cmd[54], str_1[5];
+    if (planner.laserMode) {
+      sprintf_P(cmd, PSTR("G28Z\nG0Z%s\n"),
+        dtostrf(HMI_data.target_laser_height, 2, 1, str_1));
+    }
+    else
+      sprintf_P(cmd, PSTR("G28Z")); 
+    gcode.process_subcommands_now(cmd);
+  }
   #if BOTH(INDIVIDUAL_AXIS_HOMING_SUBMENU, MESH_BED_LEVELING)
     void ApplyZAfterHoming() { HMI_data.z_after_homing = MenuData.Value; };
     void SetZAfterHoming() { SetIntOnClick(0, 20, HMI_data.z_after_homing, ApplyZAfterHoming); }
@@ -2171,7 +2266,8 @@ void SetMoveZto0() {
 
 void DoCoolDown() { thermalManager.cooldown(); }
 
-bool EnableLiveMove = false;
+
+bool EnableLiveMove = true; // mmm
 void SetLiveMove() { Toggle_Chkb_Line(EnableLiveMove); }
 void AxisMove(AxisEnum axis) {
   #if HAS_HOTEND
@@ -2246,6 +2342,56 @@ void ApplyMove() {
   void TurnOffBacklight() { HMI_SaveProcessID(WaitResponse); ui.set_brightness(0); DWIN_RedrawScreen(); }
 #endif
 
+ // mmm
+  void ApplyBaseIcon() { HMI_data.baseIcon =  MenuData.Value; DWIN_RedrawScreen(); }
+  void SetBaseIcon()   { SetIntOnClick(0,10,HMI_data.baseIcon,ApplyBaseIcon); }
+  
+#if ENABLED(LASER_SYNCHRONOUS_M106_M107)
+  void ApplyLaserLowLimit() { HMI_data.laser_off_pwr = MenuData.Value; }
+  void SetLaserLowLimit()   { SetIntOnClick(0,255,HMI_data.laser_off_pwr,ApplyLaserLowLimit);}
+#endif
+
+#ifdef Z_AFTER_HOMING_LASER
+  void ApplyLaserHeight() { HMI_data.target_laser_height = MenuData.Value; }
+  void SetLaserHeight()   { SetIntOnClick(0,100,HMI_data.target_laser_height,ApplyLaserHeight);}
+  
+#endif
+#if ENABLED(LASER_FAN_SHARING)
+  void ApplyLaserTest(bool test) {
+    char cmd[15] = {0};
+    if (test) {
+      // safety timer runs in the backgroud based on test status
+      laserTimer = millis() + LASER_TEST_TIMEOUT_MS;
+      // disable steppers to allow movement
+      DisableMotors();
+      // turn on laser at lowest setting to avoid burn
+      sprintf_P(cmd, PSTR("M106S%i"),LASER_TEST_PULSE);
+    }
+    else {
+      // turn off laser and stop timer
+      laserTimer = 0;
+      sprintf(cmd, PSTR("M107"));
+    }
+    gcode.process_subcommands_now(cmd);
+    planner.laserTest = test;
+    HMI_SaveProcessID(NothingToDo);
+    HMI_ReturnScreen();
+
+  }
+
+  void Draw_Popup_LaserTest() {
+    DWIN_Popup_ConfirmCancel(ICON_LaserMode, GET_TEXT_F(MSG_LASER_TEST)); 
+  }
+
+  void onClick_LaserTest() {
+    ApplyLaserTest(HMI_flag.select_flag);
+  }
+
+  void SetLaserTest() { Goto_Popup(Draw_Popup_LaserTest, onClick_LaserTest); }
+  // mmm
+
+#endif
+
 #if ENABLED(CASE_LIGHT_MENU)
   void SetCaseLight() {
     Toggle_Chkb_Line(caselight.on);
@@ -2317,17 +2463,48 @@ void ApplyMove() {
 
 #endif
 
+// mmm
+#if ENABLED(LASER_FAN_SHARING)
+  void ToggleLaserMode() {
+    SetLaserMode(!planner.laserMode);
+  }
+
+  void MenuToggleLaserMode() {
+    ToggleLaserMode();
+    Show_Chkb_Line(planner.laserMode);
+    if (planner.laserMode)
+      HomeZ();
+  }
+
+  void SetLaserMode(bool lasermode) {
+    planner.laserMode = lasermode;
+    DWIN_Draw_Dashboard();
+  }
+#endif
+
+void MenuToggleSDConfirm() {
+  Toggle_Chkb_Line(HMI_data.AutoStoreSD);
+}
+// mmm
+
 #if PROUI_EX && ENABLED(NOZZLE_PARK_FEATURE)
   void SetParkPosX()   { SetPIntOnClick(X_MIN_POS, X_MAX_POS); }
   void SetParkPosY()   { SetPIntOnClick(Y_MIN_POS, Y_MAX_POS); }
   void SetParkZRaise() { SetPIntOnClick(Z_MIN_POS, 50); }
 #endif
 
+  // mmm
 #if HAS_FILAMENT_SENSOR
-  void SetRunoutEnable() {
+  void ToggleRunout() {
     runout.reset();
-    Toggle_Chkb_Line(runout.enabled);
+    runout.enabled = !runout.enabled;
   }
+  
+  void SetRunoutEnable() {
+    ToggleRunout();
+    Show_Chkb_Line(runout.enabled);
+  }
+  // mmm
 
   #if PROUI_EX
     void LiveRunoutActive() { ProEx.DrawRunoutActive(true); }
@@ -2348,6 +2525,9 @@ void ApplyMove() {
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
   void SetFilLoad()   { SetPFloatOnClick(0, MAX_LOAD_UNLOAD, UNITFDIGITS); }
   void SetFilUnload() { SetPFloatOnClick(0, MAX_LOAD_UNLOAD, UNITFDIGITS); }
+  void SetFilUnloadPreLength() { SetPFloatOnClick(0, MAX_LOAD_UNLOAD, UNITFDIGITS); } // mmm
+  void ApplyFilUnloadPreDelay() { _unloadDelay = MenuData.Value; fc_settings[0].unload_predelay = _unloadDelay * 1000; } // mmm
+  void SetFilUnloadPreDelay() { SetIntOnClick(0, 255,_unloadDelay, ApplyFilUnloadPreDelay); } // mmm
 #endif
 
 #if ENABLED(PREVENT_COLD_EXTRUSION)
@@ -2375,8 +2555,15 @@ void SetSpeed() { SetPIntOnClick(MIN_PRINT_SPEED, MAX_PRINT_SPEED); }
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
 
   void ChangeFilament() {
+    if (!thermalManager.targetTooColdToExtrude(active_extruder)) { // mmm
     HMI_SaveProcessID(NothingToDo);
+      do_blocking_move_to_z(_MIN(current_position.z + PRO_data.Park_point.z, Z_MAX_POS), feedRate_t(NOZZLE_PARK_Z_FEEDRATE));
     queue.inject(F("M600 B2"));
+    }
+    else {
+      ui.set_status(GET_TEXT_F(MSG_HOTEND_TOO_COLD));
+      Draw_PreheatHotend_Menu();
+    }
   }
 
   #if ENABLED(NOZZLE_PARK_FEATURE)
@@ -2388,13 +2575,25 @@ void SetSpeed() { SetPIntOnClick(MIN_PRINT_SPEED, MAX_PRINT_SPEED); }
 
   #if ENABLED(FILAMENT_LOAD_UNLOAD_GCODES)
     void UnloadFilament() {
+      if (!thermalManager.targetTooColdToExtrude(active_extruder)) { // mmm
       LCD_MESSAGE(MSG_FILAMENTUNLOAD);
       queue.inject(F("M702 Z20"));
+      }
+      else {
+        ui.set_status(GET_TEXT_F(MSG_HOTEND_TOO_COLD));
+        Draw_PreheatHotend_Menu();
+      }
     }
 
     void LoadFilament() {
+      if (!thermalManager.targetTooColdToExtrude(active_extruder)) { // mmm
       LCD_MESSAGE(MSG_FILAMENTLOAD);
       queue.inject(F("M701 Z20"));
+      }
+      else {
+        ui.set_status(GET_TEXT_F(MSG_HOTEND_TOO_COLD));
+        Draw_PreheatHotend_Menu();
+      }
     }
   #endif
 
@@ -2498,6 +2697,7 @@ void SetFlow() { SetPIntOnClick(MIN_PRINT_FLOW, MAX_PRINT_FLOW, []{ planner.refr
       probe.stow();
       zval[0][0] = Tram(0, false);  // First tram point can do Homing
       checkkey = NothingToDo;       // After home disable user input
+      MeshViewer.margin = 50; // mmm
       MeshViewer.DrawMeshGrid(2, 2);
       MeshViewer.DrawMeshPoint(0, 0, zval[0][0]);
       zval[1][0] = Tram(1, false);
@@ -2509,7 +2709,7 @@ void SetFlow() { SetPIntOnClick(MIN_PRINT_FLOW, MAX_PRINT_FLOW, []{ planner.refr
       MeshViewer.DrawMeshPoint(0, 1, zval[0][1]);
       DWINUI::Draw_CenteredString(140, F("Calculating average"));
       DWINUI::Draw_CenteredString(160, F("and relative heights"));
-      safe_delay(1000);
+      safe_delay(500);
       float avg = 0.0f;
       LOOP_L_N(x, 2) LOOP_L_N(y, 2) avg += zval[x][y];
       avg /= 4.0f;
@@ -2526,6 +2726,9 @@ void SetFlow() { SetPIntOnClick(MIN_PRINT_FLOW, MAX_PRINT_FLOW, []{ planner.refr
         DWINUI::Draw_CenteredString(160, F("Tolerance achieved!"));
       }
       else {
+        const float threads_factor[] = { 0.5, 0.7, 0.8 }; // mmm
+        const uint8_t screw_thread = TRAMMING_SCREW_THREAD;
+        float adjust = 0;
         uint8_t p = 0;
         float max = 0;
         FSTR_P plabel;
@@ -2536,8 +2739,12 @@ void SetFlow() { SetPIntOnClick(MIN_PRINT_FLOW, MAX_PRINT_FLOW, []{ planner.refr
             s = (zval[x][y] >= 0);
             max = d;
             p = x + 2 * y;
+            adjust = ABS(d) < 0.001f ? 0 : d / threads_factor[(screw_thread - 30) / 10]; // mmm
           }
         }
+        const int full_turns = trunc(adjust); // mmm
+        const float decimal_part = adjust - float(full_turns);
+        const int minutes = trunc(decimal_part * 60.0f);
         switch (p) {
           case 0b00 : plabel = GET_TEXT_F(MSG_LEVBED_FL); break;
           case 0b01 : plabel = GET_TEXT_F(MSG_LEVBED_FR); break;
@@ -2546,13 +2753,17 @@ void SetFlow() { SetPIntOnClick(MIN_PRINT_FLOW, MAX_PRINT_FLOW, []{ planner.refr
           default   : plabel = F(""); break;
         }
         DWINUI::Draw_CenteredString(120, F("Corners not leveled"));
-        DWINUI::Draw_CenteredString(140, F("Knob adjustment required"));
-        DWINUI::Draw_CenteredString(Color_Green, 160, s ? F("Lower") : F("Raise"));
-        DWINUI::Draw_CenteredString(Color_Green, 180, plabel);
+        DWINUI::Draw_CenteredString(140,plabel); // mmm
+        DWINUI::Draw_String(F(" : "));
+        DWINUI::cursor.x = 60;
+        DWINUI::cursor.y = 160;
+        DWINUI::Draw_Int(1, full_turns);
+        DWINUI::Draw_String(F(" Turns, "));
+        DWINUI::Draw_Int(2, minutes);
+        DWINUI::Draw_String(F(" mins "));
+        DWINUI::Draw_String((s == (screw_thread&1)) ? F("CW") : F("CCW")); 
       }
-      DWINUI::Draw_Button(BTN_Continue, 86, 305);
-      checkkey = Menu;
-      HMI_SaveProcessID(WaitResponse);
+      Goto_Popup(Draw_Popup_RepeatTramming, onClick_RepeatTramming);
     }
 
     void SetManualTramming() {
@@ -2689,6 +2900,15 @@ void ApplyMaxAccel() { planner.set_max_acceleration(HMI_value.axis, MenuData.Val
   }
 #endif
 
+void SetFanPercent() { // mmm
+  Toggle_Chkb_Line(HMI_data.fan_percent);
+  DWIN_Draw_Dashboard();
+}
+
+void SetTimeFormat() {
+  Toggle_Chkb_Line(HMI_data.time_format_textual);
+}
+
 #if ENABLED(FWRETRACT)
   void SetRetractLength() { SetPFloatOnClick( 0, 10, UNITFDIGITS); }
   void SetRetractSpeed() { SetPFloatOnClick( 1, 90, UNITFDIGITS); }
@@ -2777,20 +2997,20 @@ void ReturnToPreviousMenu() {
 
 void Draw_Prepare_Menu() {
   checkkey = Menu;
-  if (SET_MENU(PrepareMenu, MSG_PREPARE, 9 + PREHEAT_COUNT)) {
+  if (SET_MENU(PrepareMenu, MSG_PREPARE, 10 + PREHEAT_COUNT)) {
     BACK_ITEM(Goto_Main_Menu);
     #if ENABLED(ADVANCED_PAUSE_FEATURE)
       MENU_ITEM(ICON_FilMan, MSG_FILAMENT_MAN, onDrawSubMenu, Draw_FilamentMan_Menu);
     #endif
-    MENU_ITEM(ICON_Axis, MSG_MOVE_AXIS, onDrawSubMenu, Draw_Move_Menu);
-    #if ENABLED(LCD_BED_TRAMMING)
-      MENU_ITEM(ICON_Tram, MSG_BED_TRAMMING, onDrawSubMenu, Draw_Tramming_Menu);
-    #endif
-    MENU_ITEM(ICON_CloseMotor, MSG_DISABLE_STEPPERS, onDrawMenuItem, DisableMotors);
     #if ENABLED(INDIVIDUAL_AXIS_HOMING_SUBMENU)
       MENU_ITEM(ICON_Homing, MSG_HOMING, onDrawSubMenu, Draw_Homing_Menu);
     #else
       MENU_ITEM(ICON_Homing, MSG_AUTO_HOME, onDrawMenuItem, AutoHome);
+    #endif
+    MENU_ITEM(ICON_Axis, MSG_MOVE_AXIS, onDrawSubMenu, Draw_Move_Menu);
+    MENU_ITEM(ICON_CloseMotor, MSG_DISABLE_STEPPERS, onDrawMenuItem, DisableMotors);
+    #if ENABLED(LCD_BED_TRAMMING)
+      MENU_ITEM(ICON_Tram, MSG_BED_TRAMMING, onDrawSubMenu, Draw_Tramming_Menu);
     #endif
     #if ENABLED(MESH_BED_LEVELING)
       MENU_ITEM(ICON_ManualMesh, MSG_MANUAL_MESH, onDrawSubMenu, Draw_ManualMesh_Menu);
@@ -2809,16 +3029,33 @@ void Draw_Prepare_Menu() {
       REPEAT_1(PREHEAT_COUNT, _ITEM_PREHEAT)
     #endif
     MENU_ITEM(ICON_Cool, MSG_COOLDOWN, onDrawMenuItem, DoCoolDown);
+    #if ENABLED(LASER_FAN_SHARING)
+      MENU_ITEM(ICON_LaserMode, MSG_LASER_SETTINGS, onDrawMenuItem, Draw_PrepareLaser_Menu);
+    #endif
   }
   ui.reset_status(true);
   UpdateMenu(PrepareMenu);
 }
 
+#if ENABLED(LASER_FAN_SHARING)
+  void Draw_PrepareLaser_Menu() {
+    checkkey = Menu;
+    if (SET_MENU(PrepareLaserMenu, MSG_LASER_SETTINGS,4)) {
+      BACK_ITEM(Draw_Prepare_Menu);
+      BACK_HOME();
+      EDIT_ITEM(ICON_LaserMode, MSG_ENABLE_LASERMODE, onDrawChkbMenu, MenuToggleLaserMode, &planner.laserMode);
+      MENU_ITEM(ICON_LaserMode, MSG_LASER_TEST, onDrawMenuItem, SetLaserTest);
+    }
+  UpdateMenu(PrepareLaserMenu);
+  }
+#endif
+
 #if ENABLED(LCD_BED_TRAMMING)
   void Draw_Tramming_Menu() {
     checkkey = Menu;
-    if (SET_MENU(TrammingMenu, MSG_BED_TRAMMING, 8)) {
+    if (SET_MENU(TrammingMenu, MSG_BED_TRAMMING, 9)) {
       BACK_ITEM(Draw_Prepare_Menu);
+      BACK_HOME();
       #if HAS_BED_PROBE
         MENU_ITEM(ICON_ProbeSet, MSG_TRAMMING_WIZARD, onDrawMenuItem, Trammingwizard);
         EDIT_ITEM(ICON_ProbeSet, MSG_BED_TRAMMING_MANUAL, onDrawChkbMenu, SetManualTramming, &HMI_data.FullManualTramming);
@@ -2837,7 +3074,7 @@ void Draw_Prepare_Menu() {
 
 void Draw_Control_Menu() {
   checkkey = Menu;
-  if (SET_MENU(ControlMenu, MSG_CONTROL, 10)) {
+  if (SET_MENU(ControlMenu, MSG_CONTROL, 14)) {
     BACK_ITEM(Goto_Main_Menu);
     MENU_ITEM(ICON_Temperature, MSG_TEMPERATURE, onDrawSubMenu, Draw_Temperature_Menu);
     MENU_ITEM(ICON_Motion, MSG_MOTION, onDrawSubMenu, Draw_Motion_Menu);
@@ -2845,8 +3082,14 @@ void Draw_Control_Menu() {
       MENU_ITEM(ICON_WriteEEPROM, MSG_STORE_EEPROM, onDrawMenuItem, WriteEeprom);
       MENU_ITEM(ICON_ReadEEPROM, MSG_LOAD_EEPROM, onDrawMenuItem, ReadEeprom);
       MENU_ITEM(ICON_ResumeEEPROM, MSG_RESTORE_DEFAULTS, onDrawMenuItem, ResetEeprom);
+      MENU_ITEM(ICON_WriteEEPROM, MSG_LOAD_SD_CONFIG, onDrawMenuItem, ConfirmLoadSDConfig);
+      MENU_ITEM(ICON_WriteEEPROM, MSG_STORE_SD_CONFIG, onDrawMenuItem, WriteSDConfig);
+      EDIT_ITEM(ICON_WriteEEPROM, MSG_AUTO_STORE_SD, onDrawChkbMenu, MenuToggleSDConfirm, &HMI_data.AutoStoreSD);
     #endif
     MENU_ITEM(ICON_Reboot, MSG_RESET_PRINTER, onDrawMenuItem, RebootPrinter);
+    #if ENABLED(HOST_SHUTDOWN_MENU_ITEM) && defined(SHUTDOWN_ACTION)
+      MENU_ITEM(ICON_Host, MSG_HOST_SHUTDOWN, onDrawMenuItem, HostShutDown);
+    #endif
     #if ENABLED(CASE_LIGHT_MENU)
       #if ENABLED(CASELIGHT_USES_BRIGHTNESS)
         MENU_ITEM(ICON_CaseLight, MSG_CASE_LIGHT, onDrawSubMenu, Draw_CaseLight_Menu);
@@ -2931,6 +3174,13 @@ void Draw_AdvancedSettings_Menu() {
       EDIT_ITEM(ICON_Brightness, MSG_BRIGHTNESS, onDrawPInt8Menu, SetBrightness, &ui.brightness);
       MENU_ITEM(ICON_Brightness, MSG_BRIGHTNESS_OFF, onDrawMenuItem, TurnOffBacklight);
     #endif
+    EDIT_ITEM(ICON_ICON_SET, MSG_ICON_SET, onDrawPInt8Menu, SetBaseIcon, &HMI_data.baseIcon);
+    #if ENABLED(LASER_FAN_SHARING)
+      MENU_ITEM(ICON_LaserMode,MSG_LASER_SETTINGS, onDrawSubMenu, Draw_LaserSettings_Menu);
+      if (!planner.laserMode)
+    #endif
+    EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, SetFanPercent, &HMI_data.fan_percent);
+    EDIT_ITEM(ICON_PrintTime, MSG_PROGRESS_IN_HHMM, onDrawChkbMenu, SetTimeFormat, &HMI_data.time_format_textual);
     #if HAS_CUSTOM_COLORS
       MENU_ITEM(ICON_Scolor, MSG_COLORS_SELECT, onDrawSubMenu, Draw_SelectColors_Menu);
     #endif
@@ -2939,10 +3189,31 @@ void Draw_AdvancedSettings_Menu() {
   UpdateMenu(AdvancedSettings);
 }
 
+#if ENABLED(LASER_FAN_SHARING)
+  void Draw_LaserSettings_Menu() {
+    if (SET_MENU(LaserSettingsMenu, MSG_LASER_SETTINGS, 7)) {
+      BACK_ITEM(Draw_AdvancedSettings_Menu);
+      BACK_HOME();
+        EDIT_ITEM(ICON_LaserMode, MSG_ENABLE_LASERMODE, onDrawChkbMenu, MenuToggleLaserMode, &planner.laserMode);
+      if (planner.laserMode)
+        EDIT_ITEM(ICON_LaserMode, MSG_LASER_PERCENT, onDrawChkbMenu, SetFanPercent, &HMI_data.fan_percent);
+      else
+        EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, SetFanPercent, &HMI_data.fan_percent);
+      EDIT_ITEM(ICON_LaserMode, MSG_LASERLOW_LIMIT, onDrawPInt8Menu, SetLaserLowLimit, &HMI_data.laser_off_pwr);
+      EDIT_ITEM(ICON_LaserMode, MSG_LASER_HEIGHT, onDrawPInt8Menu, SetLaserHeight, &HMI_data.target_laser_height);
+      MENU_ITEM(ICON_LaserMode, MSG_LASER_TEST, onDrawMenuItem, SetLaserTest);
+    }
+    UpdateMenu(LaserSettingsMenu);
+    if (!planner.laserMode) LCD_MESSAGE_F("WARNING: not in laser Mode");
+    else LCD_MESSAGE_F("Laser Mode Ready!");
+  }
+#endif
+
 void Draw_Move_Menu() {
   checkkey = Menu;
-  if (SET_MENU(MoveMenu, MSG_MOVE_AXIS, 7)) {
+  if (SET_MENU(MoveMenu, MSG_MOVE_AXIS, 8)) {
     BACK_ITEM(Draw_Prepare_Menu);
+    BACK_HOME();
     EDIT_ITEM(ICON_Axis, MSG_LIVE_MOVE, onDrawChkbMenu, SetLiveMove, &EnableLiveMove);
     #if HAS_X_AXIS
       EDIT_ITEM(ICON_MoveX, MSG_MOVE_X, onDrawPFloatMenu, SetMoveX, &current_position.x);
@@ -2967,8 +3238,9 @@ void Draw_Move_Menu() {
 
   void Draw_HomeOffset_Menu() {
     checkkey = Menu;
-    if (SET_MENU(HomeOffMenu, MSG_SET_HOME_OFFSETS, 4)) {
+    if (SET_MENU(HomeOffMenu, MSG_SET_HOME_OFFSETS, 5)) {
       BACK_ITEM(Draw_PhySet_Menu);
+      BACK_HOME();
       #if HAS_X_AXIS
         EDIT_ITEM(ICON_HomeOffsetX, MSG_HOME_OFFSET_X, onDrawPFloatMenu, SetHomeOffsetX, &home_offset.x);
       #endif
@@ -2988,8 +3260,9 @@ void Draw_Move_Menu() {
 
   void Draw_ProbeSet_Menu() {
     checkkey = Menu;
-    if (SET_MENU(ProbeSetMenu, MSG_ZPROBE_SETTINGS, 11)) {
+    if (SET_MENU(ProbeSetMenu, MSG_ZPROBE_SETTINGS, 12)) {
       BACK_ITEM(Draw_AdvancedSettings_Menu);
+      BACK_HOME();
       #if HAS_X_AXIS
         EDIT_ITEM(ICON_ProbeOffsetX, MSG_ZPROBE_XOFFSET, onDrawPFloatMenu, SetProbeOffsetX, &probe.offset.x);
       #endif
@@ -3020,8 +3293,9 @@ void Draw_Move_Menu() {
 
 void Draw_FilSet_Menu() {
   checkkey = Menu;
-  if (SET_MENU(FilSetMenu, MSG_FILAMENT_SET, 9)) {
+  if (SET_MENU(FilSetMenu, MSG_FILAMENT_SET, 12)) {
     BACK_ITEM(Draw_AdvancedSettings_Menu);
+    BACK_HOME();
     #if HAS_FILAMENT_SENSOR
       EDIT_ITEM(ICON_Runout, MSG_RUNOUT_ENABLE, onDrawChkbMenu, SetRunoutEnable, &runout.enabled);
       #if PROUI_EX
@@ -3040,6 +3314,8 @@ void Draw_FilSet_Menu() {
     #if ENABLED(ADVANCED_PAUSE_FEATURE)
       EDIT_ITEM(ICON_FilLoad, MSG_FILAMENT_LOAD, onDrawPFloatMenu, SetFilLoad, &fc_settings[0].load_length);
       EDIT_ITEM(ICON_FilUnload, MSG_FILAMENT_UNLOAD, onDrawPFloatMenu, SetFilUnload, &fc_settings[0].unload_length);
+      EDIT_ITEM(ICON_FilUnload, MSG_FILAMENT_PREUNLOAD, onDrawPFloatMenu, SetFilUnloadPreLength, &fc_settings[0].unload_prelength);
+      EDIT_ITEM(ICON_FilUnload, MSG_FILAMENT_UNLOADDELAY, onDrawPIntMenu, SetFilUnloadPreDelay, &_unloadDelay);
     #endif
     #if ENABLED(FWRETRACT)
       MENU_ITEM(ICON_FWRetract, MSG_FWRETRACT, onDrawSubMenu, Draw_FWRetract_Menu);
@@ -3052,8 +3328,9 @@ void Draw_FilSet_Menu() {
   #if ENABLED(NOZZLE_PARK_FEATURE)
     void Draw_ParkPos_Menu() {
       checkkey = Menu;
-      if (SET_MENU(ParkPosMenu, MSG_FILAMENT_PARK_ENABLED, 4)) {
+      if (SET_MENU(ParkPosMenu, MSG_FILAMENT_PARK_ENABLED, 5)) {
         BACK_ITEM(Draw_PhySet_Menu);
+        BACK_HOME();
         EDIT_ITEM(ICON_ParkPosX, MSG_PARK_XPOSITION, onDrawPIntMenu, SetParkPosX, &PRO_data.Park_point.x);
         EDIT_ITEM(ICON_ParkPosY, MSG_PARK_YPOSITION, onDrawPIntMenu, SetParkPosY, &PRO_data.Park_point.y);
         EDIT_ITEM(ICON_ParkPosZ, MSG_PARK_ZRAISE, onDrawPIntMenu, SetParkZRaise, &PRO_data.Park_point.z);
@@ -3064,8 +3341,9 @@ void Draw_FilSet_Menu() {
 
   void Draw_PhySet_Menu() {
     checkkey = Menu;
-    if (SET_MENU(PhySetMenu, MSG_PHY_SET, 10)) {
+    if (SET_MENU(PhySetMenu, MSG_PHY_SET, 11)) {
       BACK_ITEM(Draw_AdvancedSettings_Menu);
+      BACK_HOME();
       EDIT_ITEM(ICON_BedSizeX, MSG_PHY_XBEDSIZE, onDrawPIntMenu, SetBedSizeX, &PRO_data.x_bed_size);
       EDIT_ITEM(ICON_BedSizeY, MSG_PHY_YBEDSIZE, onDrawPIntMenu, SetBedSizeY, &PRO_data.y_bed_size);
       EDIT_ITEM(ICON_MaxPosX, MSG_PHY_XMINPOS, onDrawPIntMenu, SetMinPosX, &PRO_data.x_min_pos);
@@ -3088,8 +3366,9 @@ void Draw_FilSet_Menu() {
 
   void Draw_CaseLight_Menu() {
     checkkey = Menu;
-    if (SET_MENU(CaseLightMenu, MSG_CASE_LIGHT, 3)) {
+    if (SET_MENU(CaseLightMenu, MSG_CASE_LIGHT, 4)) {
       BACK_ITEM(Draw_Control_Menu);
+      BACK_HOME();
       EDIT_ITEM(ICON_CaseLight, MSG_CASE_LIGHT, onDrawChkbMenu, SetCaseLight, &caselight.on);
       EDIT_ITEM(ICON_Brightness, MSG_CASE_LIGHT_BRIGHTNESS, onDrawPInt8Menu, SetCaseLightBrightness, &caselight.brightness);
     }
@@ -3102,8 +3381,9 @@ void Draw_FilSet_Menu() {
 
   void Draw_LedControl_Menu() {
     checkkey = Menu;
-    if (SET_MENU(LedControlMenu, MSG_LED_CONTROL, 10)) {
+    if (SET_MENU(LedControlMenu, MSG_LED_CONTROL, 11)) {
       BACK_ITEM(Draw_Control_Menu);
+      BACK_HOME();
       #if !BOTH(CASE_LIGHT_MENU, CASE_LIGHT_USE_NEOPIXEL)
         EDIT_ITEM(ICON_LedControl, MSG_LEDS, onDrawChkbMenu, SetLedStatus, &leds.lights_on);
       #endif
@@ -3137,7 +3417,7 @@ void Draw_Tune_Menu() {
     if (laser_device.is_laser_device()) return LCD_MESSAGE_F("Not available in laser mode");
   #endif
   checkkey = Menu;
-  if (SET_MENU(TuneMenu, MSG_TUNE, 17)) {
+  if (SET_MENU(TuneMenu, MSG_TUNE, 18)) {
     BACK_ITEM(Goto_PrintProcess);
     EDIT_ITEM(ICON_Speed, MSG_SPEED, onDrawPIntMenu, SetSpeed, &feedrate_percentage);
     #if HAS_HOTEND
@@ -3147,7 +3427,12 @@ void Draw_Tune_Menu() {
       BedTargetItem = EDIT_ITEM(ICON_BedTemp, MSG_UBL_SET_TEMP_BED, onDrawPIntMenu, SetBedTemp, &thermalManager.temp_bed.target);
     #endif
     #if HAS_FAN
+    #if ENABLED(LASER_FAN_SHARING)
+      if (!planner.laserMode)
+        FanSpeedItem = EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED, onDrawPInt8Menu, SetFanSpeed, &thermalManager.fan_speed[0]);
+    #else
       FanSpeedItem = EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED, onDrawPInt8Menu, SetFanSpeed, &thermalManager.fan_speed[0]);
+    #endif
     #endif
     #if ALL(HAS_ZOFFSET_ITEM, HAS_BED_PROBE, BABYSTEPPING)
       EDIT_ITEM(ICON_Zoffset, MSG_ZPROBE_ZOFFSET, onDrawPFloat2Menu, SetZOffset, &BABY_Z_VAR);
@@ -3160,6 +3445,7 @@ void Draw_Tune_Menu() {
     #endif
     #if ENABLED(RUNOUT_TUNE_ITEM)
       EDIT_ITEM(ICON_Runout, MSG_RUNOUT_ENABLE, onDrawChkbMenu, SetRunoutEnable, &runout.enabled);
+      EDIT_ITEM(ICON_Runout, MSG_RUNOUT_DISTANCE_MM, onDrawPFloatMenu, SetRunoutDistance, &runout.runout_distance());
     #endif
     #if ENABLED(PLR_TUNE_ITEM)
       EDIT_ITEM(ICON_Pwrlossr, MSG_OUTAGE_RECOVERY, onDrawChkbMenu, SetPwrLossr, &recovery.enabled);
@@ -3267,8 +3553,9 @@ void Draw_Tune_Menu() {
 
 void Draw_Motion_Menu() {
   checkkey = Menu;
-  if (SET_MENU(MotionMenu, MSG_MOTION, 10)) {
+  if (SET_MENU(MotionMenu, MSG_MOTION, 11)) {
     BACK_ITEM(Draw_Control_Menu);
+    BACK_HOME();
     MENU_ITEM(ICON_MaxSpeed, MSG_SPEED, onDrawSubMenu, Draw_MaxSpeed_Menu);
     MENU_ITEM(ICON_MaxAccelerated, MSG_ACCELERATION, onDrawSubMenu, Draw_MaxAccel_Menu);
     #if HAS_CLASSIC_JERK
@@ -3308,8 +3595,9 @@ void Draw_Motion_Menu() {
 
   void Draw_FilamentMan_Menu() {
     checkkey = Menu;
-    if (SET_MENU(FilamentMenu, MSG_FILAMENT_MAN, 6)) {
+    if (SET_MENU(FilamentMenu, MSG_FILAMENT_MAN, 9)) {
       BACK_ITEM(Draw_Prepare_Menu);
+      BACK_HOME();
       #if ENABLED(NOZZLE_PARK_FEATURE)
         MENU_ITEM(ICON_Park, MSG_FILAMENT_PARK_ENABLED, onDrawMenuItem, ParkHead);
       #endif
@@ -3321,6 +3609,7 @@ void Draw_Motion_Menu() {
         MENU_ITEM(ICON_FilUnload, MSG_FILAMENTUNLOAD, onDrawMenuItem, UnloadFilament);
         MENU_ITEM(ICON_FilLoad, MSG_FILAMENTLOAD, onDrawMenuItem, LoadFilament);
       #endif
+      MENU_ITEM(ICON_Cool, MSG_COOLDOWN, onDrawMenuItem, DoCoolDown);
     }
     UpdateMenu(FilamentMenu);
   }
@@ -3331,8 +3620,9 @@ void Draw_Motion_Menu() {
 
   void Draw_ManualMesh_Menu() {
     checkkey = Menu;
-    if (SET_MENU(ManualMesh, MSG_UBL_MANUAL_MESH, 6)) {
+    if (SET_MENU(ManualMesh, MSG_UBL_MANUAL_MESH, 7)) {
       BACK_ITEM(Draw_Prepare_Menu);
+      BACK_HOME();
       MENU_ITEM(ICON_ManualMesh, MSG_LEVEL_BED, onDrawMenuItem, ManualMeshStart);
       MMeshMoveZItem = EDIT_ITEM(ICON_Zoffset, MSG_MOVE_Z, onDrawPFloat2Menu, SetMMeshMoveZ, &current_position.z);
       MENU_ITEM(ICON_Axis, MSG_UBL_CONTINUE_MESH, onDrawMenuItem, ManualMeshContinue);
@@ -3350,6 +3640,7 @@ void Draw_Motion_Menu() {
     checkkey = Menu;
     if (NotCurrent) {
       BACK_ITEM(Draw_Temperature_Menu);
+      BACK_HOME();
       #if HAS_HOTEND
         EDIT_ITEM(ICON_SetEndTemp, MSG_UBL_SET_TEMP_HOTEND, onDrawPIntMenu, SetPreheatEndTemp, &ui.material_preset[HMI_value.Select].hotend_temp);
       #endif
@@ -3377,8 +3668,9 @@ void Draw_Motion_Menu() {
 
 void Draw_Temperature_Menu() {
   checkkey = Menu;
-  if (SET_MENU(TemperatureMenu, MSG_TEMPERATURE, 4 + PREHEAT_COUNT)) {
+  if (SET_MENU(TemperatureMenu, MSG_TEMPERATURE, 5 + PREHEAT_COUNT)) {
     BACK_ITEM(Draw_Control_Menu);
+    BACK_HOME();
     #if HAS_HOTEND
       HotendTargetItem = EDIT_ITEM(ICON_SetEndTemp, MSG_UBL_SET_TEMP_HOTEND, onDrawPIntMenu, SetHotendTemp, &thermalManager.temp_hotend[0].target);
     #endif
@@ -3386,7 +3678,12 @@ void Draw_Temperature_Menu() {
       BedTargetItem = EDIT_ITEM(ICON_SetBedTemp, MSG_UBL_SET_TEMP_BED, onDrawPIntMenu, SetBedTemp, &thermalManager.temp_bed.target);
     #endif
     #if HAS_FAN
-      FanSpeedItem = EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED, onDrawPInt8Menu, SetFanSpeed, &thermalManager.fan_speed[0]);
+      #if ENABLED(LASER_FAN_SHARING)
+        if (!planner.laserMode)
+          FanSpeedItem = EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED, onDrawPInt8Menu, SetFanSpeed, &thermalManager.fan_speed[0]);
+      #else
+          FanSpeedItem = EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED, onDrawPInt8Menu, SetFanSpeed, &thermalManager.fan_speed[0]);
+      #endif
     #endif
     #if HAS_PREHEAT
       #define _ITEM_SETPREHEAT(N) MENU_ITEM(ICON_SetPreheat##N, MSG_PREHEAT_## N ##_SETTINGS, onDrawSubMenu, Draw_Preheat## N ##_Menu);
@@ -3398,8 +3695,9 @@ void Draw_Temperature_Menu() {
 
 void Draw_MaxSpeed_Menu() {
   checkkey = Menu;
-  if (SET_MENU(MaxSpeedMenu, MSG_MAX_SPEED, 5)) {
+  if (SET_MENU(MaxSpeedMenu, MSG_MAX_SPEED, 6)) {
     BACK_ITEM(Draw_Motion_Menu);
+    BACK_HOME();
     #if HAS_X_AXIS
       EDIT_ITEM(ICON_MaxSpeedX, MSG_VMAX_A, onDrawPFloatMenu, SetMaxSpeedX, &planner.settings.max_feedrate_mm_s[X_AXIS]);
     #endif
@@ -3418,8 +3716,9 @@ void Draw_MaxSpeed_Menu() {
 
 void Draw_MaxAccel_Menu() {
   checkkey = Menu;
-  if (SET_MENU(MaxAccelMenu, MSG_AMAX_EN, 5)) {
+  if (SET_MENU(MaxAccelMenu, MSG_AMAX_EN, 6)) {
     BACK_ITEM(Draw_Motion_Menu);
+    BACK_HOME();
     #if HAS_X_AXIS
       EDIT_ITEM(ICON_MaxAccX, MSG_AMAX_A, onDrawPInt32Menu, SetMaxAccelX, &planner.settings.max_acceleration_mm_per_s2[X_AXIS]);
     #endif
@@ -3440,8 +3739,9 @@ void Draw_MaxAccel_Menu() {
 
   void Draw_MaxJerk_Menu() {
     checkkey = Menu;
-    if (SET_MENU(MaxJerkMenu, MSG_JERK, 5)) {
+    if (SET_MENU(MaxJerkMenu, MSG_JERK, 6)) {
       BACK_ITEM(Draw_Motion_Menu);
+      BACK_HOME();
       #if HAS_X_AXIS
         EDIT_ITEM(ICON_MaxSpeedJerkX, MSG_VA_JERK, onDrawPFloatMenu, SetMaxJerkX, &planner.max_jerk.x);
       #endif
@@ -3462,8 +3762,9 @@ void Draw_MaxAccel_Menu() {
 
 void Draw_Steps_Menu() {
   checkkey = Menu;
-  if (SET_MENU(StepsMenu, MSG_STEPS_PER_MM, 5)) {
+  if (SET_MENU(StepsMenu, MSG_STEPS_PER_MM, 6)) {
     BACK_ITEM(Draw_Motion_Menu);
+    BACK_HOME();
     #if HAS_X_AXIS
       EDIT_ITEM(ICON_StepX, MSG_A_STEPS, onDrawPFloatMenu, SetStepsX, &planner.settings.axis_steps_per_mm[X_AXIS]);
     #endif
@@ -3546,8 +3847,9 @@ void Draw_Steps_Menu() {
 
   void Draw_SelectColors_Menu() {
     checkkey = Menu;
-    if (SET_MENU(SelectColorMenu, MSG_COLORS_SELECT, 20)) {
+    if (SET_MENU(SelectColorMenu, MSG_COLORS_SELECT, 21)) {
       BACK_ITEM(Draw_AdvancedSettings_Menu);
+      BACK_HOME();
       MENU_ITEM(ICON_StockConfiguration, MSG_RESTORE_DEFAULTS, onDrawMenuItem, RestoreDefaultColors);
       EDIT_ITEM_F(0, "Screen Background", onDrawSelColorItem, SelColor, &HMI_data.Background_Color);
       EDIT_ITEM_F(0, "Cursor", onDrawSelColorItem, SelColor, &HMI_data.Cursor_Color);
@@ -3573,8 +3875,9 @@ void Draw_Steps_Menu() {
 
   void Draw_GetColor_Menu() {
     checkkey = Menu;
-    if (SET_MENU(GetColorMenu, MSG_COLORS_GET, 5)) {
+    if (SET_MENU(GetColorMenu, MSG_COLORS_GET, 6)) {
       BACK_ITEM(DWIN_ApplyColor);
+      BACK_HOME();
       MENU_ITEM(ICON_Cancel, MSG_BUTTON_CANCEL, onDrawMenuItem, Draw_SelectColors_Menu);
       MENU_ITEM(0, MSG_COLORS_RED, onDrawGetColorItem, SetRGBColor);
       MENU_ITEM(1, MSG_COLORS_GREEN, onDrawGetColorItem, SetRGBColor);
@@ -3606,9 +3909,10 @@ void Draw_Steps_Menu() {
 
   void Draw_HotendMPC_Menu() {
     checkkey = Menu;
-    if (SET_MENU_F(HotendMPCMenu, "MPC Settings", 7)) {
+    if (SET_MENU_F(HotendMPCMenu, "MPC Settings", 9)) {
       MPC_t &mpc = thermalManager.temp_hotend[0].mpc;
       BACK_ITEM(Draw_AdvancedSettings_Menu);
+      BACK_HOME();
       #if ENABLED(MPC_AUTOTUNE_MENU)
         MENU_ITEM(ICON_MPCNozzle, MSG_MPC_AUTOTUNE, onDrawMenuItem, []{ thermalManager.MPC_autotune(active_extruder, Temperature::MPCTuningType::AUTO); });
       #endif
@@ -3704,8 +4008,9 @@ void Draw_Steps_Menu() {
 
   void Draw_BedPID_Menu() {
     checkkey = Menu;
-    if (SET_MENU_F(BedPIDMenu, STR_BED_PID " Settings", 8)) {
+    if (SET_MENU_F(BedPIDMenu, STR_BED_PID " Settings", 9)) {
       BACK_ITEM(Draw_AdvancedSettings_Menu);
+      BACK_HOME();
       #if ENABLED(PID_AUTOTUNE_MENU)
         MENU_ITEM_F(ICON_PIDBed, STR_BED_PID, onDrawMenuItem,BedPID);
         EDIT_ITEM(ICON_Temperature, MSG_TEMPERATURE, onDrawPIntMenu, SetBedPidT, &HMI_data.BedPidT);
@@ -3733,8 +4038,9 @@ void Draw_Steps_Menu() {
 
   void Draw_ZOffsetWiz_Menu() {
     checkkey = Menu;
-    if (SET_MENU(ZOffsetWizMenu, MSG_PROBE_WIZARD, 4)) {
+    if (SET_MENU(ZOffsetWizMenu, MSG_PROBE_WIZARD, 5)) {
       BACK_ITEM(Draw_Prepare_Menu);
+      BACK_HOME();
       MENU_ITEM(ICON_Homing, MSG_AUTO_HOME, onDrawMenuItem, AutoHome);
       MENU_ITEM_F(ICON_MoveZ0, "Move Z to Home", onDrawMenuItem, SetMoveZto0);
       EDIT_ITEM(ICON_Zoffset, MSG_ZPROBE_ZOFFSET, onDrawPFloat2Menu, SetZOffset, &BABY_Z_VAR);
@@ -3749,9 +4055,11 @@ void Draw_Steps_Menu() {
 
   void Draw_Homing_Menu() {
     checkkey = Menu;
-    if (SET_MENU(HomingMenu, MSG_HOMING, 6)) {
+    if (SET_MENU(HomingMenu, MSG_HOMING, 8)) {
       BACK_ITEM(Draw_Prepare_Menu);
+      BACK_HOME();
       MENU_ITEM(ICON_Homing, MSG_AUTO_HOME, onDrawMenuItem, AutoHome);
+      MENU_ITEM(ICON_HomeXY, MSG_AUTO_HOME_XY, onDrawMenuItem, HomeXY);
       #if HAS_X_AXIS
         MENU_ITEM(ICON_HomeX, MSG_AUTO_HOME_X, onDrawMenuItem, HomeX);
       #endif
@@ -3923,8 +4231,9 @@ void Draw_Steps_Menu() {
 #if HAS_MESH
   void Draw_MeshSet_Menu() {
     checkkey = Menu;
-    if (SET_MENU(MeshMenu, MSG_MESH_LEVELING, 15)) {
+    if (SET_MENU(MeshMenu, MSG_MESH_LEVELING, 16)) {
       BACK_ITEM(Draw_AdvancedSettings_Menu);
+      BACK_HOME();
       #if PROUI_EX
         MENU_ITEM(ICON_MeshPoints, MSG_MESH_POINTS, onDrawMeshPoints, SetMeshPoints);
         MENU_ITEM(ICON_ProbeMargin, MSG_MESH_INSET, onDrawSubMenu, Draw_MeshInset_Menu);
@@ -3960,9 +4269,10 @@ void Draw_Steps_Menu() {
       if (!leveling_is_valid()) { LCD_MESSAGE(MSG_UBL_MESH_INVALID); return; }
       set_bed_leveling_enabled(false);
       checkkey = Menu;
-      if (SET_MENU(EditMeshMenu, MSG_EDIT_MESH, 7)) {
+      if (SET_MENU(EditMeshMenu, MSG_EDIT_MESH, 8)) {
         bedLevelTools.mesh_x = bedLevelTools.mesh_y = 0;
         BACK_ITEM(Draw_MeshSet_Menu);
+        BACK_HOME();
         MENU_ITEM(ICON_MeshReset, MSG_MESH_RESET, onDrawMenuItem, ResetMesh);
         EDIT_ITEM(ICON_UBLActive, MSG_PROBE_WIZARD_MOVING, onDrawChkbMenu, SetAutoMovToMesh, &AutoMovToMesh);
         EDIT_ITEM(ICON_MeshEditX, MSG_MESH_X, onDrawPInt8Menu, SetEditMeshX, &bedLevelTools.mesh_x);
@@ -3977,8 +4287,9 @@ void Draw_Steps_Menu() {
   #if PROUI_EX
     void Draw_MeshInset_Menu() {
       checkkey = Menu;
-      if (SET_MENU(MeshInsetMenu, MSG_MESH_INSET, 7)) {
+      if (SET_MENU(MeshInsetMenu, MSG_MESH_INSET, 8)) {
         BACK_ITEM(Draw_MeshSet_Menu);
+        BACK_HOME();
         EDIT_ITEM(ICON_ProbeMargin, MSG_MESH_MIN_X, onDrawPFloatMenu, SetMeshInset, &PRO_data.mesh_min_x);
         EDIT_ITEM(ICON_ProbeMargin, MSG_MESH_MAX_X, onDrawPFloatMenu, SetMeshInset, &PRO_data.mesh_max_x);
         EDIT_ITEM(ICON_ProbeMargin, MSG_MESH_MIN_Y, onDrawPFloatMenu, SetMeshInset, &PRO_data.mesh_min_y);
@@ -4070,11 +4381,16 @@ void Draw_Steps_Menu() {
 // ToolBar
 //=============================================================================
 #if HAS_TOOLBAR
+  void SetTBCaption() {
+    Toggle_Chkb_Line(HMI_data.TBShowCaption);
+  }
 
   void Draw_TBSetup_Menu() {
     checkkey = Menu;
-    if (SET_MENU(TBSetupMenu, MSG_TOOLBAR_SETUP, TBMaxOpt + 1)) {
+    if (SET_MENU(TBSetupMenu, MSG_TOOLBAR_SETUP, TBMaxOpt + 3)) {
       BACK_ITEM(Draw_AdvancedSettings_Menu);
+      BACK_HOME();
+      EDIT_ITEM(ICON_TBSetup,MSG_TOOLBAR_CAPTIONS, onDrawChkbMenu, SetTBCaption, &HMI_data.TBShowCaption);
       LOOP_L_N(i, TBMaxOpt) EDIT_ITEM_F(0, "", onDrawTBSetupItem, SetTBSetupItem, &PRO_data.TBopt[i]);
     }
     UpdateMenu(TBSetupMenu);

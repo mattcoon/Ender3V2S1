@@ -30,7 +30,12 @@
 #include "../../marlinui.h"
 
 #include "dwin.h"
+#include "dwinui.h" // mmm
+#include "dwin_lcd.h" // mmm
 #include "custom_gcodes.h"
+#include "toolbar.h" // mmm
+#include "../../../core/macros.h" // mmm
+#include "../../../module/planner.h" // mmm
 
 #if BOTH(PROUI_EX, HAS_MEDIA)
   #include "file_header.h"
@@ -140,13 +145,20 @@ void custom_gcode(const int16_t codenum) {
       #if ENABLED(NOZZLE_PARK_FEATURE)
         case 125: ProEx.C125(); break;  // Set park position
       #endif
+      #if ANY(PIDTEMP,PIDTEMPBED) // mmm
+        case 303: C303(); break;            // set PID temp and cycles for Bed or Hotend
+      #endif // mmm
       #if HAS_FILAMENT_SENSOR
         case 412: ProEx.C412(); break;  // Set runout sensor active mode
       #endif
       case 562: ProEx.C562(); break;    // Invert Extruder
       case 851: ProEx.C851(); break;    // If has a probe set z feed rate and multiprobe, if not, set manual z-offset
       #if HAS_TOOLBAR
-        case 810: ProEx.C810(); break;  // Config toolbar
+        case 810: C810(); break;            // mmm Config toolbar
+      #endif
+        case 120: C120(); break;              // visual setting T = hms, F = fan%, I = iconset
+      #if ENABLED(LASER_FAN_SHARING)
+        case 3:   C3(); break;                // set L = laser mode, F = fan mode
       #endif
     #endif
     default: CError(); break;
@@ -165,6 +177,9 @@ void custom_gcode_report(const bool forReplay/*=true*/) {
     #if ENABLED(NOZZLE_PARK_FEATURE)
       ProEx.C125_report(forReplay);
     #endif
+      #if ANY(PIDTEMP,PIDTEMPBED) // mmm
+        C303_report();
+      #endif // mmm
     #if HAS_FILAMENT_SENSOR
       ProEx.C412_report(forReplay);
     #endif
@@ -172,7 +187,121 @@ void custom_gcode_report(const bool forReplay/*=true*/) {
     #if HAS_BED_PROBE
       ProEx.C851_report(forReplay);
     #endif
+      C120_report(); // mmm
+    #if ENABLED(LASER_FAN_SHARING)
+      C3_report();
+    #endif
   #endif
+}
+
+#if ANY(PIDTEMP,PIDTEMPBED) // mmm
+  void C303() {
+    if (parser.seen("CES")) {
+      // set heater
+      uint8_t heater = 0;
+      if (parser.seenval('E')) heater = parser.byteval('E');
+      if (parser.seenval('S')) (heater==-1 ? HMI_data.BedPidT : HMI_data.HotendPidT)= parser.byteval('O');
+      if (parser.seenval('C')) HMI_data.PidCycles = parser.byteval('C');
+      return;
+    }
+    C3_report();
+  }
+
+  void C303_report(const bool forReplay/*=true*/) {
+    gcode.report_heading(forReplay, F("PID Configuration"));
+    gcode.report_echo_start(forReplay);
+    SERIAL_ECHOPGM("  C303");
+    SERIAL_ECHOPGM(" E-1", HMI_data.BedPidT);
+    SERIAL_ECHOPGM(" C", HMI_data.PidCycles);
+    SERIAL_EOL();
+  }
+#endif
+
+
+#if ENABLED(LASER_FAN_SHARING)
+  void C3 () {
+    /* C3 - Laser Mode enable/disable 
+          L - enable Laser mode. commands G3-5 enabled and fan changes sync with movement
+          F - enable Fan mode. G3-5 disabled. fan changes immediately
+          fan has priority if both selected
+    */
+    if (parser.seen("FHLO")) {
+      // set to fan mode
+      if (parser.seen("F")) SetLaserMode(false);
+      // Set to Laser mode
+      else if (parser.seen("L")) SetLaserMode(true);
+      // Set Laser Off Limit. used in G0 moves to keep laser active but not burning.
+      if (parser.seenval('O')) HMI_data.laser_off_pwr = parser.byteval('O');
+      if (parser.seenval('H')) HMI_data.target_laser_height = parser.byteval('H');
+      return;
+    }
+    C3_report();
+  }
+
+  void C3_report(const bool forReplay/*=true*/) {
+    gcode.report_heading(forReplay, F("Laser/Fan Configuration"));
+    gcode.report_echo_start(forReplay);
+    SERIAL_ECHOPGM("  C3");
+    SERIAL_ECHOPGM(" O", HMI_data.laser_off_pwr);
+    SERIAL_ECHOPGM(" H", HMI_data.target_laser_height);
+    if (planner.laserMode)
+      SERIAL_ECHOPGM(" L  ; Laser Mode enabled");
+    else
+      SERIAL_ECHOPGM(" F  ; Fan Mode enabled");
+    SERIAL_EOL();
+  }
+#endif
+
+
+void C120 () {
+  /* C120 - Display cofiguration settings 
+          In - set icon set n. stock and default is 9 
+          Tn - n : 1 - enable time in hms format. 0 - use : formate for time
+          Fn - n : 1 - display fan speed in percent. 0 - display raw fan speed value 
+  */
+  if (parser.seen("ITFS")) {
+    if (parser.seenval('I')) { HMI_data.baseIcon = parser.byteval('I'); DWIN_RedrawScreen(); }
+    if (parser.seenval('T')) HMI_data.time_format_textual = parser.boolval('T');
+    if (parser.seenval('F')) { HMI_data.fan_percent = parser.boolval('F'); DWIN_Draw_Dashboard(); }
+    if (parser.seenval('S')) { HMI_data.AutoStoreSD = parser.boolval('S'); }
+    return;
+  }
+  C120_report(true);
+}
+
+void C120_report(const bool forReplay/*=true*/) {
+  gcode.report_heading(forReplay, F("Display Config Settings"));
+  gcode.report_echo_start(forReplay);
+  SERIAL_ECHOPGM("  C120 I", HMI_data.baseIcon);
+  SERIAL_ECHOPGM(" T", HMI_data.time_format_textual? 1:0);
+  SERIAL_ECHOPGM(" F", HMI_data.fan_percent? 1:0);
+  SERIAL_ECHOPGM(" S", HMI_data.AutoStoreSD? 1:0);
+  SERIAL_EOL();
+}
+
+void C810 () {
+  /* C810 - ToolbarSetup
+  */
+  if (parser.seen("ABCDE")) {
+    uint8_t tbMax = ToolBar.OptCount();
+    if (parser.seenval('A'))  PRO_data.TBopt[0] = _MIN(parser.intval('A'),tbMax); 
+    if (parser.seenval('B'))  PRO_data.TBopt[1] = _MIN(parser.intval('B'),tbMax); 
+    if (parser.seenval('C'))  PRO_data.TBopt[2] = _MIN(parser.intval('C'),tbMax); 
+    if (parser.seenval('D'))  PRO_data.TBopt[3] = _MIN(parser.intval('D'),tbMax); 
+    if (parser.seenval('E'))  PRO_data.TBopt[4] = _MIN(parser.intval('E'),tbMax);
+    return;
+  }
+  C810_report(true);
+}
+void C810_report(const bool forReplay/*=true*/) {
+  gcode.report_heading(forReplay, F("Display Config Settings"));
+  gcode.report_echo_start(forReplay);
+  SERIAL_ECHOPGM("  C810 A", PRO_data.TBopt[0]);
+  SERIAL_ECHOPGM(" B", PRO_data.TBopt[1]);
+  SERIAL_ECHOPGM(" C", PRO_data.TBopt[2]);
+  SERIAL_ECHOPGM(" D", PRO_data.TBopt[3]);
+  SERIAL_ECHOPGM(" E", PRO_data.TBopt[4]);
+  SERIAL_EOL();
 }
 
 #endif // DWIN_LCD_PROUI && HAS_CGCODE

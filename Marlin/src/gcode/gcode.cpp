@@ -56,6 +56,9 @@ GcodeSuite gcode;
 #if ENABLED(LASER_FEATURE)
   #include "../feature/spindle_laser.h"
 #endif
+  #include "../module/planner.h"
+  #include "../module/temperature.h"
+
 
 #if ENABLED(FLOWMETER_SAFETY)
   #include "../feature/cooler.h"
@@ -248,8 +251,23 @@ void GcodeSuite::get_destination_from_command() {
         }
         else if (parser.codenum == 0)
           cutter.apply_power(0);
-      }
   #endif // LASER_FEATURE
+  #if ENABLED(LASER_FAN_SHARING)  // mmm
+    if (WITHIN(parser.codenum, 1, TERN(ARC_SUPPORT, 3, 1)) || TERN0(BEZIER_CURVE_SUPPORT, parser.codenum == 5)) {
+      /* Turn on Laser power */
+      planner.laser_is_powered = true;
+      thermalManager.set_fan_speed( 0 , planner.laser_power);
+    }
+    else if (parser.codenum == 0) {
+      /* Turn off laser power */
+      uint8_t targetFanspeed = 0;
+      planner.laser_is_powered = false;
+      if (printingIsActive())
+        targetFanspeed = HMI_data.laser_off_pwr;
+      thermalManager.set_fan_speed( 0 , targetFanspeed);
+    }
+    planner.buffer_sync_block(BLOCK_BIT_SYNC_FANS);
+  #endif
 }
 
 /**
@@ -493,6 +511,11 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 3: M3_M4(false); break;                              // M3: Turn ON Laser | Spindle (clockwise), set Power | Speed
         case 4: M3_M4(true ); break;                              // M4: Turn ON Laser | Spindle (counter-clockwise), set Power | Speed
         case 5: M5(); break;                                      // M5: Turn OFF Laser | Spindle
+      #endif
+      #if ENABLED(LASER_FAN_SHARING) // mmm
+        case 3: M106(); break;                                   // M3: Turn ON Laser | Spindle (clockwise), set Power | Speed
+        case 4: M106(); break;                                    // M4: Turn ON Laser | Spindle (counter-clockwise), set Power | Speed
+        case 5: M107(); break;                                      // M5: Turn OFF Laser | Spindle
       #endif
 
       #if ENABLED(COOLANT_MIST)
