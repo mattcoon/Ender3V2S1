@@ -251,23 +251,24 @@ void GcodeSuite::get_destination_from_command() {
         }
         else if (parser.codenum == 0)
           cutter.apply_power(0);
+    #if ENABLED(LASER_FAN_SHARING)  // mmm
+      if (WITHIN(parser.codenum, 1, TERN(ARC_SUPPORT, 3, 1)) || TERN0(BEZIER_CURVE_SUPPORT, parser.codenum == 5)) {
+        /* Turn on Laser power */
+        planner.laser_is_powered = true;
+        thermalManager.set_fan_speed( 0 , planner.laser_power);
+      }
+      else if (parser.codenum == 0) {
+        /* Turn off laser power */
+        uint8_t targetFanspeed = 0;
+        planner.laser_is_powered = false;
+        if (printingIsActive())
+          targetFanspeed = HMI_data.laser_off_pwr;
+        thermalManager.set_fan_speed( 0 , targetFanspeed);
+      }
+      planner.buffer_sync_block(BLOCK_BIT_SYNC_FANS);
+    #endif
+	}
   #endif // LASER_FEATURE
-  #if ENABLED(LASER_FAN_SHARING)  // mmm
-    if (WITHIN(parser.codenum, 1, TERN(ARC_SUPPORT, 3, 1)) || TERN0(BEZIER_CURVE_SUPPORT, parser.codenum == 5)) {
-      /* Turn on Laser power */
-      planner.laser_is_powered = true;
-      thermalManager.set_fan_speed( 0 , planner.laser_power);
-    }
-    else if (parser.codenum == 0) {
-      /* Turn off laser power */
-      uint8_t targetFanspeed = 0;
-      planner.laser_is_powered = false;
-      if (printingIsActive())
-        targetFanspeed = HMI_data.laser_off_pwr;
-      thermalManager.set_fan_speed( 0 , targetFanspeed);
-    }
-    planner.buffer_sync_block(BLOCK_BIT_SYNC_FANS);
-  #endif
 }
 
 /**
