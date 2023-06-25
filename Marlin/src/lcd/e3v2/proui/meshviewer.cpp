@@ -55,6 +55,7 @@ uint8_t rmax;                               // Maximum radius
 MeshViewerClass MeshViewer;
 
 float MeshViewerClass::max, MeshViewerClass::min;
+int8_t MeshViewerClass::margin;
 
 void MeshViewerClass::DrawMeshGrid(const uint8_t csizex, const uint8_t csizey) {
   sizex = csizex;

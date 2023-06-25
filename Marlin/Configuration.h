@@ -65,13 +65,21 @@
 TODO: filament loading setting - keep track of filament
 TODO: Increment config.gcode to create a new file
 FIXME: Tramming windows on repeat is a little flacky
+TODO: automate all build from pio commandline
 
 Test: 
 ------
+FIXME: mesh viewer as building from menue wierd
 TODO: LCD assets
+TODO: add CNC build SKR PRO
 
 Done:
 -------
+runout icon add back in / fix strobe to be more noticable
+Leveling active Z icon not working when active.
+Merge May release of Proui
+automate Github action build
+2.1.3.12
 autoload config with prompt from config.gcode
 Load SD Config menu item
 Add runout distance to tune menu

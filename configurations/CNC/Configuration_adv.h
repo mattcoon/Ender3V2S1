@@ -482,7 +482,7 @@
  * Enable Autotemp Mode with M104/M109 F<factor> S<mintemp> B<maxtemp>.
  * Disable by sending M104/M109 with no F parameter (or F0 with AUTOTEMP_PROPORTIONAL).
  */
-#define AUTOTEMP
+//#define AUTOTEMP
 #if ENABLED(AUTOTEMP)
   #define AUTOTEMP_OLDWEIGHT    0.98  // Factor used to weight previous readings (0.0 < value < 1.0)
   #define AUTOTEMP_MIN          210
@@ -821,6 +821,7 @@
   #define X1_MAX_POS X_BED_SIZE   // A max coordinate so the X1 carriage can't hit the parked X2 carriage
   #define X2_MIN_POS    80        // A min coordinate so the X2 carriage can't hit the parked X1 carriage
   #define X2_MAX_POS   353        // The max position of the X2 carriage, typically also the home position
+  #define X2_HOME_DIR    1        // Set to 1. The X2 carriage always homes to the max endstop position
   #define X2_HOME_POS X2_MAX_POS  // Default X2 home position. Set to X2_MAX_POS.
                                   // NOTE: For Dual X Carriage use M218 T1 Xn to override the X2_HOME_POS.
                                   // This allows recalibration of endstops distance without a rebuild.
@@ -1098,7 +1099,6 @@
   //#define ASSISTED_TRAMMING_WAIT_POSITION { X_CENTER, Y_CENTER, 30 } // Move the nozzle out of the way for adjustment
 
 
-#endif
 
   /**
    * Screw thread:
@@ -1107,6 +1107,9 @@
    *   M5: 50 = Clockwise, 51 = Counter-Clockwise
    */
   #define TRAMMING_SCREW_THREAD 40
+
+#endif
+
 
 // @section motion
 #if ENABLED(FT_MOTION)
@@ -1215,13 +1218,13 @@
 #define DISABLE_IDLE_X
 #define DISABLE_IDLE_Y
 //#define DISABLE_IDLE_Z    // Disable if the nozzle could fall onto your printed part!
-//#define DISABLE_IDLE_I
-//#define DISABLE_IDLE_J
-//#define DISABLE_IDLE_K
-//#define DISABLE_IDLE_U
-//#define DISABLE_IDLE_V
-//#define DISABLE_IDLE_W
-//#define DISABLE_IDLE_E    // Shut down all idle extruders
+#define DISABLE_IDLE_I
+#define DISABLE_IDLE_J
+#define DISABLE_IDLE_K
+#define DISABLE_IDLE_U
+#define DISABLE_IDLE_V
+#define DISABLE_IDLE_W
+#define DISABLE_IDLE_E    // Shut down all idle extruders
 
 // Default Minimum Feedrates for printing and travel moves
 #define DEFAULT_MINIMUMFEEDRATE       0.0     // (mm/s. °/s for rotational-only moves) Minimum feedrate. Set with M205 S.
@@ -2814,6 +2817,149 @@
 /**
  * Trinamic Smart Drivers
  *
+
+/**
+ * TMC26X Stepper Driver options
+ *
+ * The TMC26XStepper library is required for this stepper driver.
+ * https://github.com/trinamic/TMC26XStepper
+ * @section tmc/tmc26x
+ */
+#if HAS_DRIVER(TMC26X)
+
+  #if AXIS_DRIVER_TYPE_X(TMC26X)
+    #define X_MAX_CURRENT     1000  // (mA)
+    #define X_SENSE_RESISTOR    91  // (mOhms)
+    #define X_MICROSTEPS        16  // Number of microsteps
+  #endif
+
+  #if AXIS_DRIVER_TYPE_X2(TMC26X)
+    #define X2_MAX_CURRENT    1000
+    #define X2_SENSE_RESISTOR   91
+    #define X2_MICROSTEPS       X_MICROSTEPS
+  #endif
+
+  #if AXIS_DRIVER_TYPE_Y(TMC26X)
+    #define Y_MAX_CURRENT     1000
+    #define Y_SENSE_RESISTOR    91
+    #define Y_MICROSTEPS        16
+  #endif
+
+  #if AXIS_DRIVER_TYPE_Y2(TMC26X)
+    #define Y2_MAX_CURRENT    1000
+    #define Y2_SENSE_RESISTOR   91
+    #define Y2_MICROSTEPS       Y_MICROSTEPS
+  #endif
+
+  #if AXIS_DRIVER_TYPE_Z(TMC26X)
+    #define Z_MAX_CURRENT     1000
+    #define Z_SENSE_RESISTOR    91
+    #define Z_MICROSTEPS        16
+  #endif
+
+  #if AXIS_DRIVER_TYPE_Z2(TMC26X)
+    #define Z2_MAX_CURRENT    1000
+    #define Z2_SENSE_RESISTOR   91
+    #define Z2_MICROSTEPS       Z_MICROSTEPS
+  #endif
+
+  #if AXIS_DRIVER_TYPE_Z3(TMC26X)
+    #define Z3_MAX_CURRENT    1000
+    #define Z3_SENSE_RESISTOR   91
+    #define Z3_MICROSTEPS       Z_MICROSTEPS
+  #endif
+
+  #if AXIS_DRIVER_TYPE_Z4(TMC26X)
+    #define Z4_MAX_CURRENT    1000
+    #define Z4_SENSE_RESISTOR   91
+    #define Z4_MICROSTEPS       Z_MICROSTEPS
+  #endif
+
+  #if AXIS_DRIVER_TYPE_I(TMC26X)
+    #define I_MAX_CURRENT    1000
+    #define I_SENSE_RESISTOR   91
+    #define I_MICROSTEPS       16
+  #endif
+
+  #if AXIS_DRIVER_TYPE_J(TMC26X)
+    #define J_MAX_CURRENT    1000
+    #define J_SENSE_RESISTOR   91
+    #define J_MICROSTEPS       16
+  #endif
+
+  #if AXIS_DRIVER_TYPE_K(TMC26X)
+    #define K_MAX_CURRENT    1000
+    #define K_SENSE_RESISTOR   91
+    #define K_MICROSTEPS       16
+  #endif
+
+  #if AXIS_DRIVER_TYPE_U(TMC26X)
+    #define U_MAX_CURRENT    1000
+    #define U_SENSE_RESISTOR   91
+    #define U_MICROSTEPS       16
+  #endif
+
+  #if AXIS_DRIVER_TYPE_V(TMC26X)
+    #define V_MAX_CURRENT    1000
+    #define V_SENSE_RESISTOR   91
+    #define V_MICROSTEPS       16
+  #endif
+
+  #if AXIS_DRIVER_TYPE_W(TMC26X)
+    #define W_MAX_CURRENT    1000
+    #define W_SENSE_RESISTOR   91
+    #define W_MICROSTEPS       16
+  #endif
+
+  #if AXIS_DRIVER_TYPE_E0(TMC26X)
+    #define E0_MAX_CURRENT    1000
+    #define E0_SENSE_RESISTOR   91
+    #define E0_MICROSTEPS       16
+  #endif
+
+  #if AXIS_DRIVER_TYPE_E1(TMC26X)
+    #define E1_MAX_CURRENT    1000
+    #define E1_SENSE_RESISTOR   91
+    #define E1_MICROSTEPS       E0_MICROSTEPS
+  #endif
+
+  #if AXIS_DRIVER_TYPE_E2(TMC26X)
+    #define E2_MAX_CURRENT    1000
+    #define E2_SENSE_RESISTOR   91
+    #define E2_MICROSTEPS       E0_MICROSTEPS
+  #endif
+
+  #if AXIS_DRIVER_TYPE_E3(TMC26X)
+    #define E3_MAX_CURRENT    1000
+    #define E3_SENSE_RESISTOR   91
+    #define E3_MICROSTEPS       E0_MICROSTEPS
+  #endif
+
+  #if AXIS_DRIVER_TYPE_E4(TMC26X)
+    #define E4_MAX_CURRENT    1000
+    #define E4_SENSE_RESISTOR   91
+    #define E4_MICROSTEPS       E0_MICROSTEPS
+  #endif
+
+  #if AXIS_DRIVER_TYPE_E5(TMC26X)
+    #define E5_MAX_CURRENT    1000
+    #define E5_SENSE_RESISTOR   91
+    #define E5_MICROSTEPS       E0_MICROSTEPS
+  #endif
+
+  #if AXIS_DRIVER_TYPE_E6(TMC26X)
+    #define E6_MAX_CURRENT    1000
+    #define E6_SENSE_RESISTOR   91
+    #define E6_MICROSTEPS       E0_MICROSTEPS
+  #endif
+
+  #if AXIS_DRIVER_TYPE_E7(TMC26X)
+    #define E7_MAX_CURRENT    1000
+    #define E7_SENSE_RESISTOR   91
+    #define E7_MICROSTEPS       E0_MICROSTEPS
+  #endif
+
+#endif // TMC26X
  * To use TMC2130, TMC2160, TMC2660, TMC5130, TMC5160 stepper drivers in SPI mode:
  *  - Connect your SPI pins to the Hardware SPI interface on the board.
  *    Some boards have simple jumper connections! See your board's documentation.
@@ -3616,16 +3762,8 @@
  *
  * NOTE: This option sacrifices some cooling fan speed options.
  */
-//#define LASER_FAN_SHARING  // implement G3-G5 and M3-M5 as redirect of M106 and M107
-#ifdef LASER_FAN_SHARING
-  #define SPEED_POWER_STARTUP       255    // M3/M4 speed/power default (with no arguments)
-  #define SPEED_POWER_LOW            15    // value for laser off tokeep running but not burning
-  #define LASER_TEST_PULSE            3    // value to just turn on laser for test pulse
-  #define LASER_TEST_TIMEOUT_MS    5000    // (ms) to 
-  #define Z_AFTER_HOMING_LASER       20    // (mm) height for laser after homing
-  #define LASER_SYNCHRONOUS_M106_M107
-  #define LASER_MODE_DEFAULT false         // startup in fan mode for printing
-#endif
+//#define LASER_SYNCHRONOUS_M106_M107
+
 /**
  * Coolant Control
  *

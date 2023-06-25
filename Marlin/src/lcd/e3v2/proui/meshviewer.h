@@ -23,11 +23,12 @@
 class MeshViewerClass {
 public:
   static float max, min;
-  void DrawMeshGrid(const uint8_t csizex, const uint8_t csizey);
-  void DrawMeshPoint(const uint8_t x, const uint8_t y, const float z);
-  void Draw(bool withsave = false, bool redraw = true);
-  void DrawMesh(bed_mesh_t zval, const uint8_t csizex, const uint8_t csizey);
-  int8_t margin; // mmm
+  static int8_t margin; // mmm
+  static void DrawMeshGrid(const uint8_t csizex, const uint8_t csizey);
+  static void DrawMeshPoint(const uint8_t x, const uint8_t y, const float z);
+  static void Draw(bool withsave = false, bool redraw = true);
+  static void DrawMesh(bed_mesh_t zval, const uint8_t csizex, const uint8_t csizey);
+  static void SetMargin(int8_t m) {margin = m;};
 };
 
 extern MeshViewerClass MeshViewer;

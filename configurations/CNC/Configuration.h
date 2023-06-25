@@ -69,13 +69,21 @@
 TODO: filament loading setting - keep track of filament
 TODO: Increment config.gcode to create a new file
 FIXME: Tramming windows on repeat is a little flacky
+FIXME: mesh viewer as building from menue wierd
+TODO: automate all build
 
 Test: 
 ------
+FIXME: runout icon add back in / fix strobe to be more noticable
+FIXME: Leveling active Z icon not working when active. use glad icons
 TODO: LCD assets
+TODO: automate Github action build
+TODO: add CNC build SKR PRO
+TODO: Merge May release of Proui
 
 Done:
 -------
+2.1.3.12
 autoload config with prompt from config.gcode
 Load SD Config menu item
 Add runout distance to tune menu
@@ -164,7 +172,7 @@ Flex mesh size
 // @section info
 
 // Author info of this build printed to the host during boot and M115
-#define STRING_CONFIG_H_AUTHOR "Miguel A. Risco-Castillo (MRiscoC)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "(V1 Engineering, Ryan, 515DL)" // "(none, default config)" // Who made the changes.
 #define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 /**
@@ -789,8 +797,8 @@ Flex mesh size
 
 #if ENABLED(PIDTEMP)
   //#define PID_DEBUG             // Print PID debug data to the serial port. Use 'M303 D' to toggle activation.
-  #define PID_EDIT_MENU         // mmm Add PID editing to the "Advanced Settings" menu. (~700 bytes of PROGMEM)
-  #define PID_AUTOTUNE_MENU     // mmm Add PID auto-tuning to the "Advanced Settings" menu. (~250 bytes of PROGMEM)
+  //#define PID_EDIT_MENU         // mmm Add PID editing to the "Advanced Settings" menu. (~700 bytes of PROGMEM)
+  //#define PID_AUTOTUNE_MENU     // mmm Add PID auto-tuning to the "Advanced Settings" menu. (~250 bytes of PROGMEM)
   //#define PID_PARAMS_PER_HOTEND // Use separate PID parameters for each extruder (useful for mismatched extruders)
                                   // Set/get with G-code: M301 E[extruder number, 0-2]
 
@@ -879,7 +887,7 @@ Flex mesh size
  *
  * With this option disabled, bang-bang will be used. BED_LIMIT_SWITCHING enables hysteresis.
  */
-#define PIDTEMPBED  // Ender Configs
+//#define PIDTEMPBED  // Ender Configs
 
 #if ENABLED(PIDTEMPBED)
   //#define MIN_BED_POWER 0
@@ -1276,7 +1284,7 @@ Flex mesh size
  */
 #define X_MIN_ENDSTOP_HIT_STATE HIGH
 #define X_MAX_ENDSTOP_HIT_STATE HIGH
-#define Y_MIN_ENDSTOP_HIT_STATE HIGH
+#define Y_MIN_ENDSTOP_HIT_STATE LOW
 #define Y_MAX_ENDSTOP_HIT_STATE HIGH
 #define Z_MIN_ENDSTOP_HIT_STATE HIGH
 #define Z_MAX_ENDSTOP_HIT_STATE HIGH
@@ -1292,7 +1300,7 @@ Flex mesh size
 #define V_MAX_ENDSTOP_HIT_STATE HIGH
 #define W_MIN_ENDSTOP_HIT_STATE HIGH
 #define W_MAX_ENDSTOP_HIT_STATE HIGH
-#define Z_MIN_PROBE_ENDSTOP_HIT_STATE HIGH
+#define Z_MIN_PROBE_ENDSTOP_HIT_STATE LOW
 
 // Enable this feature if all enabled endstop pins are interrupt-capable.
 // This will remove the need to poll the interrupt pins, saving many CPU cycles.
@@ -2471,23 +2479,6 @@ Flex mesh size
 #define PREHEAT_2_TEMP_CHAMBER 35
 #define PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
 
-#define PREHEAT_3_LABEL       "PETG"
-#define PREHEAT_3_TEMP_HOTEND 240
-#define PREHEAT_3_TEMP_BED     60
-#define PREHEAT_3_TEMP_CHAMBER 35
-#define PREHEAT_3_FAN_SPEED     0 // Value from 0 to 255
-
-#define PREHEAT_4_LABEL       "TPU"
-#define PREHEAT_4_TEMP_HOTEND 230
-#define PREHEAT_4_TEMP_BED      0
-#define PREHEAT_4_TEMP_CHAMBER 35
-#define PREHEAT_4_FAN_SPEED     0 // Value from 0 to 255
-
-#define PREHEAT_5_LABEL       "Warmup"
-#define PREHEAT_5_TEMP_HOTEND 180
-#define PREHEAT_5_TEMP_BED     45
-#define PREHEAT_5_TEMP_CHAMBER 35
-#define PREHEAT_5_FAN_SPEED     0 // Value from 0 to 255
 // @section motion
 #define FAN_SPEED_PERCENT_DEF  true
 #define TIME_HMS_FORMAT        true
@@ -2507,7 +2498,7 @@ Flex mesh size
 
 #if ENABLED(NOZZLE_PARK_FEATURE)
   // Specify a park position as { X, Y, Z_raise }
-  #define NOZZLE_PARK_POINT { (X_BED_SIZE + 10), (Y_MAX_POS - 10), 20 }
+  #define NOZZLE_PARK_POINT { (X_MIN_POS + 10), (Y_MAX_POS - 10), 20 }
   #define NOZZLE_PARK_MOVE          0   // Park motion: 0 = XY Move, 1 = X Only, 2 = Y Only, 3 = X before Y, 4 = Y before X
   #define NOZZLE_PARK_Z_RAISE_MIN   0   // (mm) Always raise Z by at least this distance  // MRiscoC uses Park Z Raise from 0 to avoid backlash issues
   #define NOZZLE_PARK_XY_FEEDRATE 100   // (mm/s) X and Y axes feedrate (also used for delta Z axis)
@@ -3463,36 +3454,7 @@ Flex mesh size
 // Ender-3 v2 OEM display. A DWIN display with Rotary Encoder.
 //
 //#define DWIN_CREALITY_LCD           // Creality UI
-// #define DWIN_LCD_PROUI              // Pro UI by MRiscoC
-// #define USE_STOCK_DWIN_SET
-// #define DWIN_ICON_SET
-
-// Professional firmware features:
-//#define PROUI_EX 1
-#if PROUI_EX
-  #define HAS_GCODE_PREVIEW 1
-  #define HAS_TOOLBAR 1
-#endif
-#define HAS_CUSTOM_COLORS 1
-#define HAS_PLOT 1
-#define HAS_ESDIAG 1
-#define HAS_CGCODE 1
-#define HAS_LOCKSCREEN 1
-//#define HAS_SD_EXTENDER 1  // Enable to support SD card extender cables
-#define MESH_EDIT_MENU
-#define SHOW_REAL_POS
-#define ACTIVATE_MESH_ITEM  // Allows temporary enabling of mesh leveling
-#define RUNOUT_TUNE_ITEM
-#define PLR_TUNE_ITEM
-//#define JD_TUNE_ITEM  // Enable only if Juntion Deviation is enabled
-//#define ADVK_TUNE_ITEM  // Enable only if Linear Advance is enabled
-//#define MEDIASORT_MENU_ITEM  // Allows enable/disable file list sorting
-//#define CCLOUD_PRINT_SUPPORT  // Allows enable/disable Creality Cloud Print Support
-#define ZHOME_BEFORE_LEVELING
-//#define SMOOTH_ENCODER_MENUITEMS  // Menu items value faster/smooth change rate
-#define SHOW_SPEED_IND // Show the axes speed in mm/s intermittently with the speed percentage
-//#define NO_BLINK_IND  // Disables dashboard icon background blink indicator
-
+//#define DWIN_LCD_PROUI              // Pro UI by MRiscoC
 //#define DWIN_CREALITY_LCD_JYERSUI   // Jyers UI by Jacob Myers
 //#define DWIN_MARLINUI_PORTRAIT      // MarlinUI (portrait orientation)
 //#define DWIN_MARLINUI_LANDSCAPE     // MarlinUI (landscape orientation)

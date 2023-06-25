@@ -65,13 +65,21 @@
 TODO: filament loading setting - keep track of filament
 TODO: Increment config.gcode to create a new file
 FIXME: Tramming windows on repeat is a little flacky
+FIXME: mesh viewer as building from menue wierd
+TODO: automate all build
 
 Test: 
 ------
+FIXME: runout icon add back in / fix strobe to be more noticable
+FIXME: Leveling active Z icon not working when active. use glad icons
 TODO: LCD assets
+TODO: automate Github action build
+TODO: add CNC build SKR PRO
+TODO: Merge May release of Proui
 
 Done:
 -------
+2.1.3.12
 autoload config with prompt from config.gcode
 Load SD Config menu item
 Add runout distance to tune menu

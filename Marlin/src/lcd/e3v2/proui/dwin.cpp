@@ -687,17 +687,15 @@ void _update_axis_value(const AxisEnum axis, const uint16_t x, const uint16_t y,
 
 void _draw_iconblink(bool &flag, const bool sensor, const uint8_t icon1, const uint8_t icon2, const uint16_t x, const uint16_t y) {
   #if DISABLED(NO_BLINK_IND)
-    if (flag != sensor) {
-      flag = sensor;
-      if (!flag) {
-        DWIN_Draw_Box(1, HMI_data.Background_Color, x, y, 20, 20);
-        DWINUI::Draw_Icon(icon1, x, y);
-      }
-    }
+    if (flag != sensor) flag = sensor; // mm
     if (flag) {
-      DWIN_Draw_Box(1, blink ? HMI_data.SplitLine_Color : HMI_data.Background_Color, x, y, 20, 20);
+      DWIN_Draw_Box(1, blink ? HMI_data.Selected_Color : HMI_data.Background_Color, x, y, 20, 20);
       DWINUI::Draw_Icon(icon2, x, y);
     }
+    else {
+      DWIN_Draw_Box(1, HMI_data.Background_Color, x, y, 20, 20);
+      DWINUI::Draw_Icon(icon1, x, y);
+    } // mmm
   #else
     if (flag != sensor) {
       flag = sensor;
@@ -710,7 +708,7 @@ void _draw_iconblink(bool &flag, const bool sensor, const uint8_t icon1, const u
 void _draw_ZOffsetIcon() {
   #if HAS_LEVELING
     static bool _leveling_active = false;
-    _draw_iconblink(_leveling_active, planner.leveling_active, ICON_Zoffset, ICON_SetZOffset, 186, 416);
+    _draw_iconblink(_leveling_active, planner.leveling_active, ICON_Zoffset, ICON_Zoffset, 186, 416);
   #else
     DWINUI::Draw_Icon(ICON_Zoffset, 187, 416);
   #endif
@@ -719,8 +717,21 @@ void _draw_ZOffsetIcon() {
 #if HAS_FILAMENT_SENSOR && PROUI_EX
   void _draw_runout_icon() {
     static bool _runout_active = false;
-    _draw_iconblink(_runout_active, FilamentSensorDevice::poll_runout_state(0), ICON_StepE, ICON_FilRunOut, 112, 416);
+    _draw_iconblink(_runout_active, FilamentSensorDevice::poll_runout_state(0), ICON_StepE, ICON_StepE, 112, 416);
   }
+  
+void _draw_FilamentSensorStatus() { // mmm
+  uint16_t RunoutColor = Color_Yellow;
+  if (runout.enabled) {
+    if (FilamentSensorDevice::poll_runout_state(0)) 
+      RunoutColor = Color_Red;
+    else
+      RunoutColor = Color_Green;
+  }
+  DWIN_Draw_Rectangle(1, RunoutColor, 110, 414, 134, 438);
+  _draw_runout_icon();
+} // mmm
+  
 #endif
 
 void _draw_feedrate() {
@@ -814,8 +825,10 @@ void update_variable() {
   _draw_feedrate();
 
   #if HAS_FAN
-    if (_new_fanspeed)
-      DWINUI::Draw_Int(DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 3, 195 + 2 * STAT_CHR_W, 384, _fanspeed);
+    if (_new_fanspeed) {
+      _fanspeed = thermalManager.fan_speed[0];
+      DWINUI::Draw_Int(DWIN_FONT_STAT, HMI_data.Indicator_Color, HMI_data.Background_Color, 3, 195 + 2 * STAT_CHR_W, 384, (HMI_data.fan_percent) ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
+    }
   #endif
 
   static float _offset = 0;
@@ -825,7 +838,8 @@ void update_variable() {
   }
 
   #if HAS_FILAMENT_SENSOR && PROUI_EX
-    _draw_runout_icon();
+    // _draw_runout_icon();
+    _draw_FilamentSensorStatus(); // mmm
   #endif
 
   _draw_ZOffsetIcon();
@@ -1482,6 +1496,7 @@ void DWIN_LevelingStart() {
     TERN_(PROUI_EX,HMI_flag.cancel_abl = 0);
     Title.ShowCaption(GET_TEXT_F(MSG_BED_LEVELING));
     #if PROUI_EX
+      MeshViewer.SetMargin(25); // mmm
       MeshViewer.DrawMeshGrid(GRID_MAX_POINTS_X, GRID_MAX_POINTS_Y);
       DWINUI::Draw_Button(BTN_Cancel, 86, 305);
     #else
@@ -2697,7 +2712,7 @@ void SetFlow() { SetPIntOnClick(MIN_PRINT_FLOW, MAX_PRINT_FLOW, []{ planner.refr
       probe.stow();
       zval[0][0] = Tram(0, false);  // First tram point can do Homing
       checkkey = NothingToDo;       // After home disable user input
-      MeshViewer.margin = 50; // mmm
+      MeshViewer.SetMargin(50); // mmm
       MeshViewer.DrawMeshGrid(2, 2);
       MeshViewer.DrawMeshPoint(0, 0, zval[0][0]);
       zval[1][0] = Tram(1, false);
@@ -2910,6 +2925,7 @@ void SetTimeFormat() {
 }
 
 #if ENABLED(FWRETRACT)
+  void Return_FWRetract_Menu() { (PreviousMenu == FilSetMenu) ? Draw_FilSet_Menu() : Draw_Tune_Menu(); }
   void SetRetractLength() { SetPFloatOnClick( 0, 10, UNITFDIGITS); }
   void SetRetractSpeed() { SetPFloatOnClick( 1, 90, UNITFDIGITS); }
   void SetZRaise() { SetPFloatOnClick( 0, 2, 2); }

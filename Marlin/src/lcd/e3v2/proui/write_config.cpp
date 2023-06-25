@@ -55,7 +55,7 @@ void WriteRGBConfig (String *lBuffer,uint8_t cIndex, uint16_t color) {
 }
 
 void WriteSDConfig() {
-  #if ProUIex
+  #if PROUI_EX
     String buffer = {};
     card.openFileWrite("config.gcode");
       // C10                    ; Mark as a configuration file
