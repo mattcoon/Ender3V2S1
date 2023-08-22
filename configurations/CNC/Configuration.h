@@ -1351,7 +1351,7 @@ Flex mesh size
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE { 100, 100, 15 } // { 50, 50, 15, 25 } // { 300, 300, 5, 25 }
+#define DEFAULT_MAX_FEEDRATE { 200, 200, 15 } // { 50, 50, 15, 25 } // { 300, 300, 5, 25 }
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -1589,6 +1589,7 @@ Flex mesh size
  *          Take extreme care when setting up this feature.
  */
 //#define SENSORLESS_PROBING
+#define DIAG_JUMPERS_REMOVED
 
 /**
  * Allen key retractable z-probe as seen on many Kossel delta printers - https://reprap.org/wiki/Kossel#Automatic_bed_leveling_probe
