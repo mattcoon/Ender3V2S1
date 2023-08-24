@@ -649,7 +649,7 @@
  *   PWM on pin OC2A. Only use this option if you don't need PWM on 0C2A. (Check your schematic.)
  *   USE_OCR2A_AS_TOP sacrifices duty cycle control resolution to achieve this broader range of frequencies.
  */
-//#define FAST_PWM_FAN    // Increase the fan PWM frequency. Removes the PWM noise but increases heating in the FET/Arduino
+#define FAST_PWM_FAN    // Increase the fan PWM frequency. Removes the PWM noise but increases heating in the FET/Arduino
 #if ENABLED(FAST_PWM_FAN)
   //#define FAST_PWM_FAN_FREQUENCY 31400  // Define here to override the defaults below
   //#define USE_OCR2A_AS_TOP
@@ -657,7 +657,7 @@
     #ifdef __AVR__
       #define FAST_PWM_FAN_FREQUENCY ((F_CPU) / (2 * 255 * 1))
     #else
-      #define FAST_PWM_FAN_FREQUENCY 1000U
+      #define FAST_PWM_FAN_FREQUENCY 2500U
     #endif
   #endif
 #endif
@@ -3604,8 +3604,12 @@
  *
  * NOTE: This option sacrifices some cooling fan speed options.
  */
-//#define LASER_SYNCHRONOUS_M106_M107
-
+#define LASER_FAN_SHARING  // implement G3-G5 and M3-M5 as redirect of M106 and M107
+#ifdef LASER_FAN_SHARING
+  #define SPEED_POWER_LOW            1    // value for laser off tokeep running but not burning
+  #define LASER_SYNCHRONOUS_M106_M107
+  #define LASER_MODE_DEFAULT true
+#endif
 /**
  * Coolant Control
  *

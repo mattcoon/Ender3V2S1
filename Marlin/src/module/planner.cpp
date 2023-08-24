@@ -2926,8 +2926,10 @@ void Planner::buffer_sync_block(const BlockFlagBit sync_flag/*=BLOCK_BIT_SYNC_PO
   #if ENABLED(BACKLASH_COMPENSATION)
     LOOP_NUM_AXES(axis) block->position[axis] += backlash.get_applied_steps((AxisEnum)axis);
   #endif
-  #if BOTH(HAS_FAN, LASER_SYNCHRONOUS_M106_M107)
+  #if ENABLED(LASER_FAN_SHARING)
     if (laserMode) // mmm
+  #endif
+  #if BOTH(HAS_FAN, LASER_SYNCHRONOUS_M106_M107)
       FANS_LOOP(i) block->fan_speed[i] = thermalManager.fan_speed[i];
   #endif
 

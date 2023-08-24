@@ -262,7 +262,7 @@ void GcodeSuite::get_destination_from_command() {
         uint8_t targetFanspeed = 0;
         planner.laser_is_powered = false;
         if (printingIsActive())
-          targetFanspeed = HMI_data.laser_off_pwr;
+          targetFanspeed = TERN(DWIN_LCD_PROUI,HMI_data.laser_off_pwr,SPEED_POWER_LOW);
         thermalManager.set_fan_speed( 0 , targetFanspeed);
       }
       planner.buffer_sync_block(BLOCK_BIT_SYNC_FANS);
@@ -512,11 +512,12 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 3: M3_M4(false); break;                              // M3: Turn ON Laser | Spindle (clockwise), set Power | Speed
         case 4: M3_M4(true ); break;                              // M4: Turn ON Laser | Spindle (counter-clockwise), set Power | Speed
         case 5: M5(); break;                                      // M5: Turn OFF Laser | Spindle
-      #endif
-      #if ENABLED(LASER_FAN_SHARING) // mmm
-        case 3: M106(); break;                                   // M3: Turn ON Laser | Spindle (clockwise), set Power | Speed
-        case 4: M106(); break;                                    // M4: Turn ON Laser | Spindle (counter-clockwise), set Power | Speed
-        case 5: M107(); break;                                      // M5: Turn OFF Laser | Spindle
+      #else
+        #if ENABLED(LASER_FAN_SHARING) // mmm
+          case 3: M106(); break;                                   // M3: Turn ON Laser | Spindle (clockwise), set Power | Speed
+          case 4: M106(); break;                                    // M4: Turn ON Laser | Spindle (counter-clockwise), set Power | Speed
+          case 5: M107(); break;                                      // M5: Turn OFF Laser | Spindle
+        #endif
       #endif
 
       #if ENABLED(COOLANT_MIST)
