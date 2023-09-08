@@ -9,6 +9,7 @@ on:
   pull_request:
     branches:
     - bugfix-2.1.x
+    - MattMods2023
     paths-ignore:
     - config/**
     - data/**
@@ -17,6 +18,7 @@ on:
   push:
     branches:
     - bugfix-2.1.x
+    - MattMods2023
     paths-ignore:
     - config/**
     - data/**
@@ -26,7 +28,7 @@ on:
 jobs:
   test_builds:
     name: Run All Tests
-    if: github.repository == 'mriscoc/Ender3V2S1'
+    if: github.repository == 'mattcoon/Ender3V2S1'
 
     runs-on: ubuntu-latest
 

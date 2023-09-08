@@ -43,7 +43,8 @@ void onDrawTBItem(MenuItem* menuitem, int8_t line) {
   const uint8_t xp = xoff + line * B_XPOS + (line > sel ? tw : 0);
   if (focused && (line == sel)) {
     dwinDrawBox(1, COLOR_BG_WINDOW, xp - 2, TBYPOS, B_XPOS, TBHEIGHT);
-    DWINUI::drawString(xp + B_XPOS, B_YPOS + 1, menuitem->caption);
+    if (hmiData.TBShowCaption) // mmm
+      DWINUI::drawString(xp + B_XPOS, B_YPOS + 1, menuitem->caption);
   }
   DWINUI::drawIcon(menuitem->icon, xp, B_YPOS);
 };

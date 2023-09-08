@@ -44,7 +44,7 @@
     static void drawPoint(const uint8_t x, const uint8_t y, const float z);
     static void drawMesh(const bed_mesh_t zval, const uint8_t csizex, const uint8_t csizey);
     static void drawViewer(const bool withsave=false, const bool redraw=true);
-  };
+};
   extern MeshViewer meshViewer;
 #endif
 

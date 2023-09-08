@@ -28,7 +28,7 @@
 /**
  * Marlin release version identifier
  */
-#define SHORT_BUILD_VERSION "2.1.3 MRiscoC"
+#define SHORT_BUILD_VERSION "2.1.3.13"
 
 /**
  * Verbose version identifier which should contain a reference to the location
@@ -57,7 +57,7 @@
  * has a distinct Github fork— the Source Code URL should just be the main
  * Marlin repository.
  */
-#define SOURCE_CODE_URL "github.com/mriscoc/Ender3V2S1"
+#define SOURCE_CODE_URL "github.com/mattcoon/Ender3V2S1" // mmm
 
 /**
  * Default generic printer UUID.

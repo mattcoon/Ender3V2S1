@@ -49,6 +49,7 @@ extern MenuData_t menuData;
 #define SET_MENU_R(I,R,L,V) setMenu(I, R, GET_TEXT_F(L), V)
 
 #define BACK_ITEM(H) menuItemAdd(ICON_Back, GET_TEXT_F(MSG_BUTTON_BACK), onDrawMenuItem, H)
+#define BACK_HOME()  menuItemAdd(ICON_Back, GET_TEXT_F(MSG_BUTTON_MAIN), onDrawMenuItem, gotoMainMenu) // mmm
 #define MENU_ITEM(I,L,V...) menuItemAdd(I, GET_TEXT_F(L), V)
 #define EDIT_ITEM(I,L,V...) editItemAdd(I, GET_TEXT_F(L), V)
 #define MENU_ITEM_F(I,L,V...) menuItemAdd(I, F(L), V)
