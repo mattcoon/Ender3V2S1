@@ -31,8 +31,9 @@
 
 #include "../../sd/cardreader.h"
 
-#if ENABLED(NANODLP_Z_SYNC)
+#if ANY(NANODLP_Z_SYNC,LASER_FAN_SHARING)
   #include "../../module/planner.h"
+  #include "../../module/temperature.h"
 #endif
 
 extern xyze_pos_t destination;
@@ -90,6 +91,16 @@ void GcodeSuite::G0_G1(TERN_(HAS_FAST_MOVES, const bool fast_move/*=false*/)) {
     }
 
   #endif // FWRETRACT
+  #if ENABLED(LASER_FAN_SHARING)
+    if( parser.seen_test('S')) {
+      uint16_t speed = parser.value_ushort();
+      planner.laser_power = speed;
+      thermalManager.set_fan_speed(active_extruder, speed);
+      planner.laser_power = speed;
+      if (planner.laserMode == true)
+      planner.buffer_sync_block(BLOCK_BIT_SYNC_FANS);
+    }
+  #endif
 
   #if ANY(IS_SCARA, POLAR)
     fast_move ? prepare_fast_move_to_destination() : prepare_line_to_destination();

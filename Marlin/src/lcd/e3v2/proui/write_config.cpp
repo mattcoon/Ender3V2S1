@@ -147,6 +147,9 @@ void writeSDConfig() {
     // store current mesh as M421 commands
     writeMeshConfig(&buffer);
 
+    // ui sounds
+    buffer += "M300E" + String(ui.sound_on?1:0) + "\n";
+
     // ui colors
     // C11 E2  R1 G2 B1     ;Screen Background
     writeRGBConfig(&buffer,2,hmiData.colorBackground);

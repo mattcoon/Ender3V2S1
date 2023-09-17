@@ -507,15 +507,15 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 1: M0_M1(); break;                                   // M1: Conditional stop - Wait for user button press on LCD
       #endif
 
-      #if HAS_CUTTER
-        case 3: M3_M4(false); break;                              // M3: Turn ON Laser | Spindle (clockwise), set Power | Speed
-        case 4: M3_M4(true ); break;                              // M4: Turn ON Laser | Spindle (counter-clockwise), set Power | Speed
-        case 5: M5(); break;                                      // M5: Turn OFF Laser | Spindle
+      #if ENABLED(LASER_FAN_SHARING) // mmm
+        case 3: M106(); break;                                   // M3: Turn ON Laser | Spindle (clockwise), set Power | Speed
+        case 4: M106(); break;                                    // M4: Turn ON Laser | Spindle (counter-clockwise), set Power | Speed
+        case 5: M107(); break;                                      // M5: Turn OFF Laser | Spindle
       #else
-        #if ENABLED(LASER_FAN_SHARING) // mmm
-          case 3: M106(); break;                                   // M3: Turn ON Laser | Spindle (clockwise), set Power | Speed
-          case 4: M106(); break;                                    // M4: Turn ON Laser | Spindle (counter-clockwise), set Power | Speed
-          case 5: M107(); break;                                      // M5: Turn OFF Laser | Spindle
+        #if HAS_CUTTER
+          case 3: M3_M4(false); break;                              // M3: Turn ON Laser | Spindle (clockwise), set Power | Speed
+          case 4: M3_M4(true ); break;                              // M4: Turn ON Laser | Spindle (counter-clockwise), set Power | Speed
+          case 5: M5(); break;                                      // M5: Turn OFF Laser | Spindle
         #endif
       #endif
 
