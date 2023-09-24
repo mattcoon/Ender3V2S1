@@ -19,6 +19,8 @@ on:
     branches:
     - bugfix-2.1.x
     - MattMods2023
+    - Matt2023_fall
+    
     paths-ignore:
     - config/**
     - data/**
