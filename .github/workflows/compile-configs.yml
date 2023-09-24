@@ -6,6 +6,7 @@ on:
   push:
     branches:
     - MattMods2023
+    - Matt2023_fall
   
   workflow_dispatch:
 
