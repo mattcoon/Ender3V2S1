@@ -3,7 +3,10 @@ name: Build Configs
 on:
   release:
     types: [published]
-
+  push:
+    branches:
+    - MattMods2023
+  
   workflow_dispatch:
 
 jobs:
