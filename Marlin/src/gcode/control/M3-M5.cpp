@@ -102,7 +102,7 @@ void GcodeSuite::M3_M4(const bool is_M4) {
     #else
       float u = 0;
     #endif
-    if (parser.seenval('S')) {
+    if (parser.seenval('S') || parser.seenval('O')) {
       const float v = parser.value_float();
       #if ENABLED(CV_LASER_MODULE)
         u = laser_device.power16_to_8(v);
