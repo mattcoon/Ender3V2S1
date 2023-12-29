@@ -72,6 +72,8 @@ typedef struct FilamentChangeSettings {
     static constexpr float load_length = FILAMENT_CHANGE_FAST_LOAD_LENGTH,
                            unload_length = FILAMENT_CHANGE_UNLOAD_LENGTH;
   #endif
+  float unload_prelength;  // mmm
+  millis_t unload_predelay; // mmm
 } fil_change_settings_t;
 
 #if ENABLED(CONFIGURE_FILAMENT_CHANGE)

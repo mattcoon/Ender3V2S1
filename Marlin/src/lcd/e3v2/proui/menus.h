@@ -34,6 +34,7 @@
 
 // Create and add a MenuItem object to the menu array
 #define BACK_ITEM(OC) menuItemAdd(ICON_Back, GET_TEXT_F(MSG_BUTTON_BACK), onDrawMenuItem, OC, nullptr)
+#define BACK_HOME()  menuItemAdd(ICON_Back, GET_TEXT_F(MSG_BUTTON_MAIN), onDrawMenuItem, gotoMainMenu) // mmm
 #define MENU_ITEM(I,L,OD,OC) menuItemAdd(I, GET_TEXT_F(L), OD, OC, nullptr)
 #define EDIT_ITEM(I,L,OD,OC,V) menuItemAdd(I, GET_TEXT_F(L), OD, OC, V)
 #define MENU_ITEM_F(I,L,OD,OC) menuItemAdd(I, F(L), OD, OC, nullptr)

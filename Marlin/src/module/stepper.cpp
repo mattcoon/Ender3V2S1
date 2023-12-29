@@ -2500,7 +2500,11 @@ hal_timer_t Stepper::block_phase_isr() {
 
         TERN_(LASER_SYNCHRONOUS_M106_M107, if (current_block->is_fan_sync()) planner.sync_fan_speeds(current_block->fan_speed));
 
-        if (!(current_block->is_fan_sync() || current_block->is_pwr_sync())) _set_position(current_block->position);
+        if (!(current_block->is_fan_sync()  // mmm
+        #if ENABLED(LASER_FAN_SHARING)
+          || !planner.laserMode || planner.laserTest
+        #endif
+        || current_block->is_pwr_sync())) _set_position(current_block->position); // mmm
 
         discard_current_block();
 

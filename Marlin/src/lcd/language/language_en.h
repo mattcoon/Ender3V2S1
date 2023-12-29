@@ -75,6 +75,7 @@ namespace LanguageNarrow_en {
   LSTR MSG_LCD_SOFT_ENDSTOPS              = _UxGT("Soft Endstops");
   LSTR MSG_MAIN_MENU                      = _UxGT("Main Menu");
   LSTR MSG_ADVANCED_SETTINGS              = _UxGT("Advanced Settings");
+  LSTR MSG_TOOLBAR_CAPTIONS               = _UxGT("Enable Toolbar Caption"); // mmm
   LSTR MSG_CONFIGURATION                  = _UxGT("Configuration");
   LSTR MSG_RUN_AUTO_FILES                 = _UxGT("Run Auto Files");
   LSTR MSG_DISABLE_STEPPERS               = _UxGT("Disable Steppers");
@@ -84,6 +85,7 @@ namespace LanguageNarrow_en {
   LSTR MSG_Z_PROBE                        = _UxGT("Z Probe");
   LSTR MSG_HOMING                         = _UxGT("Homing");
   LSTR MSG_AUTO_HOME                      = _UxGT("Auto Home");
+  LSTR MSG_AUTO_HOME_XY                   = _UxGT("Home XY"); // mmm
   LSTR MSG_AUTO_HOME_A                    = _UxGT("Home @");
   LSTR MSG_AUTO_HOME_X                    = _UxGT("Home X");
   LSTR MSG_AUTO_HOME_Y                    = _UxGT("Home Y");
@@ -91,6 +93,7 @@ namespace LanguageNarrow_en {
   LSTR MSG_Z_AFTER_HOME                   = _UxGT("Z After Homing");
   LSTR MSG_FILAMENT_SET                   = _UxGT("Filament Settings");
   LSTR MSG_FILAMENT_MAN                   = _UxGT("Filament Management");
+  LSTR MSG_FILAMENT_MGT                   = _UxGT("Manage Filament"); // mmm
   LSTR MSG_MANUAL_LEVELING                = _UxGT("Manual Leveling");
   LSTR MSG_TRAM_FL                        = _UxGT("Front Left");
   LSTR MSG_TRAM_FR                        = _UxGT("Front Right");
@@ -117,23 +120,38 @@ namespace LanguageNarrow_en {
   LSTR MSG_TRAMMING_WIZARD                = _UxGT("Tramming Wizard");
   LSTR MSG_SELECT_ORIGIN                  = _UxGT("Select Origin");
   LSTR MSG_LAST_VALUE_SP                  = _UxGT("Last value ");
-
-  LSTR MSG_PREHEAT_1                      = _UxGT("Preheat ") PREHEAT_1_LABEL;
-  LSTR MSG_PREHEAT_1_H                    = _UxGT("Preheat ") PREHEAT_1_LABEL " ~";
-  LSTR MSG_PREHEAT_1_END                  = _UxGT("Preheat ") PREHEAT_1_LABEL _UxGT(" End");
-  LSTR MSG_PREHEAT_1_END_E                = _UxGT("Preheat ") PREHEAT_1_LABEL _UxGT(" End ~");
-  LSTR MSG_PREHEAT_1_ALL                  = _UxGT("Preheat ") PREHEAT_1_LABEL _UxGT(" All");
-  LSTR MSG_PREHEAT_1_BEDONLY              = _UxGT("Preheat ") PREHEAT_1_LABEL _UxGT(" Bed");
-  LSTR MSG_PREHEAT_1_SETTINGS             = _UxGT("Preheat ") PREHEAT_1_LABEL _UxGT(" Conf");
-
-  LSTR MSG_PREHEAT_M                      = _UxGT("Preheat $");
-  LSTR MSG_PREHEAT_M_H                    = _UxGT("Preheat $ ~");
-  LSTR MSG_PREHEAT_M_END                  = _UxGT("Preheat $ End");
-  LSTR MSG_PREHEAT_M_END_E                = _UxGT("Preheat $ End ~");
-  LSTR MSG_PREHEAT_M_ALL                  = _UxGT("Preheat $ All");
-  LSTR MSG_PREHEAT_M_BEDONLY              = _UxGT("Preheat $ Bed");
-  LSTR MSG_PREHEAT_M_SETTINGS             = _UxGT("Preheat $ Conf");
-
+  #if HAS_PREHEAT
+    LSTR MSG_PREHEAT_1                    = _UxGT("Preheat ") PREHEAT_1_LABEL;
+    LSTR MSG_PREHEAT_1_H                  = _UxGT("Preheat ") PREHEAT_1_LABEL " ~";
+    LSTR MSG_PREHEAT_1_END                = _UxGT("Preheat ") PREHEAT_1_LABEL _UxGT(" End");
+    LSTR MSG_PREHEAT_1_END_E              = _UxGT("Preheat ") PREHEAT_1_LABEL _UxGT(" End ~");
+    LSTR MSG_PREHEAT_1_ALL                = _UxGT("Preheat ") PREHEAT_1_LABEL _UxGT(" All");
+    LSTR MSG_PREHEAT_1_BEDONLY            = _UxGT("Preheat ") PREHEAT_1_LABEL _UxGT(" Bed");
+    LSTR MSG_PREHEAT_1_SETTINGS           = _UxGT("Preheat ") PREHEAT_1_LABEL _UxGT(" Conf");
+    #ifdef PREHEAT_2_LABEL
+      LSTR MSG_PREHEAT_2                  = _UxGT("Preheat ") PREHEAT_2_LABEL;
+      LSTR MSG_PREHEAT_2_SETTINGS         = _UxGT("Preheat ") PREHEAT_2_LABEL _UxGT(" Conf");
+    #endif
+    #ifdef PREHEAT_3_LABEL
+      LSTR MSG_PREHEAT_3                  = _UxGT("Preheat ") PREHEAT_3_LABEL;
+      LSTR MSG_PREHEAT_3_SETTINGS         = _UxGT("Preheat ") PREHEAT_3_LABEL _UxGT(" Conf");
+    #endif
+    #ifdef PREHEAT_4_LABEL // mmm
+      LSTR MSG_PREHEAT_4                  = _UxGT("Preheat ") PREHEAT_4_LABEL;
+      LSTR MSG_PREHEAT_4_SETTINGS         = _UxGT("Preheat ") PREHEAT_4_LABEL _UxGT(" Conf");
+    #endif
+    #ifdef PREHEAT_5_LABEL
+      LSTR MSG_PREHEAT_5                  = _UxGT("Preheat ") PREHEAT_5_LABEL;
+      LSTR MSG_PREHEAT_5_SETTINGS         = _UxGT("Preheat ") PREHEAT_5_LABEL _UxGT(" Conf");
+    #endif
+    LSTR MSG_PREHEAT_M                    = _UxGT("Preheat $");
+    LSTR MSG_PREHEAT_M_H                  = _UxGT("Preheat $ ~");
+    LSTR MSG_PREHEAT_M_END                = _UxGT("Preheat $ End");
+    LSTR MSG_PREHEAT_M_END_E              = _UxGT("Preheat $ End ~");
+    LSTR MSG_PREHEAT_M_ALL                = _UxGT("Preheat $ All");
+    LSTR MSG_PREHEAT_M_BEDONLY            = _UxGT("Preheat $ Bed");
+    LSTR MSG_PREHEAT_M_SETTINGS           = _UxGT("Preheat $ Conf");
+  #endif
   LSTR MSG_PREHEAT_HOTEND                 = _UxGT("Preheat Hotend");
   LSTR MSG_PREHEAT_CUSTOM                 = _UxGT("Preheat Custom");
   LSTR MSG_COOLDOWN                       = _UxGT("Cooldown");
@@ -435,6 +453,8 @@ namespace LanguageNarrow_en {
   LSTR MSG_FILAMENT_DIAM                  = _UxGT("Fil. Dia.");
   LSTR MSG_FILAMENT_DIAM_E                = _UxGT("Fil. Dia. *");
   LSTR MSG_FILAMENT_UNLOAD                = _UxGT("Unload mm");
+  LSTR MSG_FILAMENT_PREUNLOAD             = _UxGT("Initial Unload mm"); // mmm
+  LSTR MSG_FILAMENT_UNLOADDELAY           = _UxGT("Initial Unload delay s");
   LSTR MSG_FILAMENT_LOAD                  = _UxGT("Load mm");
   LSTR MSG_SEGMENTS_PER_SECOND            = _UxGT("Segments/Sec");
   LSTR MSG_DRAW_MIN_X                     = _UxGT("Draw Min X");
@@ -448,10 +468,22 @@ namespace LanguageNarrow_en {
   LSTR MSG_CONTRAST                       = _UxGT("LCD Contrast");
   LSTR MSG_BRIGHTNESS                     = _UxGT("LCD Brightness");
   LSTR MSG_SCREEN_TIMEOUT                 = _UxGT("LCD Timeout (m)");
+  LSTR MSG_ICON_SET                       = _UxGT("ICON Selection"); // mmm
+  LSTR MSG_PROGRESS_IN_HHMM               = _UxGT("Progress in __h__m");
+  LSTR MSG_FAN_SPEED_PERCENT              = _UxGT("Fan Speed Percent");
+  LSTR MSG_LASER_SETTINGS                 = _UxGT("Laser Settings");
+  LSTR MSG_LASER_PERCENT                  = _UxGT("Laser Percent");
+  LSTR MSG_LASER_HEIGHT                   = _UxGT("Target Laser Height");
+  LSTR MSG_LASER_TEST                     = _UxGT("Laser Test Mode");
+  LSTR MSG_TOGGLE_LASER                   = _UxGT("Toggle LaserMode");
+  LSTR MSG_LASERLOW_LIMIT                 = _UxGT("Laser OFF Limit");
   LSTR MSG_BRIGHTNESS_OFF                 = _UxGT("Turn Off LCD");
   LSTR MSG_STORE_EEPROM                   = _UxGT("Store Settings");
   LSTR MSG_LOAD_EEPROM                    = _UxGT("Load Settings");
   LSTR MSG_RESTORE_DEFAULTS               = _UxGT("Restore Defaults");
+  LSTR MSG_STORE_SD_CONFIG                = _UxGT("Store SD Configuration"); // mmm
+  LSTR MSG_AUTO_STORE_SD                  = _UxGT("AutoStore to SD"); // mmm
+  LSTR MSG_LOAD_SD_CONFIG                 = _UxGT("Load settings from SD"); // mmm
   LSTR MSG_INIT_EEPROM                    = _UxGT("Initialize EEPROM");
   LSTR MSG_ERR_EEPROM_CRC                 = _UxGT("Err: EEPROM CRC");
   LSTR MSG_ERR_EEPROM_SIZE                = _UxGT("Err: EEPROM Size");
@@ -484,6 +516,7 @@ namespace LanguageNarrow_en {
   LSTR MSG_BUTTON_CONTINUE                = _UxGT("Continue");
   LSTR MSG_BUTTON_DONE                    = _UxGT("Done");
   LSTR MSG_BUTTON_BACK                    = _UxGT("Back");
+  LSTR MSG_BUTTON_MAIN                    = _UxGT("Main"); // mmm
   LSTR MSG_BUTTON_PROCEED                 = _UxGT("Proceed");
   LSTR MSG_BUTTON_SKIP                    = _UxGT("Skip");
   LSTR MSG_BUTTON_INFO                    = _UxGT("Info");
@@ -493,6 +526,7 @@ namespace LanguageNarrow_en {
   LSTR MSG_BUTTON_ADVANCED                = _UxGT("Advanced");
   LSTR MSG_BUTTON_SAVE                    = _UxGT("Save");
   LSTR MSG_BUTTON_PURGE                   = _UxGT("Purge");
+  LSTR MSG_BUTTON_REPEAT                  = _UxGT("Repeat"); // mmm
   LSTR MSG_PAUSING                        = _UxGT("Pausing...");
   LSTR MSG_PAUSE_PRINT                    = _UxGT("Pause Print");
   LSTR MSG_ADVANCED_PAUSE                 = _UxGT("Advanced Pause");
@@ -595,6 +629,7 @@ namespace LanguageNarrow_en {
   LSTR MSG_ZPROBE_MARGIN                  = _UxGT("Probe Margin");
   LSTR MSG_Z_FEED_RATE                    = _UxGT("Z Feed Rate");
   LSTR MSG_ENABLE_HS_MODE                 = _UxGT("Enable HS mode");
+  LSTR MSG_ENABLE_LASERMODE               = _UxGT("Enable Laser mode"); // mmm
   LSTR MSG_MOVE_NOZZLE_TO_BED             = _UxGT("Move Nozzle to Bed");
   LSTR MSG_BABYSTEP_X                     = _UxGT("Babystep X");
   LSTR MSG_BABYSTEP_Y                     = _UxGT("Babystep Y");
@@ -702,6 +737,7 @@ namespace LanguageNarrow_en {
   LSTR MSG_RUNOUT_SENSOR                  = _UxGT("Runout Sensor");
   LSTR MSG_RUNOUT_DISTANCE_MM             = _UxGT("Runout Dist mm");
   LSTR MSG_RUNOUT_ENABLE                  = _UxGT("Enable Runout");
+  LSTR MSG_RUNOUT_TOGGLE                  = _UxGT("Toggle Runout"); // mmm
   LSTR MSG_RUNOUT_ACTIVE                  = _UxGT("Runout Active");
   LSTR MSG_INVERT_EXTRUDER                = _UxGT("Invert Extruder");
   LSTR MSG_EXTRUDER_MIN_TEMP              = _UxGT("Extruder Min Temp.");
@@ -892,12 +928,6 @@ namespace LanguageNarrow_en {
   LSTR DGUS_MSG_FILAMENT_RUNOUT           = _UxGT("Filament runout E%d");
 
   // DWIN_LCD_PROUI specific message strings
-  #define _MSG_PREHEAT(N) \
-    LSTR MSG_PREHEAT_##N                  = _UxGT("Preheat ") PREHEAT_## N ##_LABEL; \
-    LSTR MSG_PREHEAT_## N ##_SETTINGS     = _UxGT("Preheat ") PREHEAT_## N ##_LABEL _UxGT(" Conf");
-  #if PREHEAT_COUNT > 1
-    REPEAT_S(2, INCREMENT(PREHEAT_COUNT), _MSG_PREHEAT)
-  #endif
   LSTR MSG_BED_TEMPERATURE                = _UxGT("Bed Temperature");
   LSTR MSG_NOZZLE_TEMPERATURE             = _UxGT("Nozzle temperature");
   LSTR MSG_TOO_HIGH                       = _UxGT("is too high");

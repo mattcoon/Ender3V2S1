@@ -31,6 +31,7 @@
 const TBItem_t TBItemA[] = {
   TB_ITEM(0, MSG_OPTION_DISABLED, nullptr),
   TB_ITEM(ICON_Homing, MSG_AUTO_HOME, autoHome),
+  TB_ITEM(ICON_HomeXY, MSG_AUTO_HOME_XY, homeXY), // mmm
   #if HAS_BED_PROBE
     #if HAS_TRAMMING_WIZARD
       TB_ITEM(ICON_BedTramming, MSG_TRAMMING_WIZARD, runTrammingWizard),
@@ -46,10 +47,20 @@ const TBItem_t TBItemA[] = {
     #define _TBPREHEAT(N) TB_ITEM(ICON_Preheat##N, MSG_PREHEAT_##N, DoPreheat##N),
     REPEAT_1(PREHEAT_COUNT, _TBPREHEAT)
   #endif
+  #if HAS_FILAMENT_SENSOR // mmm
+    TB_ITEM(ICON_Runout, MSG_RUNOUT_TOGGLE, toggleRunout),
+  #endif
+    TB_ITEM(ICON_FilUnload,MSG_FILAMENT_MGT, drawFilamentManMenu),
+  #if ENABLED(HOST_SHUTDOWN_MENU_ITEM) && defined(SHUTDOWN_ACTION)
+    TB_ITEM(ICON_Host, MSG_HOST_SHUTDOWN, hostShutDown),
+  #endif
   #if HAS_LCD_BRIGHTNESS
     TB_ITEM(ICON_Brightness, MSG_BRIGHTNESS_OFF, turnOffBacklight),
   #endif
   TB_ITEM(ICON_Reboot, MSG_RESET_PRINTER, rebootPrinter),
   TB_ITEM(ICON_WriteEEPROM, MSG_STORE_EEPROM, writeEeprom),
+  #if ENABLED(LASER_FAN_SHARING) // ...
+    TB_ITEM(ICON_LaserMode, MSG_TOGGLE_LASER,toggleLaserMode),
+  #endif
   TB_ITEM(ICON_Park, MSG_FILAMENT_PARK_ENABLED, parkHead)
 };

@@ -142,6 +142,15 @@ typedef struct {
   uint32_t ledColor;
   bool adaptiveStepSmoothing;
   bool enablePreview;
+  bool fan_percent; // mmm
+  bool time_format_textual; // mmm format time in HH:MM:SS or HHhMMmSSs
+  bool TBShowCaption; // mmm show toolbar captions along with icons
+  bool autoStoreSD; // mmmm when true store EEPROM triggers write SD Config file
+  uint8_t baseIcon; // mmm base Icon offset for LCD
+#if ENABLED(LASER_FAN_SHARING)
+  uint8_t laser_off_pwr; // mmmm PWM output for laser to not burn
+  uint8_t target_laser_height; // mmm height to move laser after homing
+#endif
 } hmi_data_t;
 
 extern hmi_data_t hmiData;
@@ -159,6 +168,8 @@ typedef struct {
   bool printing_flag:1; // sd or host printing
   bool abort_flag:1;    // sd or host was aborted
   bool pause_flag:1;    // printing is paused
+  bool percent_flag:1;  // mmm percent was override by M73
+  bool remain_flag:1;   // remain was override by M73
   bool select_flag:1;   // Popup button selected
   bool config_flag:1;   // SD G-code file is a Configuration file
 } hmi_flag_t;
@@ -184,6 +195,9 @@ inline bool hostPrinting() { return (isPrinting() && !IS_SD_FILE_OPEN()); }
   void writeEeprom();
   void readEeprom();
   void resetEeprom();
+  void writeSDConfig(); // mmm
+  void confirmWriteSDConfig();
+  void confirmLoadSDConfig();
   #if HAS_MESH
     void saveMesh();
   #endif
@@ -192,6 +206,7 @@ void rebootPrinter();
 void disableMotors();
 void autoLev();
 void autoHome();
+void homeXY(); // mmm
 #if HAS_PREHEAT
   #define _DOPREHEAT(N) void DoPreheat##N();
   REPEAT_1(PREHEAT_COUNT, _DOPREHEAT)
@@ -203,8 +218,27 @@ void doCoolDown();
 #endif
 #if HAS_LCD_BRIGHTNESS
   void turnOffBacklight();
+#endif
+#if HAS_FILAMENT_SENSOR // mmm
+  void setRunoutEnable();
+  void toggleRunout();
+#endif
+#if ENABLED(LASER_FAN_SHARING)
+  void toggleLaserMode();
+  void setLaserMode(bool lasermode);
+  void applyLaserTest(bool test);
+  void drawPopupLaserTest();
+  void drawPrepareLaserMenu();
+  void onClick_LaserTest();
+  void setLaserTest();
+#endif
   #if LCD_BACKLIGHT_TIMEOUT_MINS
     void dimBacklight();
+  #endif
+#if ENABLED(LCD_BED_TRAMMING)
+  TERN(HAS_BED_PROBE, float, void) Tram(uint8_t point, bool stow_probe = true);
+  #if ENABLED(HAS_BED_PROBE)
+    void trammingwizard();
   #endif
 #endif
 void applyExtMinT();
@@ -230,6 +264,7 @@ void gotoMainMenu();
 void gotoInfoMenu();
 void gotoPowerLossRecovery();
 void gotoConfirmToPrint();
+void dwinDrawDashboard(); // mmm Status Area
 void drawMainArea();      // Redraw main area
 void dwinDrawStatusLine(const char *text); // Draw simple status text
 inline void dwinDrawStatusLine(FSTR_P fstr) { dwinDrawStatusLine(FTOP(fstr)); }
@@ -301,6 +336,8 @@ void drawMoveMenu();
   #endif
 #endif
 
+void drawPreheat_Menu(); // mmm
+void drawPreheatHotendMenu();
 #if HAS_HOME_OFFSET
   void drawHomeOffsetMenu();
 #endif
@@ -325,6 +362,9 @@ void drawMotionMenu();
 #endif
 #if ENABLED(MESH_BED_LEVELING)
   void drawManualMeshMenu();
+#endif
+#if ENABLED(LASER_FAN_SHARING) // mmm
+  void drawLaserSettingsMenu();
 #endif
 void drawTemperatureMenu();
 void drawMaxSpeedMenu();
