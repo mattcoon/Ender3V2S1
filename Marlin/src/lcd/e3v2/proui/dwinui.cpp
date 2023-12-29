@@ -23,7 +23,9 @@
 
 #if ENABLED(DWIN_LCD_PROUI)
 
+#include "dwin_lcd.h" // mmm
 #include "dwinui.h"
+#include "dwin.h" // mmm
 
 xy_int_t DWINUI::cursor = { 0 };
 uint16_t DWINUI::penColor = COLOR_WHITE;
@@ -198,7 +200,7 @@ void DWINUI::drawFloat(uint8_t bShow, bool signedMode, fontid_t fid, uint16_t co
 //  picID: Icon ID
 //  x/y: Upper-left point
 void DWINUI::iconShow(bool BG, uint8_t icon, uint16_t x, uint16_t y) {
-  const uint8_t libID = ICON TERN_(HAS_CUSTOMICONS, + (icon / 100));
+  const uint8_t libID = hmiData.baseIcon TERN_(HAS_CUSTOMICONS, + (icon / 100)); // mmm
   const uint8_t picID = icon TERN_(HAS_CUSTOMICONS, % 100);
   dwinIconShow(BG, false, !BG, libID, picID, x, y);
 }
@@ -218,6 +220,7 @@ void DWINUI::drawButton(uint8_t id, uint16_t x, uint16_t y) {
     case BTN_Print   : drawButton(GET_TEXT_F(MSG_BUTTON_PRINT), x, y); break;
     case BTN_Save    : drawButton(GET_TEXT_F(MSG_BUTTON_SAVE), x, y); break;
     case BTN_Purge   : drawButton(GET_TEXT_F(MSG_BUTTON_PURGE), x, y); break;
+    case BTN_Repeat  : drawButton(GET_TEXT_F(MSG_BUTTON_REPEAT), x, y); break; // mmm
     default: break;
   }
 }

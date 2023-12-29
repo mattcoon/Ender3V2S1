@@ -27,3 +27,16 @@
 
 void customGcode(const int16_t codenum);
 void customGcodeReport(const bool forReplay=true);
+
+    void C810(); // mmm
+    void C810_report(const bool forReplay=true);
+    void C120();
+    void C120_report(const bool forReplay=true);
+  #if ANY(PIDTEMP,PIDTEMPBED)
+    void C303();
+    void C303_report(const bool forReplay=true);
+  #endif
+  #if ENABLED(LASER_FAN_SHARING)
+    void C3();
+    void C3_report(const bool forReplay=true);
+  #endif

@@ -3025,7 +3025,8 @@ void MarlinSettings::postprocess() {
     #if ANY(EEPROM_AUTO_INIT, EEPROM_INIT_NOW)
       (void)save();
       SERIAL_ECHO_MSG("EEPROM Initialized");
-      #if ALL(DWIN_LCD_PROUI, PROUI_EX)
+      #if PROUI_EX
+        confirmLoadSDConfig(); // mmm if config on SD use those settings
         safe_delay(200);
         rebootPrinter();
       #endif
@@ -3645,6 +3646,8 @@ void MarlinSettings::reset() {
     EXTRUDER_LOOP() {
       fc_settings[e].unload_length = FILAMENT_CHANGE_UNLOAD_LENGTH;
       fc_settings[e].load_length = FILAMENT_CHANGE_FAST_LOAD_LENGTH;
+      fc_settings[e].unload_predelay = FILAMENT_UNLOAD_PURGE_DELAY; // mmm
+      fc_settings[e].unload_prelength = FILAMENT_UNLOAD_PURGE_LENGTH;
     }
   #endif
 

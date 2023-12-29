@@ -29,8 +29,9 @@
 #define TB_ITEM(I,L,V...) {I, GET_TEXT_F(L), V}
 
 const TBItem_t TBItemA[] = {
-  TB_ITEM(0, MSG_OPTION_DISABLED, nullptr),
-  TB_ITEM(ICON_Homing, MSG_AUTO_HOME, autoHome),
+  {0, GET_TEXT_F(MSG_OPTION_DISABLED), nullptr},
+  {ICON_Homing, GET_TEXT_F(MSG_AUTO_HOME), autoHome},
+  {ICON_HomeXY, GET_TEXT_F(MSG_AUTO_HOME_XY), homeXY}, // mmm
   #if HAS_BED_PROBE
     #if HAS_TRAMMING_WIZARD
       TB_ITEM(ICON_BedTramming, MSG_TRAMMING_WIZARD, runTrammingWizard),
@@ -46,10 +47,18 @@ const TBItem_t TBItemA[] = {
     #define _TBPREHEAT(N) TB_ITEM(ICON_Preheat##N, MSG_PREHEAT_##N, DoPreheat##N),
     REPEAT_1(PREHEAT_COUNT, _TBPREHEAT)
   #endif
-  #if HAS_LCD_BRIGHTNESS
-    TB_ITEM(ICON_Brightness, MSG_BRIGHTNESS_OFF, turnOffBacklight),
+  #if HAS_FILAMENT_SENSOR // mmm
+    {ICON_Runout, GET_TEXT_F(MSG_RUNOUT_TOGGLE), toggleRunout},
   #endif
-  TB_ITEM(ICON_Reboot, MSG_RESET_PRINTER, rebootPrinter),
-  TB_ITEM(ICON_WriteEEPROM, MSG_STORE_EEPROM, writeEeprom),
-  TB_ITEM(ICON_Park, MSG_FILAMENT_PARK_ENABLED, parkHead)
+    {ICON_FilUnload,GET_TEXT_F(MSG_FILAMENT_MGT), drawFilamentManMenu},
+  #if ENABLED(HOST_SHUTDOWN_MENU_ITEM) && defined(SHUTDOWN_ACTION)
+    {ICON_Host, GET_TEXT_F(MSG_HOST_SHUTDOWN), hostShutDown},
+  #endif
+  {ICON_Brightness, GET_TEXT_F(MSG_BRIGHTNESS_OFF), turnOffBacklight},
+  {ICON_Reboot, GET_TEXT_F(MSG_RESET_PRINTER), rebootPrinter},
+  {ICON_WriteEEPROM, GET_TEXT_F(MSG_STORE_EEPROM), writeEeprom},
+  #if ENABLED(LASER_FAN_SHARING) // ...
+    {ICON_LaserMode, GET_TEXT_F(MSG_TOGGLE_LASER),toggleLaserMode},
+  #endif
+  {ICON_Park, GET_TEXT_F(MSG_FILAMENT_PARK_ENABLED), parkHead}
 };

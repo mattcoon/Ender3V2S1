@@ -55,7 +55,7 @@
 // Servos
 //
 #define SERVO0_PIN                          PA1
-#define SERVO1_PIN                          PC9
+#define SERVO1_PIN                          PE5
 
 //
 // Trinamic Stallguard pins
@@ -291,7 +291,7 @@
 
 //
 // Fans
-//
+// fan one and zero due to destroying Q8 on MB
 #define FAN0_PIN                            PC8   // Fan0
 #define FAN1_PIN                            PE5   // Fan1
 

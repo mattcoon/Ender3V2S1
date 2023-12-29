@@ -95,9 +95,11 @@ void GcodeSuite::M3_M4(const bool is_M4) {
 
   auto get_s_power = [] {
     #if ENABLED(CV_LASER_MODULE)
-      cutter.menuPower = cutter.unitPower;
+      float u = cutter.unitPower;
+    #else
+      float u = 0;
     #endif
-    if (parser.seenval('S')) {
+    if (parser.seenval('S') || parser.seenval('O')) {
       const float v = parser.value_float();
       #if ENABLED(CV_LASER_MODULE)
         cutter.menuPower = laser_device.power16_to_8(v);
