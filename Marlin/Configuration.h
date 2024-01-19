@@ -7,7 +7,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, ANY version 3 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -61,142 +61,17 @@
  *                      https://www.thingiverse.com/thing:1278865
  */
 
-/*
-
-TODO: filament loading setting - keep track of filament
-TODO: Increment config.gcode to create a new file
-FIXME: Tramming windows on repeat is a little flacky
-TODO: automate all build from pio commandline
-
-Test: 
-------
-FIXME: mesh viewer as building from menue wierd
-TODO: LCD assets
-TODO: add CNC build SKR PRO
-
-Done:
--------
-runout icon add back in / fix strobe to be more noticable
-Leveling active Z icon not working when active.
-Merge May release of Proui
-automate Github action build
-2.1.3.12
-autoload config with prompt from config.gcode
-Load SD Config menu item
-Add runout distance to tune menu
-correct workflows to the right repository
-V2.1.3.11
-Auto request store SD or simply store
-Select autostore setting or confirm
-update github workflows to auto build after release
-toolbar short cuts over 12 store setting correctly
-Add Preview config storage
-add material settings, min extrusion temp, jerk/junction, PID tune settings to write config
-use conditionals for store and restore settings
-V2.1.3.10
-merge spring 2.1.3 code
-Store ColorScheme
-Store Full 9x9 mesh
-V2.1.3.9
-add save config gcode to SD
-V2.1.3.8
-cancel does not move in laser mode
-laser Test service popup
-add M603 options for P-preunload length (mm) and D preunload delay (ms)
-add Laser position check/ low-power strobe to find the 0 point, only in laser mode. set 0,0 position. 
-Laser submenu on advanced
-add auto laser lift to target focus when homing in laser mode
-V2.1.3.7
-implement laser mode and fan sharing G3-5 on fan output
-G0 move no power. Configured by menu / C3
-in laser vs fan, change fan icon in status bar
-add laser mode toggle for toolbar
-add icon,hms,fan% Gcode C120 to allow configuration by gcode
-add laser mode fan mode by gcode C3 L or F
-allow movement in laser mode
-home X and Y only
-add XY home to toolbar
-eliminate bowden/direct use config files
-filament management toolbar shortcut changed description
-V2.1.3.4
-filament change toolbar
-Zprobe wizard toolbar not working?? only sometimes?
-filament sensor not changing fix call to update
-V2.1.3.3
-filament sensor mode menu
-toggle for percent menu not working
-Minimus 4010 43.5mm, 5.7mm
-toolbar descriptions making a mess
-filament change pre unload timing fixed display
-toolbar descripiton as option to disable
-filament change lift z axis
-V2.1.3.2
-unload retraction variable. from no pause retraction to current 3mm / 5sec
-Dynamic icon setting
-preheat filament  - back to filament not prepare
-v2.1.3.1
-host shutdown in toolbar
-tramming lift to safe z
-H m screen display toggle in menu
-add status of fil sensor on bottom. extruder icon background color? green working closed, yellow disabled, red runout
-filament status color too much . shift right side 2 px
-preheat hotend mode
-Fan percent
-percent calc wrong, and toggle for stat not working in advance menu
-tramming repeat... lower button or shrink chart
-maybe toggle runout toolbar message. remove checkbox
-change order of preheat menu to have TPU before warmup
-filament menu update status with temp too low
-main fast back called it main / home
-Preheat option bed/hotend maybe only in filament menu
-make flex environment for 4.2.7 and 4.2.2 with direct drive or bowden
-Unload filament / change - temp dialog not just warm preheat
-Fast back menu
-prepare preheat submenu
-tramming cancel not returning to menu clean
-Filament menu cooldown
-Bed tramming add turns to summary
-tramming repeat
-Mpc store settings like pid bed
-Shortcuts  / toolbar - look ok - filament enable/disable
-Laser mode
-Bed tramming mostly
-Auto build mesh
-Flex mesh size
-
-*/
-
 // @section info
 
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "Matt Coon" // Who made the changes.
 #define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
-/**
- * *** VENDORS PLEASE READ ***
- *
- * Marlin allows you to add a custom boot image for Graphical LCDs.
- * With this option Marlin will first show your custom screen followed
- * by the standard Marlin logo with version number and web URL.
- *
- * We encourage you to take advantage of this new feature and we also
- * respectfully request that you retain the unmodified Marlin boot screen.
- */
-
-// Show the Marlin bootscreen on startup. ** ENABLE FOR PRODUCTION **
-#define SHOW_BOOTSCREEN
-
-// Show the bitmap in Marlin/_Bootscreen.h on startup.
-#define SHOW_CUSTOM_BOOTSCREEN
-
-// Show the bitmap in Marlin/_Statusscreen.h on the status screen.
-//#define CUSTOM_STATUS_SCREEN_IMAGE
-
 // @section machine
 
 // Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-  #define MOTHERBOARD BOARD_BTT_SKR_PRO_V1_2 // BOARD_RAMPS_14_EFB
+  #define MOTHERBOARD BOARD_CREALITY_V422  
 #endif
 
 /**
@@ -207,7 +82,8 @@ Flex mesh size
  *
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#define SERIAL_PORT 1 // 0
+#define SERIAL_PORT 1  // Ender Configs
+#define NO_AUTO_ASSIGN_WARNING  // Disable serial warnings
 
 /**
  * Serial Port Baud Rate
@@ -220,16 +96,16 @@ Flex mesh size
  *
  * :[2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000]
  */
-#define BAUDRATE 250000
+#define BAUDRATE 250000  // MRiscoC increase serial performace
 
-//#define BAUD_RATE_GCODE     // Enable G-code M575 to set the baud rate
+#define BAUD_RATE_GCODE     // Enable G-code M575 to set the baud rate  // MRiscoC Enables change the baudrate
 
 /**
  * Select a secondary serial port on the board to use for communication with the host.
  * Currently Ethernet (-2) is only supported on Teensy 4.1 boards.
  * :[-2, -1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#define SERIAL_PORT_2 -1 // -1
+//#define SERIAL_PORT_2 -1
 //#define BAUDRATE_2 250000   // :[2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000] Enable to override BAUDRATE
 
 /**
@@ -237,14 +113,29 @@ Flex mesh size
  * Currently only supported for AVR, DUE, LPC1768/9 and STM32/STM32F1
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#define SERIAL_PORT_3 6 // 1
+//#define SERIAL_PORT_3 1
 //#define BAUDRATE_3 250000   // :[2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000] Enable to override BAUDRATE
 
 // Enable the Bluetooth serial interface on AT90USB devices
 //#define BLUETOOTH
+#define NO_CREALITY_422_DRIVER_WARNING
+
+#ifndef CREALITY_STOCK
+
+  #define X_STEP_PIN                          PB9
+  #define X_DIR_PIN                           PC2
+  #define Y_STEP_PIN                          PB7
+
+  #define Y_DIR_PIN                           PB8
+  #define Z_STEP_PIN                          PB5
+  #define Z_DIR_PIN                           PB6
+
+  #define E0_STEP_PIN                         PB3
+  #define E0_DIR_PIN                          PB4
+#endif
 
 // Name displayed in the LCD "Ready" message and Info menu
-#define CUSTOM_MACHINE_NAME "V1CNC 515DL" // "3D Printer"
+#define CUSTOM_MACHINE_NAME "Ender3V2-42x-UBL"
 
 // Printer's unique ID, used by some programs to differentiate between machines.
 // Choose your own or use a service like https://www.uuidgenerator.net/version4
@@ -267,12 +158,12 @@ Flex mesh size
  *          TMC5130, TMC5130_STANDALONE, TMC5160, TMC5160_STANDALONE
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
-#define X_DRIVER_TYPE TMC2209 // TMC2209 // A4988
-#define Y_DRIVER_TYPE TMC2209 // TMC2209 // A4988
-#define Z_DRIVER_TYPE TMC2209 // TMC2209 // A4988
+#define X_DRIVER_TYPE  TMC2208_STANDALONE  // Ender Configs
+#define Y_DRIVER_TYPE  TMC2208_STANDALONE  // Ender Configs
+#define Z_DRIVER_TYPE  TMC2208_STANDALONE  // Ender Configs
 //#define X2_DRIVER_TYPE A4988
-#define Y2_DRIVER_TYPE TMC2209 // A4988
-#define Z2_DRIVER_TYPE TMC2209 // A4988
+//#define Y2_DRIVER_TYPE A4988
+//#define Z2_DRIVER_TYPE A4988
 //#define Z3_DRIVER_TYPE A4988
 //#define Z4_DRIVER_TYPE A4988
 //#define I_DRIVER_TYPE  A4988
@@ -281,7 +172,7 @@ Flex mesh size
 //#define U_DRIVER_TYPE  A4988
 //#define V_DRIVER_TYPE  A4988
 //#define W_DRIVER_TYPE  A4988
-//#define E0_DRIVER_TYPE A4988
+#define E0_DRIVER_TYPE TMC2208_STANDALONE  // Ender Configs
 //#define E1_DRIVER_TYPE A4988
 //#define E2_DRIVER_TYPE A4988
 //#define E3_DRIVER_TYPE A4988
@@ -336,7 +227,7 @@ Flex mesh size
 
 // This defines the number of extruders
 // :[0, 1, 2, 3, 4, 5, 6, 7, 8]
-#define EXTRUDERS 0 // 1
+#define EXTRUDERS 1
 
 // Generally expected filament diameter (1.75, 2.85, 3.0, ...). Used for Volumetric, Filament Width Sensor, etc.
 #define DEFAULT_NOMINAL_FILAMENT_DIA 1.75
@@ -372,7 +263,8 @@ Flex mesh size
 #if ENABLED(SWITCHING_NOZZLE)
   #define SWITCHING_NOZZLE_SERVO_NR 0
   //#define SWITCHING_NOZZLE_E1_SERVO_NR 1          // If two servos are used, the index of the second
-  #define SWITCHING_NOZZLE_SERVO_ANGLES { 0, 90 }   // Angles for E0, E1 (single servo) or lowered/raised (dual servo)
+  #define SWITCHING_NOZZLE_SERVO_ANGLES { 0, 90 }   // A pair of angles for { E0, E1 }.
+                                                    // For Dual Servo use two pairs: { { lower, raise }, { lower, raise } }
   #define SWITCHING_NOZZLE_SERVO_DWELL 2500         // Dwell time to wait for servo to make physical move
 #endif
 
@@ -594,6 +486,7 @@ Flex mesh size
  *    13 : 100kΩ Hisens up to 300°C - for "Simple ONE" & "All In ONE" hotend - beta 3950, 1%
  *    14 : 100kΩ  (R25), 4092K (beta25), 4.7kΩ pull-up, bed thermistor as used in Ender-5 S1
  *    15 : 100kΩ Calibrated for JGAurora A5 hotend
+ *    17 : 100kΩ Dagoma NTC white thermistor
  *    18 : 200kΩ ATC Semitec 204GT-2 Dagoma.Fr - MKS_Base_DKU001327
  *    22 : 100kΩ GTM32 Pro vB - hotend - 4.7kΩ pullup to 3.3V and 220Ω to analog input
  *    23 : 100kΩ GTM32 Pro vB - bed - 4.7kΩ pullup to 3.3v and 220Ω to analog input
@@ -605,6 +498,7 @@ Flex mesh size
  *    68 : PT100 Smplifier board from Dyze Design
  *    70 : 100kΩ bq Hephestos 2
  *    75 : 100kΩ Generic Silicon Heat Pad with NTC100K MGB18-104F39050L32
+ *   666 : 200kΩ Einstart S custom thermistor with 10k pullup.
  *  2000 : 100kΩ Ultimachine Rambo TDK NTCG104LH104KT1 NTC100K motherboard Thermistor
  *
  * ================================================================
@@ -638,10 +532,10 @@ Flex mesh size
  * ================================================================
  *  SPI RTD/Thermocouple Boards
  * ================================================================
- *    -5 : MAX31865 with Pt100/Pt1000, 2, 3, or 4-wire  (only for sensors 0-1)
+ *    -5 : MAX31865 with Pt100/Pt1000, 2, 3, or 4-wire  (only for sensors 0-2 and bed)
  *                  NOTE: You must uncomment/set the MAX31865_*_OHMS_n defines below.
- *    -3 : MAX31855 with Thermocouple, -200°C to +700°C (only for sensors 0-1)
- *    -2 : MAX6675  with Thermocouple, 0°C to +700°C    (only for sensors 0-1)
+ *    -3 : MAX31855 with Thermocouple, -200°C to +700°C (only for sensors 0-2 and bed)
+ *    -2 : MAX6675  with Thermocouple, 0°C to +700°C    (only for sensors 0-2 and bed)
  *
  *  NOTE: Ensure TEMP_n_CS_PIN is set in your pins file for each TEMP_SENSOR_n using an SPI Thermocouple. By default,
  *        Hardware SPI on the default serial bus is used. If you have also set TEMP_n_SCK_PIN and TEMP_n_MISO_PIN,
@@ -677,7 +571,7 @@ Flex mesh size
 #define TEMP_SENSOR_5 0
 #define TEMP_SENSOR_6 0
 #define TEMP_SENSOR_7 0
-#define TEMP_SENSOR_BED 0
+#define TEMP_SENSOR_BED 1  // Ender Configs
 #define TEMP_SENSOR_PROBE 0
 #define TEMP_SENSOR_CHAMBER 0
 #define TEMP_SENSOR_COOLER 0
@@ -739,7 +633,7 @@ Flex mesh size
 
 // Below this temperature the heater will be switched off
 // because it probably indicates a broken thermistor wire.
-#define HEATER_0_MINTEMP   5
+#define HEATER_0_MINTEMP   0  // Ender Configs
 #define HEATER_1_MINTEMP   5
 #define HEATER_2_MINTEMP   5
 #define HEATER_3_MINTEMP   5
@@ -747,7 +641,7 @@ Flex mesh size
 #define HEATER_5_MINTEMP   5
 #define HEATER_6_MINTEMP   5
 #define HEATER_7_MINTEMP   5
-#define BED_MINTEMP        5
+#define BED_MINTEMP        0  // Ender Configs
 #define CHAMBER_MINTEMP    5
 
 // Above this temperature the heater will be switched off.
@@ -761,7 +655,7 @@ Flex mesh size
 #define HEATER_5_MAXTEMP 275
 #define HEATER_6_MAXTEMP 275
 #define HEATER_7_MAXTEMP 275
-#define BED_MAXTEMP      150
+#define BED_MAXTEMP      120  // Ender Configs
 #define CHAMBER_MAXTEMP  60
 
 /**
@@ -787,16 +681,16 @@ Flex mesh size
  * PIDTEMP : PID temperature control (~4.1K)
  * MPCTEMP : Predictive Model temperature control. (~1.8K without auto-tune)
  */
-#define PIDTEMP          // See the PID Tuning Guide at https://reprap.org/wiki/PID_Tuning
-//#define MPCTEMP        // ** EXPERIMENTAL **
+#define MPCTEMP        // ** EXPERIMENTAL **
+//#define MPCTEMP         // ** EXPERIMENTAL ** See https://marlinfw.org/docs/features/model_predictive_control.html
 
 #define PID_MAX  255      // Limit hotend current while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
-#define PID_K1 0.95       // Smoothing factor within any PID loop
+#define PID_K1     0.95   // Smoothing factor within any PID loop
 
 #if ENABLED(PIDTEMP)
   //#define PID_DEBUG             // Print PID debug data to the serial port. Use 'M303 D' to toggle activation.
-  //#define PID_EDIT_MENU         // mmm Add PID editing to the "Advanced Settings" menu. (~700 bytes of PROGMEM)
-  //#define PID_AUTOTUNE_MENU     // mmm Add PID auto-tuning to the "Advanced Settings" menu. (~250 bytes of PROGMEM)
+  #define PID_EDIT_MENU         // mmm Add PID editing to the "Advanced Settings" menu. (~700 bytes of PROGMEM)
+  #define PID_AUTOTUNE_MENU     // mmm Add PID auto-tuning to the "Advanced Settings" menu. (~250 bytes of PROGMEM)
   //#define PID_PARAMS_PER_HOTEND // Use separate PID parameters for each extruder (useful for mismatched extruders)
                                   // Set/get with G-code: M301 E[extruder number, 0-2]
 
@@ -807,9 +701,9 @@ Flex mesh size
     #define DEFAULT_Ki_LIST {   1.08,   1.08 }
     #define DEFAULT_Kd_LIST { 114.00, 114.00 }
   #else
-    #define DEFAULT_Kp  22.20
-    #define DEFAULT_Ki   1.08
-    #define DEFAULT_Kd 114.00
+    #define DEFAULT_Kp  22.89
+    #define DEFAULT_Ki   1.87
+    #define DEFAULT_Kd  70.18
   #endif
 #else
   #define BANG_MAX 255    // Limit hotend current while in bang-bang mode; 255=full current
@@ -889,7 +783,7 @@ Flex mesh size
  *
  * With this option disabled, bang-bang will be used. BED_LIMIT_SWITCHING enables hysteresis.
  */
-//#define PIDTEMPBED  // Ender Configs
+#define PIDTEMPBED  // Ender Configs
 
 #if ENABLED(PIDTEMPBED)
   //#define MIN_BED_POWER 0
@@ -905,6 +799,9 @@ Flex mesh size
 #else
   //#define BED_LIMIT_SWITCHING   // Keep the bed temperature within BED_HYSTERESIS of the target
 #endif
+
+// Add 'M190 R T' for more gradual M190 R bed cooling.
+//#define BED_ANNEALING_GCODE
 
 //===========================================================================
 //==================== PID > Chamber Temperature Control ====================
@@ -957,8 +854,8 @@ Flex mesh size
   #define PID_FUNCTIONAL_RANGE 10 // If the temperature difference between the target temperature and the actual temperature
                                   // is more than PID_FUNCTIONAL_RANGE then the PID will be shut off and the heater will be set to min/max.
 
-  //#define PID_EDIT_MENU         // Add PID editing to the "Advanced Settings" menu. (~700 bytes of flash)
-  //#define PID_AUTOTUNE_MENU     // Add PID auto-tuning to the "Advanced Settings" menu. (~250 bytes of flash)
+  #define PID_EDIT_MENU         // Add PID editing to the "Advanced Settings" menu. (~700 bytes of flash)  // Ender Configs
+  #define PID_AUTOTUNE_MENU     // Add PID auto-tuning to the "Advanced Settings" menu. (~250 bytes of flash)  // Ender Configs
 #endif
 
 // @section safety
@@ -997,8 +894,8 @@ Flex mesh size
  * details can be tuned in Configuration_adv.h
  */
 
-//#define THERMAL_PROTECTION_HOTENDS // Enable thermal protection for all extruders
-//#define THERMAL_PROTECTION_BED     // Enable thermal protection for the heated bed
+#define THERMAL_PROTECTION_HOTENDS // Enable thermal protection for all extruders
+#define THERMAL_PROTECTION_BED     // Enable thermal protection for the heated bed
 //#define THERMAL_PROTECTION_CHAMBER // Enable thermal protection for the heated chamber
 //#define THERMAL_PROTECTION_COOLER  // Enable thermal protection for the laser cooling
 
@@ -1016,7 +913,12 @@ Flex mesh size
 //#define COREYX
 //#define COREZX
 //#define COREZY
-//#define MARKFORGED_XY  // MarkForged. See https://reprap.org/forum/read.php?152,504042
+
+//
+// MarkForged Kinematics
+// See https://reprap.org/forum/read.php?152,504042
+//
+//#define MARKFORGED_XY
 //#define MARKFORGED_YX
 #if ANY(MARKFORGED_XY, MARKFORGED_YX)
   //#define MARKFORGED_INVERSE  // Enable for an inverted Markforged kinematics belt path
@@ -1077,7 +979,7 @@ Flex mesh size
   // Distance between bed and nozzle Z home position
   #define DELTA_HEIGHT 250.00             // (mm) Get this value from G33 auto calibrate
 
-  #define DELTA_ENDSTOP_ADJ { 0.0, 0.0, 0.0 } // Get these values from G33 auto calibrate
+  #define DELTA_ENDSTOP_ADJ { 0.0, 0.0, 0.0 } // (mm) Get these values from G33 auto calibrate
 
   // Horizontal distance bridged by diagonal push rods when effector is centered.
   #define DELTA_RADIUS 124.0              // (mm) Get this value from G33 auto calibrate
@@ -1085,11 +987,11 @@ Flex mesh size
   // Trim adjustments for individual towers
   // tower angle corrections for X and Y tower / rotate XYZ so Z tower angle = 0
   // measured in degrees anticlockwise looking from above the printer
-  #define DELTA_TOWER_ANGLE_TRIM { 0.0, 0.0, 0.0 } // Get these values from G33 auto calibrate
+  #define DELTA_TOWER_ANGLE_TRIM { 0.0, 0.0, 0.0 } // (mm) Get these values from G33 auto calibrate
 
-  // Delta radius and diagonal rod adjustments (mm)
-  //#define DELTA_RADIUS_TRIM_TOWER { 0.0, 0.0, 0.0 }
-  //#define DELTA_DIAGONAL_ROD_TRIM_TOWER { 0.0, 0.0, 0.0 }
+  // Delta radius and diagonal rod adjustments
+  //#define DELTA_RADIUS_TRIM_TOWER       { 0.0, 0.0, 0.0 } // (mm)
+  //#define DELTA_DIAGONAL_ROD_TRIM_TOWER { 0.0, 0.0, 0.0 } // (mm)
 #endif
 
 // @section scara
@@ -1291,7 +1193,7 @@ Flex mesh size
 #define X_MAX_ENDSTOP_HIT_STATE HIGH
 #define Y_MIN_ENDSTOP_HIT_STATE HIGH
 #define Y_MAX_ENDSTOP_HIT_STATE HIGH
-#define Z_MIN_ENDSTOP_HIT_STATE LOW
+#define Z_MIN_ENDSTOP_HIT_STATE HIGH
 #define Z_MAX_ENDSTOP_HIT_STATE HIGH
 #define I_MIN_ENDSTOP_HIT_STATE HIGH
 #define I_MAX_ENDSTOP_HIT_STATE HIGH
@@ -1305,11 +1207,11 @@ Flex mesh size
 #define V_MAX_ENDSTOP_HIT_STATE HIGH
 #define W_MIN_ENDSTOP_HIT_STATE HIGH
 #define W_MAX_ENDSTOP_HIT_STATE HIGH
-#define Z_MIN_PROBE_ENDSTOP_HIT_STATE LOW
+#define Z_MIN_PROBE_ENDSTOP_HIT_STATE HIGH
 
 // Enable this feature if all enabled endstop pins are interrupt-capable.
 // This will remove the need to poll the interrupt pins, saving many CPU cycles.
-//#define ENDSTOP_INTERRUPTS_FEATURE
+#define ENDSTOP_INTERRUPTS_FEATURE  // Ender Configs
 
 /**
  * Endstop Noise Threshold
@@ -1353,7 +1255,7 @@ Flex mesh size
  * Override with M92
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT { 100, 100, 400 } // { 100, 100, 400, 100 } // { 80, 80, 400, 500 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 93 }  // Ender Configs
 
 #define LIMITED_MAX_STEPS_EDITING
 #if ENABLED(LIMITED_MAX_STEPS_EDITING)
@@ -1365,13 +1267,13 @@ Flex mesh size
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE { 300, 300, 15 } // { 50, 50, 15, 25 } // { 300, 300, 5, 25 }
+#define DEFAULT_MAX_FEEDRATE          { 500, 500, 10, 45 }
 
 #define DEFAULT_FEEDRATE_MM_M (50*60)
 
 #define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2  // MRiscoC allows higher limits
 #if ENABLED(LIMITED_MAX_FR_EDITING)
-  #define MAX_FEEDRATE_EDIT_VALUES    { 1000, 1000, 40 } // ...or, set your own edit limits  // MRiscoC allows higher limits
+  #define MAX_FEEDRATE_EDIT_VALUES    { 3000, 3000, 80, 200 } // ...or, set your own edit limits  // MRiscoC allows higher limits
 #endif
 
 /**
@@ -1380,11 +1282,11 @@ Flex mesh size
  * Override with M201
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION { 1000, 1000, 80 } // { 180, 180, 80, 180 } // { 3000, 3000, 100, 10000 }
+#define DEFAULT_MAX_ACCELERATION      { 500, 500, 100, 1000 }  // Ender Configs
 
 #define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2  // MRiscoC allows higher limits
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
-  #define MAX_ACCEL_EDIT_VALUES       { 6000, 6000, 200} // ...or, set your own edit limits
+  #define MAX_ACCEL_EDIT_VALUES       { 9999, 9999, 999, 9999 } // ...or, set your own edit limits  // MRiscoC allows higher limits
 #endif
 
 /**
@@ -1395,9 +1297,9 @@ Flex mesh size
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
-#define DEFAULT_ACCELERATION 1000 // 3000    // X, Y, Z and E acceleration for printing moves
-#define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION 1000 // 3000    // X, Y, Z acceleration for travel (non printing) moves
+#define DEFAULT_ACCELERATION          500    // X, Y, Z and E acceleration for printing moves  // Ender Configs
+#define DEFAULT_RETRACT_ACCELERATION  800    // E acceleration for retracts  // Ender Configs
+#define DEFAULT_TRAVEL_ACCELERATION   1000    // X, Y, Z acceleration for travel (non printing) moves  // Ender Configs
 
 /**
  * Default Jerk limits (mm/s)
@@ -1409,9 +1311,9 @@ Flex mesh size
  */
 #define CLASSIC_JERK  // Ender Configs
 #if ENABLED(CLASSIC_JERK)
-  #define DEFAULT_XJERK 10.0
-  #define DEFAULT_YJERK 10.0
-  #define DEFAULT_ZJERK  0.3
+  #define DEFAULT_XJERK 8.0  // Ender Configs
+  #define DEFAULT_YJERK 8.0  // Ender Configs
+  #define DEFAULT_ZJERK  0.4  // Ender Configs
   //#define DEFAULT_IJERK  0.3
   //#define DEFAULT_JJERK  0.3
   //#define DEFAULT_KJERK  0.3
@@ -1421,9 +1323,9 @@ Flex mesh size
 
   //#define TRAVEL_EXTRA_XYJERK 0.0     // Additional jerk allowance for all travel moves
 
-  //#define LIMITED_JERK_EDITING        // Limit edit via M205 or LCD to DEFAULT_aJERK * 2
+  #define LIMITED_JERK_EDITING        // Limit edit via M205 or LCD to DEFAULT_aJERK * 2  // Ender Configs
   #if ENABLED(LIMITED_JERK_EDITING)
-    #define MAX_JERK_EDIT_VALUES { 20, 20, 0.6, 10 } // ...or, set your own edit limits
+    #define MAX_JERK_EDIT_VALUES { 20, 20, 1, 20 } // ...or, set your own edit limits  // MRiscoC allows higher limits
   #endif
 #endif
 
@@ -1469,7 +1371,7 @@ Flex mesh size
 //#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN  // Probe connected to BLTouch port
 
 // Force the use of the probe for Z-axis homing
-//#define USE_PROBE_FOR_Z_HOMING
+#define USE_PROBE_FOR_Z_HOMING
 
 /**
  * Z_MIN_PROBE_PIN
@@ -1484,7 +1386,7 @@ Flex mesh size
  *    - Normally-closed (NC) also connect to GND.
  *    - Normally-open (NO) also connect to 5V.
  */
-#define Z_MIN_PROBE_PIN Z_MIN_PIN // 32 // Pin 32 is the RAMPS default
+//#define Z_MIN_PROBE_PIN -1
 
 /**
  * Probe Type
@@ -1504,7 +1406,7 @@ Flex mesh size
  * A Fix-Mounted Probe either doesn't deploy or needs manual deployment.
  *   (e.g., an inductive probe or a nozzle-based probe-switch.)
  */
-#define FIX_MOUNTED_PROBE
+//#define FIX_MOUNTED_PROBE
 
 /**
  * Use the nozzle as the probe, as with a conductive
@@ -1526,7 +1428,7 @@ Flex mesh size
 /**
  * The BLTouch probe uses a Hall effect sensor and emulates a servo.
  */
-//#define BLTOUCH
+#define BLTOUCH  // 3D/CR/BLTouch version
 
 /**
  * MagLev V4 probe by MDD
@@ -1617,7 +1519,6 @@ Flex mesh size
  *          Take extreme care when setting up this feature.
  */
 //#define SENSORLESS_PROBING
-#define DIAG_JUMPERS_REMOVED
 
 /**
  * Allen key retractable z-probe as seen on many Kossel delta printers - https://reprap.org/wiki/Kossel#Autolevel_probe
@@ -1667,7 +1568,7 @@ Flex mesh size
  *
  * Tune and Adjust
  * -  Probe Offsets can be tuned at runtime with 'M851', LCD menus, babystepping, etc.
- * -  PROBE_OFFSET_WIZARD (configuration_adv.h) can be used for setting the Z offset.
+ * -  PROBE_OFFSET_WIZARD (Configuration_adv.h) can be used for setting the Z offset.
  *
  * Assuming the typical work area orientation:
  *  - Probe to RIGHT of the Nozzle has a Positive X offset
@@ -1691,10 +1592,10 @@ Flex mesh size
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
+#define NOZZLE_TO_PROBE_OFFSET { -43.5, -5.7, 0 }  // MRiscoC BLTouch offset for support: https://www.thingiverse.com/thing:4605354 (z-offset = -1.80 mm)
 
 // Enable and set to use a specific tool for probing. Disable to allow any tool.
-//#define PROBING_TOOL 0
+#define PROBING_TOOL 0
 #ifdef PROBING_TOOL
   //#define PROBE_TOOLCHANGE_NO_MOVE  // Suppress motion on probe tool-change
 #endif
@@ -1704,10 +1605,10 @@ Flex mesh size
 #define PROBING_MARGIN 10  // MRiscoC Avoid clips on borders
 
 // X and Y axis travel speed (mm/min) between probes
-#define XY_PROBE_FEEDRATE (133*60)
+#define XY_PROBE_FEEDRATE (200*60)  // MRiscoC increase travel speed between probes
 
 // Feedrate (mm/min) for the first approach when double-probing (MULTIPLE_PROBING == 2)
-#define Z_PROBE_FEEDRATE_FAST (4*60)
+#define Z_PROBE_FEEDRATE_FAST (16*60)  // MRiscoC increase probe Z speed
 
 // Feedrate (mm/min) for the "accurate" probe of each point
 #define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 2)
@@ -1757,8 +1658,8 @@ Flex mesh size
  * A total of 2 does fast/slow probes with a weighted average.
  * A total of 3 or more adds more slow probes, taking the average.
  */
-//#define MULTIPLE_PROBING 2
-//#define EXTRA_PROBING    1
+#define MULTIPLE_PROBING 2  // MRiscoC Enabled
+#define EXTRA_PROBING    1  // MRiscoC Enabled
 
 /**
  * Z probes require clearance when deploying, stowing, and moving between
@@ -1774,19 +1675,24 @@ Flex mesh size
  * Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
-#define Z_CLEARANCE_DEPLOY_PROBE   10 // Z Clearance for Deploy/Stow
-#define Z_CLEARANCE_BETWEEN_PROBES  5 // Z Clearance between probe points
-#define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
-//#define Z_AFTER_PROBING           5 // Z position after probing is done
+#define Z_CLEARANCE_DEPLOY_PROBE   5 // (mm) Z Clearance for Deploy/Stow  // MRiscoC Increase speed
+#define Z_CLEARANCE_BETWEEN_PROBES  5 // (mm) Z Clearance between probe points  // MRiscoC Increase probe compatibility
+#define Z_CLEARANCE_MULTI_PROBE     5 // (mm) Z Clearance between multiple probes  // MRiscoC Increase speed
+#define Z_PROBE_ERROR_TOLERANCE     3 // (mm) Tolerance for early trigger (<= -probe.offset.z + ZPET)
+//#define Z_AFTER_PROBING           5 // (mm) Z position after probing is done
 
-#define Z_PROBE_LOW_POINT          -2 // Farthest distance below the trigger-point to go before stopping
+#define Z_PROBE_LOW_POINT          -3 // (mm) Farthest distance below the trigger-point to go before stopping  // MRiscoC allows reach lower points
 
-// For M851 give a range for adjusting the Z probe offset
-#define PROBE_OFFSET_ZMIN -20
-#define PROBE_OFFSET_ZMAX 20
+// For M851 provide ranges for adjusting the X, Y, and Z probe offsets
+//#define PROBE_OFFSET_XMIN -50   // (mm)
+//#define PROBE_OFFSET_XMAX  50   // (mm)
+//#define PROBE_OFFSET_YMIN -50   // (mm)
+//#define PROBE_OFFSET_YMAX  50   // (mm)
+//#define PROBE_OFFSET_ZMIN -20   // (mm)
+//#define PROBE_OFFSET_ZMAX  20   // (mm)
 
 // Enable the M48 repeatability test to test probe accuracy
-//#define Z_MIN_PROBE_REPEATABILITY_TEST
+#define Z_MIN_PROBE_REPEATABILITY_TEST  // MRiscoC Enable M48 repeatability test
 
 // Before deploy/stow pause for user confirmation
 //#define PAUSE_BEFORE_DEPLOY_STOW
@@ -1806,10 +1712,10 @@ Flex mesh size
   //#define WAIT_FOR_BED_HEATER     // Wait for bed to heat back up between probes (to improve accuracy)
   //#define WAIT_FOR_HOTEND         // Wait for hotend to heat back up between probes (to improve accuracy & prevent cold extrude)
 #endif
-//#define PROBING_FANS_OFF          // Turn fans off when probing
+#define PROBING_FANS_OFF          // Turn fans off when probing  // MRiscoC Turn fans off for avoid vibrations and interference
 //#define PROBING_ESTEPPERS_OFF     // Turn all extruder steppers off when probing
 //#define PROBING_STEPPERS_OFF      // Turn all steppers off (unless needed to hold position) when probing (including extruders)
-//#define DELAY_BEFORE_PROBING 200  // (ms) To prevent vibrations from triggering piezo sensors
+#define DELAY_BEFORE_PROBING 200  // (ms) To prevent vibrations from triggering piezo sensors  // MRiscoC Wait for stability
 
 // Require minimum nozzle and/or bed temperature for probing
 //#define PREHEAT_BEFORE_PROBING
@@ -1833,9 +1739,9 @@ Flex mesh size
 
 // Disable axis steppers immediately when they're not being stepped.
 // WARNING: When motors turn off there is a chance of losing position accuracy!
-#define DISABLE_X false
-#define DISABLE_Y false
-#define DISABLE_Z false
+//#define DISABLE_X
+//#define DISABLE_Y
+//#define DISABLE_Z
 //#define DISABLE_I
 //#define DISABLE_J
 //#define DISABLE_K
@@ -1848,15 +1754,15 @@ Flex mesh size
 
 // @section extruder
 
-#define DISABLE_E false             // Disable the extruder when not stepping
+//#define DISABLE_E               // Disable the extruder when not stepping
 #define DISABLE_OTHER_EXTRUDERS   // Keep only the active extruder enabled
 
 // @section motion
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#define INVERT_X_DIR false  // Ender Configs
-#define INVERT_Y_DIR true
-#define INVERT_Z_DIR false
+#define INVERT_X_DIR false
+#define INVERT_Y_DIR false
+#define INVERT_Z_DIR true
 //#define INVERT_I_DIR false
 //#define INVERT_J_DIR false
 //#define INVERT_K_DIR false
@@ -1888,16 +1794,19 @@ Flex mesh size
  */
 //#define Z_IDLE_HEIGHT Z_HOME_POS
 
-//#define Z_CLEARANCE_FOR_HOMING  10 // (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...  // MRiscoC Crearance over the bed
-                                    // Be sure to have this much clearance over your Z_MAX_POS to prevent grinding.
+//#define Z_CLEARANCE_FOR_HOMING  10   // (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...  // MRiscoC Crearance over the bed
+                                      // You'll need this much clearance above Z_MAX_POS to avoid grinding.
 
-//#define Z_AFTER_HOMING  5      // (mm) Height to move to after homing Z  // MRiscoC Crearance over the bed
+//#define Z_AFTER_HOMING         5   // (mm) Height to move to after homing (if Z was homed)  // MRiscoC Crearance over the bed
+//#define XY_AFTER_HOMING { 10, 10 }  // (mm) Move to an XY position after homing (and raising Z)
+
+//#define EVENT_GCODE_AFTER_HOMING "M300 P440 S200"  // Commands to run after G28 (and move to XY_AFTER_HOMING)
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
 #define X_HOME_DIR -1
 #define Y_HOME_DIR -1
-#define Z_HOME_DIR +1 // -1
+#define Z_HOME_DIR -1
 //#define I_HOME_DIR -1
 //#define J_HOME_DIR -1
 //#define K_HOME_DIR -1
@@ -1923,16 +1832,16 @@ Flex mesh size
 // @section geometry
 
 // The size of the printable area
-#define X_BED_SIZE 1220 // 200
-#define Y_BED_SIZE 1200 // 200
+#define X_BED_SIZE 230  // MRiscoC Max usable bed size
+#define Y_BED_SIZE 230  // MRiscoC Max usable bed size
 
 // Travel limits (linear=mm, rotational=°) after homing, corresponding to endstop positions.
 #define X_MIN_POS 0  // MRiscoC Stock physical limit
 #define Y_MIN_POS 0  // MRiscoC Stock physical limit
 #define Z_MIN_POS 0
-#define X_MAX_POS X_BED_SIZE
-#define Y_MAX_POS Y_BED_SIZE
-#define Z_MAX_POS 80
+#define X_MAX_POS 240  // MRiscoC Stock physical limit
+#define Y_MAX_POS 231  // MRiscoC Stock physical limit
+#define Z_MAX_POS 250  // Ender Configs
 //#define I_MIN_POS 0
 //#define I_MAX_POS 50
 //#define J_MIN_POS 0
@@ -1970,7 +1879,7 @@ Flex mesh size
 #endif
 
 // Max software endstops constrain movement within maximum coordinate bounds
-//#define MAX_SOFTWARE_ENDSTOPS
+#define MAX_SOFTWARE_ENDSTOPS
 #if ENABLED(MAX_SOFTWARE_ENDSTOPS)
   #define MAX_SOFTWARE_ENDSTOP_X
   #define MAX_SOFTWARE_ENDSTOP_Y
@@ -1984,7 +1893,7 @@ Flex mesh size
 #endif
 
 #if ANY(MIN_SOFTWARE_ENDSTOPS, MAX_SOFTWARE_ENDSTOPS)
-  #define SOFT_ENDSTOPS_MENU_ITEM    // Enable/Disable software endstops from the LCD
+  //#define SOFT_ENDSTOPS_MENU_ITEM  // Enable/Disable software endstops from the LCD
 #endif
 
 /**
@@ -2000,9 +1909,9 @@ Flex mesh size
  * RAMPS-based boards use SERVO3_PIN for the first runout sensor.
  * For other boards you may need to define FIL_RUNOUT_PIN, FIL_RUNOUT2_PIN, etc.
  */
-//#define FILAMENT_RUNOUT_SENSOR
+#define FILAMENT_RUNOUT_SENSOR  // MRiscoC Enabled runout sensor support
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
-  #define FIL_RUNOUT_ENABLED_DEFAULT true // Enable the sensor on startup. Override with M412 followed by M500.
+  #define FIL_RUNOUT_ENABLED_DEFAULT false // Enable the sensor on startup. Override with M412 followed by M500.
   #define NUM_RUNOUT_SENSORS   1          // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
 
   #define FIL_RUNOUT_STATE     HIGH       // Pin state indicating that filament is NOT present.
@@ -2144,39 +2053,36 @@ Flex mesh size
 //#define AUTO_BED_LEVELING_3POINT
 //#define AUTO_BED_LEVELING_LINEAR
 //#define AUTO_BED_LEVELING_BILINEAR
-//#define AUTO_BED_LEVELING_UBL
+#define AUTO_BED_LEVELING_UBL  // MRiscoC UBL
 //#define MESH_BED_LEVELING
+
+/**
+ * Commands to execute at the end of G29 probing.
+ * Useful to retract or move the Z probe out of the way.
+ */
+//#define Z_PROBE_END_SCRIPT "G1 Z10 F12000\nG1 X15 Y330\nG1 Z0.5\nG1 Z10"
 
 /**
  * Normally G28 leaves leveling disabled on completion. Enable one of
  * these options to restore the prior leveling state or to always enable
  * leveling immediately after G28.
  */
-//#define RESTORE_LEVELING_AFTER_G28
+#define RESTORE_LEVELING_AFTER_G28 // mmm
 //#define ENABLE_LEVELING_AFTER_G28
 
 /**
  * Auto-leveling needs preheating
  */
-//#define PREHEAT_BEFORE_LEVELING
+#define PREHEAT_BEFORE_LEVELING  // MRiscoC Heatting to compensate thermal expansions
 #if ENABLED(PREHEAT_BEFORE_LEVELING)
-  #define LEVELING_NOZZLE_TEMP 120   // (°C) Only applies to E0 at this time
+  #define LEVELING_NOZZLE_TEMP 175   // (°C) Only applies to E0 at this time  // Preheat nozzle without oozing
   #define LEVELING_BED_TEMP     50
 #endif
 
 /**
- * Bed Distance Sensor
- *
- * Measures the distance from bed to nozzle with accuracy of 0.01mm.
- * For information about this sensor https://github.com/markniu/Bed_Distance_sensor
- * Uses I2C port, so it requires I2C library markyue/Panda_SoftMasterI2C.
- */
-//#define BD_SENSOR
-
-/**
  * Enable detailed logging of G28, G29, M48, etc.
  * Turn on with the command 'M111 S32'.
- * NOTE: Requires a lot of PROGMEM!
+ * NOTE: Requires a lot of flash!
  */
 //#define DEBUG_LEVELING_FEATURE
 
@@ -2319,14 +2225,14 @@ Flex mesh size
 #endif
 
 // Add a menu item to move between bed corners for manual bed adjustment
-//#define LCD_BED_TRAMMING
+#define LCD_BED_TRAMMING  // ProUI has a bed tramming menu
 
 #if ENABLED(LCD_BED_TRAMMING)
   #define BED_TRAMMING_INSET_LFRB { 30, 30, 30, 30 } // (mm) Left, Front, Right, Back insets
   #define BED_TRAMMING_HEIGHT      0.0        // (mm) Z height of nozzle at tramming points
   #define BED_TRAMMING_Z_HOP       5.0        // (mm) Z height of nozzle between tramming points
   //#define BED_TRAMMING_INCLUDE_CENTER       // Move to the center after the last corner
-  //#define BED_TRAMMING_USE_PROBE
+  #define BED_TRAMMING_USE_PROBE // mmm
   #if ENABLED(BED_TRAMMING_USE_PROBE)
     #define BED_TRAMMING_PROBE_TOLERANCE 0.1  // (mm)
     #define BED_TRAMMING_VERIFY_RAISED        // After adjustment triggers the probe, re-probe to verify
@@ -2353,12 +2259,6 @@ Flex mesh size
   #define BED_TRAMMING_LEVELING_ORDER { LF, RF, RB, LB }
 #endif
 
-/**
- * Commands to execute at the end of G29 probing.
- * Useful to retract or move the Z probe out of the way.
- */
-//#define Z_PROBE_END_SCRIPT "G1 Z10 F12000\nG1 X15 Y330\nG1 Z0.5\nG1 Z10"
-
 // @section homing
 
 // The center of the bed is at (X=0, Y=0)
@@ -2383,11 +2283,11 @@ Flex mesh size
  * - Allows Z homing only when XY positions are known and trusted.
  * - If stepper drivers sleep, XY homing may be required again before Z homing.
  */
-//#define Z_SAFE_HOMING
+#define Z_SAFE_HOMING  // MRiscoC Homing Z at center of bed
 
 #if ENABLED(Z_SAFE_HOMING)
-  #define Z_SAFE_HOMING_X_POINT X_CENTER  // X point for Z homing
-  #define Z_SAFE_HOMING_Y_POINT Y_CENTER  // Y point for Z homing
+  #define Z_SAFE_HOMING_X_POINT X_CENTER  // (mm) X point for Z homing
+  #define Z_SAFE_HOMING_Y_POINT Y_CENTER  // (mm) Y point for Z homing
   //#define Z_SAFE_HOMING_POINT_ABSOLUTE  // Ignore home offsets (M206) for Z homing position
 #endif
 
@@ -2436,7 +2336,7 @@ Flex mesh size
   #define XY_SIDE_AD 200
 
   // Or, set the XY skew factor directly:
-  #define XY_SKEW_FACTOR 0.0
+  //#define XY_SKEW_FACTOR 0.0
 
   //#define SKEW_CORRECTION_FOR_Z
   #if ENABLED(SKEW_CORRECTION_FOR_Z)
@@ -2447,8 +2347,8 @@ Flex mesh size
     #define YZ_SIDE_AD 200
 
     // Or, set the Z skew factors directly:
-    #define XZ_SKEW_FACTOR 0.0
-    #define YZ_SKEW_FACTOR 0.0
+    //#define XZ_SKEW_FACTOR 0.0
+    //#define YZ_SKEW_FACTOR 0.0
   #endif
 
   // Enable this option for M852 to set skew at runtime
@@ -2472,7 +2372,7 @@ Flex mesh size
  */
 #define EEPROM_SETTINGS     // Persistent storage with M500 and M501  // Ender Configs
 //#define DISABLE_M503        // Saves ~2700 bytes of flash. Disable for release!
-#define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
+#define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save flash.
 #define EEPROM_BOOT_SILENT    // Keep M503 quiet and only give errors during first load
 #if ENABLED(EEPROM_SETTINGS)
   #define EEPROM_AUTO_INIT  // Init EEPROM automatically on any errors.  // Ender Configs
@@ -2520,6 +2420,23 @@ Flex mesh size
 #define PREHEAT_2_TEMP_CHAMBER 35
 #define PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
 
+#define PREHEAT_3_LABEL       "PETG"
+#define PREHEAT_3_TEMP_HOTEND 240
+#define PREHEAT_3_TEMP_BED     60
+#define PREHEAT_3_TEMP_CHAMBER 35
+#define PREHEAT_3_FAN_SPEED     0 // Value from 0 to 255
+
+#define PREHEAT_4_LABEL       "TPU"
+#define PREHEAT_4_TEMP_HOTEND 230
+#define PREHEAT_4_TEMP_BED      0
+#define PREHEAT_4_TEMP_CHAMBER 35
+#define PREHEAT_4_FAN_SPEED     0 // Value from 0 to 255
+
+#define PREHEAT_5_LABEL       "Warmup"
+#define PREHEAT_5_TEMP_HOTEND 180
+#define PREHEAT_5_TEMP_BED     45
+#define PREHEAT_5_TEMP_CHAMBER 35
+#define PREHEAT_5_FAN_SPEED     0 // Value from 0 to 255
 // @section motion
 #define FAN_SPEED_PERCENT_DEF  true
 #define TIME_HMS_FORMAT        true
@@ -2535,13 +2452,13 @@ Flex mesh size
  *    P1  Raise the nozzle always to Z-park height.
  *    P2  Raise the nozzle by Z-park amount, limited to Z_MAX_POS.
  */
-// #define NOZZLE_PARK_FEATURE
+#define NOZZLE_PARK_FEATURE  // MRiscoC Enabled
 
 #if ENABLED(NOZZLE_PARK_FEATURE)
   // Specify a park position as { X, Y, Z_raise }
-  #define NOZZLE_PARK_POINT { (X_MIN_POS + 10), (Y_MAX_POS - 10), 20 }
+  #define NOZZLE_PARK_POINT { (X_BED_SIZE + 10), (Y_MAX_POS - 10), 20 }
   #define NOZZLE_PARK_MOVE          0   // Park motion: 0 = XY Move, 1 = X Only, 2 = Y Only, 3 = X before Y, 4 = Y before X
-  #define NOZZLE_PARK_Z_RAISE_MIN   2   // (mm) Always raise Z by at least this distance  // MRiscoC uses Park Z Raise from 0 to avoid backlash issues
+  #define NOZZLE_PARK_Z_RAISE_MIN   0   // (mm) Always raise Z by at least this distance  // MRiscoC uses Park Z Raise from 0 to avoid backlash issues
   #define NOZZLE_PARK_XY_FEEDRATE 100   // (mm/s) X and Y axes feedrate (also used for delta Z axis)
   #define NOZZLE_PARK_Z_FEEDRATE    5   // (mm/s) Z axis feedrate (not used for delta printers)
 #endif
@@ -2669,7 +2586,7 @@ Flex mesh size
  *
  * View the current statistics with M78.
  */
-//#define PRINTCOUNTER
+#define PRINTCOUNTER  // MRiscoC Enable Print Statistics
 #if ENABLED(PRINTCOUNTER)
   #define PRINTCOUNTER_SAVE_INTERVAL 60 // (minutes) EEPROM save interval during print. A value of 0 will save stats at end of print.
 #endif
@@ -2786,13 +2703,13 @@ Flex mesh size
 // This option overrides the default number of encoder pulses needed to
 // produce one step. Should be increased for high-resolution encoders.
 //
-//#define ENCODER_PULSES_PER_STEP 4
+#define ENCODER_PULSES_PER_STEP 4  // Ender Configs
 
 //
 // Use this option to override the number of step signals required to
 // move between next/prev menu items.
 //
-//#define ENCODER_STEPS_PER_MENU_ITEM 1
+#define ENCODER_STEPS_PER_MENU_ITEM 1  // Ender Configs
 
 /**
  * Encoder Direction Options
@@ -2860,8 +2777,8 @@ Flex mesh size
 // Note: Test audio output with the G-Code:
 //  M300 S<frequency Hz> P<duration ms>
 //
-//#define LCD_FEEDBACK_FREQUENCY_DURATION_MS 2
-//#define LCD_FEEDBACK_FREQUENCY_HZ 5000
+#define LCD_FEEDBACK_FREQUENCY_DURATION_MS 2  // Ender Configs
+#define LCD_FEEDBACK_FREQUENCY_HZ 5000  // Ender Configs
 
 //
 // Tone queue size, used to keep beeps from blocking execution.
@@ -3045,7 +2962,7 @@ Flex mesh size
 // RepRapDiscount FULL GRAPHIC Smart Controller
 // https://reprap.org/wiki/RepRapDiscount_Full_Graphic_Smart_Controller
 //
-#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
+//#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
 
 //
 // K.3D Full Graphic Smart Controller
@@ -3141,10 +3058,15 @@ Flex mesh size
 //#define FYSETC_GENERIC_12864_1_1 // Larger display with basic ON/OFF backlight.
 
 //
-// BigTreeTech Mini 12864 V1.0 is an alias for FYSETC_MINI_12864_2_1. Type A/B. NeoPixel RGB Backlight.
-// https://github.com/bigtreetech/MINI-12864/tree/master/mini12864_v1.0
+// BigTreeTech Mini 12864 V1.0 / V2.0 is an alias for FYSETC_MINI_12864_2_1. Type A/B. NeoPixel RGB Backlight.
+// https://github.com/bigtreetech/MINI-12864
 //
-//#define BTT_MINI_12864_V1
+//#define BTT_MINI_12864
+
+//
+// BEEZ MINI 12864 is an alias for FYSETC_MINI_12864_2_1. Type A/B. NeoPixel RGB Backlight.
+//
+//#define BEEZ_MINI_12864
 
 //
 // Factory display for Creality CR-10 / CR-7 / Ender-3
@@ -3160,14 +3082,14 @@ Flex mesh size
 //#define ENDER2_STOCKDISPLAY
 
 //
-// ANET and Tronxy Graphical Controller
-//
-// Anet 128x64 full graphics lcd with rotary encoder as used on Anet A6
-// A clone of the RepRapDiscount full graphics display but with
-// different pins/wiring (see pins_ANET_10.h). Enable one of these.
+// ANET and Tronxy 128×64 Full Graphics Controller as used on Anet A6
 //
 //#define ANET_FULL_GRAPHICS_LCD
-//#define ANET_FULL_GRAPHICS_LCD_ALT_WIRING
+
+//
+// GUCOCO CTC 128×64 Full Graphics Controller as used on GUCOCO CTC A10S
+//
+//#define CTC_A10S_A13
 
 //
 // AZSMZ 12864 LCD with SD
@@ -3511,7 +3433,53 @@ Flex mesh size
 // Ender-3 v2 OEM display. A DWIN display with Rotary Encoder.
 //
 //#define DWIN_CREALITY_LCD           // Creality UI
-//#define DWIN_LCD_PROUI              // Pro UI by MRiscoC
+#define DWIN_LCD_PROUI              // Pro UI by MRiscoC
+#define USE_STOCK_DWIN_SET
+#define DWIN_ICON_SET
+
+// Professional firmware features:
+#define PROUI_EX 1
+#if PROUI_EX
+  #if ENABLED(FILAMENT_RUNOUT_SENSOR)
+    #define HAS_PROUI_RUNOUT_SENSOR 1
+  #endif
+  #if ENABLED(EXTRUDERS)
+    #define HAS_PROUI_MAXTEMP 1
+  #endif
+  #define HAS_CGCODE 1
+  #define DEF_PROBEZFIX 0
+#endif
+#if ENABLED(DWIN_LCD_PROUI)
+  #if PROUI_EX
+    #if ENABLED(LCD_BED_TRAMMING)
+      #define HAS_TRAMMING_WIZARD 1
+    #endif
+    #define HAS_GCODE_PREVIEW 1
+    #define HAS_TOOLBAR 1
+  #endif
+  #define HAS_CUSTOM_COLORS 1
+  #define HAS_CUSTOM_COLORS_MENU 1
+  #define HAS_PLOT 1
+  #define HAS_ESDIAG 1
+  #define HAS_LOCKSCREEN 1
+  #define MESH_EDIT_MENU
+  #define PREVIEW_MENU_ITEM    // Allows enable/disable Thumbnail preview via menu and C250
+  #define SHOW_REAL_POS        // Display the real axes position in cartesian printers
+  //#define ACTIVATE_MESH_ITEM   // Allows temporary enabling of mesh leveling
+  #define RUNOUT_TUNE_ITEM     // Allows enable/disable the run out filament sensor while printing
+  #define PLR_TUNE_ITEM        // Allows enable/disable the power lost recovery while printing
+  //#define JD_TUNE_ITEM         // Enable only if Juntion Deviation is enabled
+  //#define ADVK_TUNE_ITEM       // Enable only if Linear Advance is enabled
+  //#define MEDIASORT_MENU_ITEM  // Allows enable/disable file list sorting
+  #define SHOW_SPEED_IND       // Show the axes speed in mm/s intermittently with the speed percentage
+  //#define NO_BLINK_IND         // Disables dashboard icon background blink indicator
+#endif
+  //#define ZOFFSET_SAVE_SETTINGS // Saves settings after changing the z-offset via the menu
+//#define HAS_SD_EXTENDER 1  // Enable to support SD card extender cables
+//#define CCLOUD_PRINT_SUPPORT  // Allows enable/disable Creality Cloud Print Support
+#define ZHOME_BEFORE_LEVELING
+//#define SMOOTH_ENCODER_MENUITEMS  // Menu items value faster/smooth change rate
+
 //#define DWIN_CREALITY_LCD_JYERSUI   // Jyers UI by Jacob Myers
 //#define DWIN_MARLINUI_PORTRAIT      // MarlinUI (portrait orientation)
 //#define DWIN_MARLINUI_LANDSCAPE     // MarlinUI (landscape orientation)
@@ -3569,14 +3537,14 @@ Flex mesh size
 // Use software PWM to drive the fan, as for the heaters. This uses a very low frequency
 // which is not as annoying as with the hardware PWM. On the other hand, if this frequency
 // is too low, you should also increment SOFT_PWM_SCALE.
-//#define FAN_SOFT_PWM
+#define FAN_SOFT_PWM  // Ender Configs
 
 // Incrementing this by 1 will double the software PWM frequency,
 // affecting heaters, and the fan if FAN_SOFT_PWM is enabled.
 // However, control resolution will be halved for each increment;
 // at zero value, there are 128 effective control positions.
 // :[0,1,2,3,4,5,6,7]
-#define SOFT_PWM_SCALE 0
+#define SOFT_PWM_SCALE 3
 
 // If SOFT_PWM_SCALE is set to a value higher than 0, dithering can
 // be used to mitigate the associated resolution loss. If enabled,
@@ -3651,7 +3619,7 @@ Flex mesh size
 #if ENABLED(NEOPIXEL_LED)
   #define NEOPIXEL_TYPE          NEO_GRBW // NEO_GRBW, NEO_RGBW, NEO_GRB, NEO_RBG, etc.
                                           // See https://github.com/adafruit/Adafruit_NeoPixel/blob/master/Adafruit_NeoPixel.h
-  //#define NEOPIXEL_PIN                4 // LED driving pin
+  #define NEOPIXEL_PIN                PA13 // LED driving pin
   //#define NEOPIXEL2_TYPE  NEOPIXEL_TYPE
   //#define NEOPIXEL2_PIN               5
   #define NEOPIXEL_PIXELS              30 // Number of LEDs in the strip. (Longest strip when NEOPIXEL2_SEPARATE is disabled.)
@@ -3717,6 +3685,3 @@ Flex mesh size
 
 // Disable servo with M282 to reduce power consumption, noise, and heat when not in use
 //#define SERVO_DETACH_GCODE
-// #define SHORT_BUILD_VERSION "515DL 2.1.1"
-#define USER_DESC_4 "Probe Z min"
-#define USER_GCODE_4 "G38.2 Z0"

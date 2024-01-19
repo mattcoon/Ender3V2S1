@@ -7,7 +7,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, ANY version 3 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -60,111 +60,6 @@
  * Calibration Objects: https://www.thingiverse.com/thing:5573
  *                      https://www.thingiverse.com/thing:1278865
  */
-
-/*
-
-TODO: filament loading setting - keep track of filament
-TODO: Increment config.gcode to create a new file
-FIXME: Tramming windows on repeat is a little flacky
-TODO: automate all build from pio commandline
-
-Test: 
-------
-FIXME: mesh viewer as building from menue wierd
-TODO: LCD assets
-TODO: add CNC build SKR PRO
-
-Done:
--------
-runout icon add back in / fix strobe to be more noticable
-Leveling active Z icon not working when active.
-Merge May release of Proui
-automate Github action build
-2.1.3.12
-autoload config with prompt from config.gcode
-Load SD Config menu item
-Add runout distance to tune menu
-correct workflows to the right repository
-V2.1.3.11
-Auto request store SD or simply store
-Select autostore setting or confirm
-update github workflows to auto build after release
-toolbar short cuts over 12 store setting correctly
-Add Preview config storage
-add material settings, min extrusion temp, jerk/junction, PID tune settings to write config
-use conditionals for store and restore settings
-V2.1.3.10
-merge spring 2.1.3 code
-Store ColorScheme
-Store Full 9x9 mesh
-V2.1.3.9
-add save config gcode to SD
-V2.1.3.8
-cancel does not move in laser mode
-laser Test service popup
-add M603 options for P-preunload length (mm) and D preunload delay (ms)
-add Laser position check/ low-power strobe to find the 0 point, only in laser mode. set 0,0 position. 
-Laser submenu on advanced
-add auto laser lift to target focus when homing in laser mode
-V2.1.3.7
-implement laser mode and fan sharing G3-5 on fan output
-G0 move no power. Configured by menu / C3
-in laser vs fan, change fan icon in status bar
-add laser mode toggle for toolbar
-add icon,hms,fan% Gcode C120 to allow configuration by gcode
-add laser mode fan mode by gcode C3 L or F
-allow movement in laser mode
-home X and Y only
-add XY home to toolbar
-eliminate bowden/direct use config files
-filament management toolbar shortcut changed description
-V2.1.3.4
-filament change toolbar
-Zprobe wizard toolbar not working?? only sometimes?
-filament sensor not changing fix call to update
-V2.1.3.3
-filament sensor mode menu
-toggle for percent menu not working
-Minimus 4010 43.5mm, 5.7mm
-toolbar descriptions making a mess
-filament change pre unload timing fixed display
-toolbar descripiton as option to disable
-filament change lift z axis
-V2.1.3.2
-unload retraction variable. from no pause retraction to current 3mm / 5sec
-Dynamic icon setting
-preheat filament  - back to filament not prepare
-v2.1.3.1
-host shutdown in toolbar
-tramming lift to safe z
-H m screen display toggle in menu
-add status of fil sensor on bottom. extruder icon background color? green working closed, yellow disabled, red runout
-filament status color too much . shift right side 2 px
-preheat hotend mode
-Fan percent
-percent calc wrong, and toggle for stat not working in advance menu
-tramming repeat... lower button or shrink chart
-maybe toggle runout toolbar message. remove checkbox
-change order of preheat menu to have TPU before warmup
-filament menu update status with temp too low
-main fast back called it main / home
-Preheat option bed/hotend maybe only in filament menu
-make flex environment for 4.2.7 and 4.2.2 with direct drive or bowden
-Unload filament / change - temp dialog not just warm preheat
-Fast back menu
-prepare preheat submenu
-tramming cancel not returning to menu clean
-Filament menu cooldown
-Bed tramming add turns to summary
-tramming repeat
-Mpc store settings like pid bed
-Shortcuts  / toolbar - look ok - filament enable/disable
-Laser mode
-Bed tramming mostly
-Auto build mesh
-Flex mesh size
-
-*/
 
 // @section info
 
@@ -372,7 +267,8 @@ Flex mesh size
 #if ENABLED(SWITCHING_NOZZLE)
   #define SWITCHING_NOZZLE_SERVO_NR 0
   //#define SWITCHING_NOZZLE_E1_SERVO_NR 1          // If two servos are used, the index of the second
-  #define SWITCHING_NOZZLE_SERVO_ANGLES { 0, 90 }   // Angles for E0, E1 (single servo) or lowered/raised (dual servo)
+  #define SWITCHING_NOZZLE_SERVO_ANGLES { 0, 90 }   // A pair of angles for { E0, E1 }.
+                                                    // For Dual Servo use two pairs: { { lower, raise }, { lower, raise } }
   #define SWITCHING_NOZZLE_SERVO_DWELL 2500         // Dwell time to wait for servo to make physical move
 #endif
 
@@ -594,6 +490,7 @@ Flex mesh size
  *    13 : 100kΩ Hisens up to 300°C - for "Simple ONE" & "All In ONE" hotend - beta 3950, 1%
  *    14 : 100kΩ  (R25), 4092K (beta25), 4.7kΩ pull-up, bed thermistor as used in Ender-5 S1
  *    15 : 100kΩ Calibrated for JGAurora A5 hotend
+ *    17 : 100kΩ Dagoma NTC white thermistor
  *    18 : 200kΩ ATC Semitec 204GT-2 Dagoma.Fr - MKS_Base_DKU001327
  *    22 : 100kΩ GTM32 Pro vB - hotend - 4.7kΩ pullup to 3.3V and 220Ω to analog input
  *    23 : 100kΩ GTM32 Pro vB - bed - 4.7kΩ pullup to 3.3v and 220Ω to analog input
@@ -605,6 +502,7 @@ Flex mesh size
  *    68 : PT100 Smplifier board from Dyze Design
  *    70 : 100kΩ bq Hephestos 2
  *    75 : 100kΩ Generic Silicon Heat Pad with NTC100K MGB18-104F39050L32
+ *   666 : 200kΩ Einstart S custom thermistor with 10k pullup.
  *  2000 : 100kΩ Ultimachine Rambo TDK NTCG104LH104KT1 NTC100K motherboard Thermistor
  *
  * ================================================================
@@ -638,10 +536,10 @@ Flex mesh size
  * ================================================================
  *  SPI RTD/Thermocouple Boards
  * ================================================================
- *    -5 : MAX31865 with Pt100/Pt1000, 2, 3, or 4-wire  (only for sensors 0-1)
+ *    -5 : MAX31865 with Pt100/Pt1000, 2, 3, or 4-wire  (only for sensors 0-2 and bed)
  *                  NOTE: You must uncomment/set the MAX31865_*_OHMS_n defines below.
- *    -3 : MAX31855 with Thermocouple, -200°C to +700°C (only for sensors 0-1)
- *    -2 : MAX6675  with Thermocouple, 0°C to +700°C    (only for sensors 0-1)
+ *    -3 : MAX31855 with Thermocouple, -200°C to +700°C (only for sensors 0-2 and bed)
+ *    -2 : MAX6675  with Thermocouple, 0°C to +700°C    (only for sensors 0-2 and bed)
  *
  *  NOTE: Ensure TEMP_n_CS_PIN is set in your pins file for each TEMP_SENSOR_n using an SPI Thermocouple. By default,
  *        Hardware SPI on the default serial bus is used. If you have also set TEMP_n_SCK_PIN and TEMP_n_MISO_PIN,
@@ -787,11 +685,11 @@ Flex mesh size
  * PIDTEMP : PID temperature control (~4.1K)
  * MPCTEMP : Predictive Model temperature control. (~1.8K without auto-tune)
  */
-#define PIDTEMP          // See the PID Tuning Guide at https://reprap.org/wiki/PID_Tuning
-//#define MPCTEMP        // ** EXPERIMENTAL **
+#define PIDTEMP           // See the PID Tuning Guide at https://reprap.org/wiki/PID_Tuning
+//#define MPCTEMP         // ** EXPERIMENTAL ** See https://marlinfw.org/docs/features/model_predictive_control.html
 
 #define PID_MAX  255      // Limit hotend current while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
-#define PID_K1 0.95       // Smoothing factor within any PID loop
+#define PID_K1     0.95   // Smoothing factor within any PID loop
 
 #if ENABLED(PIDTEMP)
   //#define PID_DEBUG             // Print PID debug data to the serial port. Use 'M303 D' to toggle activation.
@@ -906,6 +804,9 @@ Flex mesh size
   //#define BED_LIMIT_SWITCHING   // Keep the bed temperature within BED_HYSTERESIS of the target
 #endif
 
+// Add 'M190 R T' for more gradual M190 R bed cooling.
+//#define BED_ANNEALING_GCODE
+
 //===========================================================================
 //==================== PID > Chamber Temperature Control ====================
 //===========================================================================
@@ -1016,7 +917,12 @@ Flex mesh size
 //#define COREYX
 //#define COREZX
 //#define COREZY
-//#define MARKFORGED_XY  // MarkForged. See https://reprap.org/forum/read.php?152,504042
+
+//
+// MarkForged Kinematics
+// See https://reprap.org/forum/read.php?152,504042
+//
+//#define MARKFORGED_XY
 //#define MARKFORGED_YX
 #if ANY(MARKFORGED_XY, MARKFORGED_YX)
   //#define MARKFORGED_INVERSE  // Enable for an inverted Markforged kinematics belt path
@@ -1077,7 +983,7 @@ Flex mesh size
   // Distance between bed and nozzle Z home position
   #define DELTA_HEIGHT 250.00             // (mm) Get this value from G33 auto calibrate
 
-  #define DELTA_ENDSTOP_ADJ { 0.0, 0.0, 0.0 } // Get these values from G33 auto calibrate
+  #define DELTA_ENDSTOP_ADJ { 0.0, 0.0, 0.0 } // (mm) Get these values from G33 auto calibrate
 
   // Horizontal distance bridged by diagonal push rods when effector is centered.
   #define DELTA_RADIUS 124.0              // (mm) Get this value from G33 auto calibrate
@@ -1085,11 +991,11 @@ Flex mesh size
   // Trim adjustments for individual towers
   // tower angle corrections for X and Y tower / rotate XYZ so Z tower angle = 0
   // measured in degrees anticlockwise looking from above the printer
-  #define DELTA_TOWER_ANGLE_TRIM { 0.0, 0.0, 0.0 } // Get these values from G33 auto calibrate
+  #define DELTA_TOWER_ANGLE_TRIM { 0.0, 0.0, 0.0 } // (mm) Get these values from G33 auto calibrate
 
-  // Delta radius and diagonal rod adjustments (mm)
-  //#define DELTA_RADIUS_TRIM_TOWER { 0.0, 0.0, 0.0 }
-  //#define DELTA_DIAGONAL_ROD_TRIM_TOWER { 0.0, 0.0, 0.0 }
+  // Delta radius and diagonal rod adjustments
+  //#define DELTA_RADIUS_TRIM_TOWER       { 0.0, 0.0, 0.0 } // (mm)
+  //#define DELTA_DIAGONAL_ROD_TRIM_TOWER { 0.0, 0.0, 0.0 } // (mm)
 #endif
 
 // @section scara
@@ -1667,7 +1573,7 @@ Flex mesh size
  *
  * Tune and Adjust
  * -  Probe Offsets can be tuned at runtime with 'M851', LCD menus, babystepping, etc.
- * -  PROBE_OFFSET_WIZARD (configuration_adv.h) can be used for setting the Z offset.
+ * -  PROBE_OFFSET_WIZARD (Configuration_adv.h) can be used for setting the Z offset.
  *
  * Assuming the typical work area orientation:
  *  - Probe to RIGHT of the Nozzle has a Positive X offset
@@ -1888,10 +1794,13 @@ Flex mesh size
  */
 //#define Z_IDLE_HEIGHT Z_HOME_POS
 
-//#define Z_CLEARANCE_FOR_HOMING  10 // (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...  // MRiscoC Crearance over the bed
-                                    // Be sure to have this much clearance over your Z_MAX_POS to prevent grinding.
+//#define Z_CLEARANCE_FOR_HOMING  10   // (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...  // MRiscoC Crearance over the bed
+                                      // You'll need this much clearance above Z_MAX_POS to avoid grinding.
 
-//#define Z_AFTER_HOMING  5      // (mm) Height to move to after homing Z  // MRiscoC Crearance over the bed
+//#define Z_AFTER_HOMING         5   // (mm) Height to move to after homing (if Z was homed)  // MRiscoC Crearance over the bed
+//#define XY_AFTER_HOMING { 10, 10 }  // (mm) Move to an XY position after homing (and raising Z)
+
+//#define EVENT_GCODE_AFTER_HOMING "M300 P440 S200"  // Commands to run after G28 (and move to XY_AFTER_HOMING)
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
@@ -2148,6 +2057,12 @@ Flex mesh size
 //#define MESH_BED_LEVELING
 
 /**
+ * Commands to execute at the end of G29 probing.
+ * Useful to retract or move the Z probe out of the way.
+ */
+//#define Z_PROBE_END_SCRIPT "G1 Z10 F12000\nG1 X15 Y330\nG1 Z0.5\nG1 Z10"
+
+/**
  * Normally G28 leaves leveling disabled on completion. Enable one of
  * these options to restore the prior leveling state or to always enable
  * leveling immediately after G28.
@@ -2165,18 +2080,9 @@ Flex mesh size
 #endif
 
 /**
- * Bed Distance Sensor
- *
- * Measures the distance from bed to nozzle with accuracy of 0.01mm.
- * For information about this sensor https://github.com/markniu/Bed_Distance_sensor
- * Uses I2C port, so it requires I2C library markyue/Panda_SoftMasterI2C.
- */
-//#define BD_SENSOR
-
-/**
  * Enable detailed logging of G28, G29, M48, etc.
  * Turn on with the command 'M111 S32'.
- * NOTE: Requires a lot of PROGMEM!
+ * NOTE: Requires a lot of flash!
  */
 //#define DEBUG_LEVELING_FEATURE
 
@@ -2239,7 +2145,7 @@ Flex mesh size
     // Subdivision of the grid by Catmull-Rom method.
     // Synthesizes intermediate points to produce a more detailed mesh.
     //
-    //#define ABL_BILINEAR_SUBDIVISION
+    //#define ABL_BILINEAR_SUBDIVISION  // Original Ender3S1 Configs set this to Enable
     #if ENABLED(ABL_BILINEAR_SUBDIVISION)
       // Number of subdivisions between probe points
       #define BILINEAR_SUBDIVISIONS 3
@@ -2259,7 +2165,7 @@ Flex mesh size
   #define GRID_MAX_POINTS_X 5      // Don't use more than 15 points per axis, implementation limited.  // MRiscoC Customizable by menu
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
-  #define UBL_HILBERT_CURVE       // mmm Use Hilbert distribution for less travel when probing multiple points
+  //#define UBL_HILBERT_CURVE       // Use Hilbert distribution for less travel when probing multiple points
 
   //#define UBL_TILT_ON_MESH_POINTS         // Use nearest mesh points with G29 J for better Z reference
   //#define UBL_TILT_ON_MESH_POINTS_3POINT  // Use nearest mesh points with G29 J0 (3-point)
@@ -2353,12 +2259,6 @@ Flex mesh size
   #define BED_TRAMMING_LEVELING_ORDER { LF, RF, RB, LB }
 #endif
 
-/**
- * Commands to execute at the end of G29 probing.
- * Useful to retract or move the Z probe out of the way.
- */
-//#define Z_PROBE_END_SCRIPT "G1 Z10 F12000\nG1 X15 Y330\nG1 Z0.5\nG1 Z10"
-
 // @section homing
 
 // The center of the bed is at (X=0, Y=0)
@@ -2386,8 +2286,8 @@ Flex mesh size
 //#define Z_SAFE_HOMING
 
 #if ENABLED(Z_SAFE_HOMING)
-  #define Z_SAFE_HOMING_X_POINT X_CENTER  // X point for Z homing
-  #define Z_SAFE_HOMING_Y_POINT Y_CENTER  // Y point for Z homing
+  #define Z_SAFE_HOMING_X_POINT X_CENTER  // (mm) X point for Z homing
+  #define Z_SAFE_HOMING_Y_POINT Y_CENTER  // (mm) Y point for Z homing
   //#define Z_SAFE_HOMING_POINT_ABSOLUTE  // Ignore home offsets (M206) for Z homing position
 #endif
 
@@ -2472,7 +2372,7 @@ Flex mesh size
  */
 #define EEPROM_SETTINGS     // Persistent storage with M500 and M501  // Ender Configs
 //#define DISABLE_M503        // Saves ~2700 bytes of flash. Disable for release!
-#define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
+#define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save flash.
 #define EEPROM_BOOT_SILENT    // Keep M503 quiet and only give errors during first load
 #if ENABLED(EEPROM_SETTINGS)
   #define EEPROM_AUTO_INIT  // Init EEPROM automatically on any errors.  // Ender Configs
@@ -3141,10 +3041,15 @@ Flex mesh size
 //#define FYSETC_GENERIC_12864_1_1 // Larger display with basic ON/OFF backlight.
 
 //
-// BigTreeTech Mini 12864 V1.0 is an alias for FYSETC_MINI_12864_2_1. Type A/B. NeoPixel RGB Backlight.
-// https://github.com/bigtreetech/MINI-12864/tree/master/mini12864_v1.0
+// BigTreeTech Mini 12864 V1.0 / V2.0 is an alias for FYSETC_MINI_12864_2_1. Type A/B. NeoPixel RGB Backlight.
+// https://github.com/bigtreetech/MINI-12864
 //
-//#define BTT_MINI_12864_V1
+//#define BTT_MINI_12864
+
+//
+// BEEZ MINI 12864 is an alias for FYSETC_MINI_12864_2_1. Type A/B. NeoPixel RGB Backlight.
+//
+//#define BEEZ_MINI_12864
 
 //
 // Factory display for Creality CR-10 / CR-7 / Ender-3
@@ -3160,14 +3065,14 @@ Flex mesh size
 //#define ENDER2_STOCKDISPLAY
 
 //
-// ANET and Tronxy Graphical Controller
-//
-// Anet 128x64 full graphics lcd with rotary encoder as used on Anet A6
-// A clone of the RepRapDiscount full graphics display but with
-// different pins/wiring (see pins_ANET_10.h). Enable one of these.
+// ANET and Tronxy 128×64 Full Graphics Controller as used on Anet A6
 //
 //#define ANET_FULL_GRAPHICS_LCD
-//#define ANET_FULL_GRAPHICS_LCD_ALT_WIRING
+
+//
+// GUCOCO CTC 128×64 Full Graphics Controller as used on GUCOCO CTC A10S
+//
+//#define CTC_A10S_A13
 
 //
 // AZSMZ 12864 LCD with SD

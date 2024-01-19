@@ -1115,7 +1115,13 @@
    */
   #define TRAMMING_SCREW_THREAD 40
 
-// @section motion
+// @section motion control
+
+/**
+ * Fixed-time-based Motion Control -- EXPERIMENTAL
+ * Enable/disable and set parameters with G-code M493.
+ */
+//#define FT_MOTION
 #if ENABLED(FT_MOTION)
   #define FTM_DEFAULT_MODE        ftMotionMode_DISABLED // Default mode of fixed time control. (Enums in ft_types.h)
   #define FTM_DEFAULT_DYNFREQ_MODE dynFreqMode_DISABLED // Default mode of dynamic frequency calculation. (Enums in ft_types.h)
@@ -1792,8 +1798,8 @@
   #if ENABLED(SDCARD_SORT_ALPHA)
     #define SDSORT_REVERSE     false  // Default to sorting file names in reverse order.
     #define SDSORT_LIMIT       50     // Maximum number of sorted items (10-256). Costs 27 bytes each.  // MRiscoC Increase number of sorted items
-    #define SDSORT_FOLDERS     1     // -1=above  0=none  1=below
-    #define SDSORT_GCODE       true  // Allow turning sorting on/off with LCD and M34 G-code.  // MRiscoC Allows disable file sort by M34 g-code
+    #define SDSORT_FOLDERS     -1     // -1=above  0=none  1=below
+    #define SDSORT_GCODE       true  // Enable G-code M34 to set sorting behaviors: M34 S<-1|0|1> F<-1|0|1>  // MRiscoC Allows disable file sort by M34 g-code
     #define SDSORT_USES_RAM    true  // Pre-allocate a static array for faster pre-sorting.  // Ender Configs
     #define SDSORT_USES_STACK  false  // Prefer the stack for pre-sorting to give back some SRAM. (Negated by next 2 options.)
     #define SDSORT_CACHE_NAMES true  // Keep sorted items in RAM longer for speedy performance. Most expensive option.  // Ender Configs
@@ -1826,7 +1832,7 @@
 
   //#define SD_REPRINT_LAST_SELECTED_FILE // On print completion open the LCD Menu and select the same file
 
-  #define AUTO_REPORT_SD_STATUS         // Auto-report media status with 'M27 S<seconds>'
+  //#define AUTO_REPORT_SD_STATUS         // Auto-report media status with 'M27 S<seconds>'
 
   /**
    * Support for USB thumb drives using an Arduino USB Host Shield or
@@ -3885,7 +3891,9 @@
 
 // @section reporting
 
-// Extra options for the M114 "Current Position" report
+/**
+ * Extra options for the M114 "Current Position" report
+ */
 #define M114_DETAIL         // Use 'M114` for details to check planner calculations
 //#define M114_REALTIME       // Real current position based on forward kinematics
 //#define M114_LEGACY         // M114 used to synchronize on every call. Enable if needed.

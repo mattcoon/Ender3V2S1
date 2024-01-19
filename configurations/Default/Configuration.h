@@ -61,111 +61,6 @@
  *                      https://www.thingiverse.com/thing:1278865
  */
 
-/*
-
-TODO: filament loading setting - keep track of filament
-TODO: Increment config.gcode to create a new file
-FIXME: Tramming windows on repeat is a little flacky
-TODO: automate all build from pio commandline
-
-Test: 
-------
-FIXME: mesh viewer as building from menue wierd
-TODO: LCD assets
-TODO: add CNC build SKR PRO
-
-Done:
--------
-runout icon add back in / fix strobe to be more noticable
-Leveling active Z icon not working when active.
-Merge May release of Proui
-automate Github action build
-2.1.3.12
-autoload config with prompt from config.gcode
-Load SD Config menu item
-Add runout distance to tune menu
-correct workflows to the right repository
-V2.1.3.11
-Auto request store SD or simply store
-Select autostore setting or confirm
-update github workflows to auto build after release
-toolbar short cuts over 12 store setting correctly
-Add Preview config storage
-add material settings, min extrusion temp, jerk/junction, PID tune settings to write config
-use conditionals for store and restore settings
-V2.1.3.10
-merge spring 2.1.3 code
-Store ColorScheme
-Store Full 9x9 mesh
-V2.1.3.9
-add save config gcode to SD
-V2.1.3.8
-cancel does not move in laser mode
-laser Test service popup
-add M603 options for P-preunload length (mm) and D preunload delay (ms)
-add Laser position check/ low-power strobe to find the 0 point, only in laser mode. set 0,0 position. 
-Laser submenu on advanced
-add auto laser lift to target focus when homing in laser mode
-V2.1.3.7
-implement laser mode and fan sharing G3-5 on fan output
-G0 move no power. Configured by menu / C3
-in laser vs fan, change fan icon in status bar
-add laser mode toggle for toolbar
-add icon,hms,fan% Gcode C120 to allow configuration by gcode
-add laser mode fan mode by gcode C3 L or F
-allow movement in laser mode
-home X and Y only
-add XY home to toolbar
-eliminate bowden/direct use config files
-filament management toolbar shortcut changed description
-V2.1.3.4
-filament change toolbar
-Zprobe wizard toolbar not working?? only sometimes?
-filament sensor not changing fix call to update
-V2.1.3.3
-filament sensor mode menu
-toggle for percent menu not working
-Minimus 4010 43.5mm, 5.7mm
-toolbar descriptions making a mess
-filament change pre unload timing fixed display
-toolbar descripiton as option to disable
-filament change lift z axis
-V2.1.3.2
-unload retraction variable. from no pause retraction to current 3mm / 5sec
-Dynamic icon setting
-preheat filament  - back to filament not prepare
-v2.1.3.1
-host shutdown in toolbar
-tramming lift to safe z
-H m screen display toggle in menu
-add status of fil sensor on bottom. extruder icon background color? green working closed, yellow disabled, red runout
-filament status color too much . shift right side 2 px
-preheat hotend mode
-Fan percent
-percent calc wrong, and toggle for stat not working in advance menu
-tramming repeat... lower button or shrink chart
-maybe toggle runout toolbar message. remove checkbox
-change order of preheat menu to have TPU before warmup
-filament menu update status with temp too low
-main fast back called it main / home
-Preheat option bed/hotend maybe only in filament menu
-make flex environment for 4.2.7 and 4.2.2 with direct drive or bowden
-Unload filament / change - temp dialog not just warm preheat
-Fast back menu
-prepare preheat submenu
-tramming cancel not returning to menu clean
-Filament menu cooldown
-Bed tramming add turns to summary
-tramming repeat
-Mpc store settings like pid bed
-Shortcuts  / toolbar - look ok - filament enable/disable
-Laser mode
-Bed tramming mostly
-Auto build mesh
-Flex mesh size
-
-*/
-
 // @section info
 
 // Author info of this build printed to the host during boot and M115
@@ -1780,13 +1675,13 @@ Flex mesh size
  * Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
-#define Z_CLEARANCE_DEPLOY_PROBE   10 // (mm) Z Clearance for Deploy/Stow
-#define Z_CLEARANCE_BETWEEN_PROBES  5 // (mm) Z Clearance between probe points
-#define Z_CLEARANCE_MULTI_PROBE     5 // (mm) Z Clearance between multiple probes
+#define Z_CLEARANCE_DEPLOY_PROBE   5 // (mm) Z Clearance for Deploy/Stow  // MRiscoC Increase speed
+#define Z_CLEARANCE_BETWEEN_PROBES  5 // (mm) Z Clearance between probe points  // MRiscoC Increase probe compatibility
+#define Z_CLEARANCE_MULTI_PROBE     5 // (mm) Z Clearance between multiple probes  // MRiscoC Increase speed
 #define Z_PROBE_ERROR_TOLERANCE     3 // (mm) Tolerance for early trigger (<= -probe.offset.z + ZPET)
 //#define Z_AFTER_PROBING           5 // (mm) Z position after probing is done
 
-#define Z_PROBE_LOW_POINT          -3 // Farthest distance below the trigger-point to go before stopping  // MRiscoC allows reach lower points
+#define Z_PROBE_LOW_POINT          -3 // (mm) Farthest distance below the trigger-point to go before stopping  // MRiscoC allows reach lower points
 
 // For M851 provide ranges for adjusting the X, Y, and Z probe offsets
 //#define PROBE_OFFSET_XMIN -50   // (mm)
@@ -1902,7 +1797,10 @@ Flex mesh size
 //#define Z_CLEARANCE_FOR_HOMING  10   // (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...  // MRiscoC Crearance over the bed
                                       // You'll need this much clearance above Z_MAX_POS to avoid grinding.
 
-//#define Z_AFTER_HOMING  5      // (mm) Height to move to after homing Z  // MRiscoC Crearance over the bed
+//#define Z_AFTER_HOMING         5   // (mm) Height to move to after homing (if Z was homed)  // MRiscoC Crearance over the bed
+//#define XY_AFTER_HOMING { 10, 10 }  // (mm) Move to an XY position after homing (and raising Z)
+
+//#define EVENT_GCODE_AFTER_HOMING "M300 P440 S200"  // Commands to run after G28 (and move to XY_AFTER_HOMING)
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
@@ -2157,6 +2055,12 @@ Flex mesh size
 //#define AUTO_BED_LEVELING_BILINEAR
 #define AUTO_BED_LEVELING_UBL  // MRiscoC UBL
 //#define MESH_BED_LEVELING
+
+/**
+ * Commands to execute at the end of G29 probing.
+ * Useful to retract or move the Z probe out of the way.
+ */
+//#define Z_PROBE_END_SCRIPT "G1 Z10 F12000\nG1 X15 Y330\nG1 Z0.5\nG1 Z10"
 
 /**
  * Normally G28 leaves leveling disabled on completion. Enable one of
@@ -3548,7 +3452,7 @@ Flex mesh size
 #if ENABLED(DWIN_LCD_PROUI)
   #if PROUI_EX
     #if ENABLED(LCD_BED_TRAMMING)
-      #define HAS_TRAMMING_WIZARD 1  // Manual mesh not have a probe
+      #define HAS_TRAMMING_WIZARD 1
     #endif
     #define HAS_GCODE_PREVIEW 1
     #define HAS_TOOLBAR 1
