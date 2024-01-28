@@ -686,14 +686,14 @@ void _drawIconBlink(bool &flag, const bool sensor, const uint8_t icon1, const ui
 #if HAS_HOTEND
   void _drawHotendIcon() {
     static bool _isHeatingHotend = false;
-    _drawIconBlink(_isHeatingHotend, thermalManager.isHeatingHotend(EXT), ICON_HotendTemp, ICON_SetEndTemp, 10, 383);
+    _drawIconBlink(_isHeatingHotend, thermalManager.isHeatingHotend(EXT), ICON_HotendTemp, ICON_HotendTemp, 10, 383);
   }
 #endif
 
 #if HAS_HEATED_BED
   void _drawBedIcon() {
     static bool _isHeatingBed = false;
-    _drawIconBlink(_isHeatingBed, thermalManager.isHeatingBed(), ICON_BedTemp, ICON_SetBedTemp, 10, 416);
+    _drawIconBlink(_isHeatingBed, thermalManager.isHeatingBed(), ICON_BedTemp, ICON_BedTemp, 10, 416);
   }
 #endif
 
