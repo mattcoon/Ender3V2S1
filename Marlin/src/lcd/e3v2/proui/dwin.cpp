@@ -747,6 +747,11 @@ void _drawFeedrate() {
   #endif
 }
 
+void _drawFanspeed() {
+  DWINUI::drawInt(    DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 195 + 2 * STAT_CHR_W, 384, blink ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
+  DWINUI::drawString( DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 195 + 5 * STAT_CHR_W + 2, 384, blink ? F("%") : F(" "));
+}
+
 void _drawXYZPosition(const bool force) {
   _update_axis_value(X_AXIS,  27, 459, force);
   _update_axis_value(Y_AXIS, 112, 459, force);
@@ -817,11 +822,12 @@ void updateVariable() {
   #endif
 
   _drawFeedrate();
+  _drawFanspeed();
 
   #if HAS_FAN
     if (_new_fanspeed) {
       _fanspeed = thermalManager.fan_speed[0];
-      DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 195 + 2 * STAT_CHR_W, 384, (hmiData.fan_percent) ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
+      DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 195 + 2 * STAT_CHR_W, 384, blink ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
     }
   #endif
 
@@ -1051,8 +1057,8 @@ void dwinDrawDashboard() {
     else
     #endif
       DWINUI::drawIcon(ICON_FanSpeed, 186, 383);
-    DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 195 + 2 * STAT_CHR_W, 384, (hmiData.fan_percent) ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
-    dwinDrawString( false, DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 195 + 5 * STAT_CHR_W + 2, 384, (hmiData.fan_percent) ? F("%") : F(" "));
+    DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 195 + 2 * STAT_CHR_W, 384, blink ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
+    DWINUI::drawString( DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 195 + 5 * STAT_CHR_W + 2, 384, blink ? F("%") : F(" "));
   #endif
 
   #if HAS_ZOFFSET_ITEM
@@ -2707,11 +2713,6 @@ void applyMaxAccel() { planner.set_max_acceleration((AxisEnum)hmiValue.select, m
   }
 #endif
 
-void setFanPercent() { // mmm
-  toggleCheckboxLine(hmiData.fan_percent);
-  dwinDrawDashboard();
-}
-
 void setTimeFormat() {
   toggleCheckboxLine(hmiData.time_format_textual);
 }
@@ -2994,7 +2995,6 @@ void drawAdvancedSettingsMenu() {
       MENU_ITEM(ICON_LaserMode,MSG_LASER_SETTINGS, onDrawSubMenu, drawLaserSettingsMenu);
       if (!planner.laserMode)
     #endif
-    EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, setFanPercent, &hmiData.fan_percent);
     EDIT_ITEM(ICON_PrintTime, MSG_PROGRESS_IN_HHMM, onDrawChkbMenu, setTimeFormat, &hmiData.time_format_textual);
     #if HAS_CUSTOM_COLORS
       MENU_ITEM(ICON_Scolor, MSG_COLORS_SELECT, onDrawSubMenu, drawSelectColorsMenu);
@@ -3009,11 +3009,7 @@ void drawAdvancedSettingsMenu() {
     if (notCurrentMenu(laserSettingsMenu)) {
       BACK_ITEM(drawAdvancedSettingsMenu);
       BACK_HOME();
-        EDIT_ITEM(ICON_LaserMode, MSG_ENABLE_LASERMODE, onDrawChkbMenu, menuToggleLaserMode, &planner.laserMode);
-      if (planner.laserMode)
-        EDIT_ITEM(ICON_LaserMode, MSG_LASER_PERCENT, onDrawChkbMenu, setFanPercent, &hmiData.fan_percent);
-      else
-        EDIT_ITEM(ICON_FanSpeed, MSG_FAN_SPEED_PERCENT, onDrawChkbMenu, setFanPercent, &hmiData.fan_percent);
+      EDIT_ITEM(ICON_LaserMode, MSG_ENABLE_LASERMODE, onDrawChkbMenu, menuToggleLaserMode, &planner.laserMode);
       EDIT_ITEM(ICON_LaserMode, MSG_LASERLOW_LIMIT, onDrawPInt8Menu, setLaserLowLimit, &hmiData.laser_off_pwr);
       EDIT_ITEM(ICON_LaserMode, MSG_LASER_HEIGHT, onDrawPInt8Menu, setLaserHeight, &hmiData.target_laser_height);
       MENU_ITEM(ICON_LaserMode, MSG_LASER_TEST, onDrawMenuItem, setLaserTest);
