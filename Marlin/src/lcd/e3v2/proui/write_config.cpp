@@ -103,7 +103,7 @@ void writeSDConfig() {
     writeMaterialConfig(&buffer);
 
     // ; Probe settings
-    //TODO:mmm buffer += "C29L" + String(PRO_data.mesh_min_x) + "R" + String(PRO_data.mesh_max_x) + "F" + String(PRO_data.mesh_min_x) + "B" + String(PRO_data.mesh_max_y) + "N" + String(PRO_data.grid_max_points) + "\n";
+    buffer += "C29L" + String(meshSet.mesh_min_x) + "R" + String(meshSet.mesh_max_x) + "F" + String(meshSet.mesh_min_x) + "B" + String(meshSet.mesh_max_y) + "N" + String(meshSet.grid_max_points_x) + "\n";
     #if HAS_BED_PROBE
       buffer += "M851X" + String(probe.offset.x) + "Y" + String(probe.offset.y) + "Z" + String(probe.offset.z) + "\n";
       buffer += "C851S" + String(PRO_data.zprobefeedslow) + "M" + String(PRO_data.multiple_probing) + "\n";
