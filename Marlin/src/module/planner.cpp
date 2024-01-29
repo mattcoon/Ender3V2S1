@@ -2917,7 +2917,7 @@ void Planner::buffer_sync_block(const BlockFlagBit sync_flag/*=BLOCK_BIT_SYNC_PO
     if (laserMode) // mmm
   #endif
   #if ALL(HAS_FAN, LASER_SYNCHRONOUS_M106_M107)
-      FANS_LOOP(i) block->fan_speed[i] = thermalManager.fan_speed[i];
+    FANS_LOOP(i) block->fan_speed[i] = thermalManager.fan_speed[i];
   #endif
 
   /**

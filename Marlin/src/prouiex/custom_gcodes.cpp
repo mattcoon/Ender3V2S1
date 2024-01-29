@@ -152,28 +152,28 @@ void customGcode(const int16_t codenum) {
     #if HAS_PROUI_MAXTEMP
       case 104: proUIEx.C104(); break;    // Set extruder max temperature (limited by maxtemp in thermistor table)
     #endif
-      case 115: proUIEx.C115(); break;    // ProUI Info
-      #if ENABLED(NOZZLE_PARK_FEATURE)
-        case 125: proUIEx.C125(); break;  // Set park position
-      #endif
-      #if ALL(HAS_GCODE_PREVIEW, PREVIEW_MENU_ITEM)
-        case 250: C250(); break;          // Enable or disable preview screen
-      #endif
-      #if ANY(PIDTEMP,PIDTEMPBED) // mmm
-        case 303: C303(); break;            // set PID temp and cycles for Bed or Hotend
-      #endif // mmm
-      #if HAS_FILAMENT_SENSOR
-        case 412: proUIEx.C412(); break;  // Set runout sensor active mode
-      #endif
-      case 562: proUIEx.C562(); break;    // Invert Extruder
-      case 851: proUIEx.C851(); break;    // If has a probe set z feed rate and multiprobe, if not, set manual z-offset
-      #if HAS_TOOLBAR
-        case 810: C810(); break;            // mmm Config toolbar
-      #endif
-        case 120: C120(); break;              // visual setting T = hms, F = fan%, I = iconset
-      #if ENABLED(LASER_FAN_SHARING)
-        case 3:   C3(); break;                // set L = laser mode, F = fan mode
-      #endif
+    case 115: proUIEx.C115(); break;    // ProUI Info
+    #if ENABLED(NOZZLE_PARK_FEATURE)
+      case 125: proUIEx.C125(); break;  // Set park position
+    #endif
+    #if ALL(HAS_GCODE_PREVIEW, PREVIEW_MENU_ITEM)
+      case 250: C250(); break;          // Enable or disable preview screen
+    #endif
+    #if ANY(PIDTEMP,PIDTEMPBED) // mmm
+      case 303: C303(); break;            // set PID temp and cycles for Bed or Hotend
+    #endif // mmm
+    #if HAS_FILAMENT_SENSOR
+      case 412: proUIEx.C412(); break;  // Set runout sensor active mode
+    #endif
+    case 562: proUIEx.C562(); break;    // Invert Extruder
+    case 851: proUIEx.C851(); break;    // If has a probe set z feed rate and multiprobe, if not, set manual z-offset
+    #if HAS_TOOLBAR
+      case 810: C810(); break;            // mmm Config toolbar
+    #endif
+      case 120: C120(); break;              // visual setting T = hms, F = fan%, I = iconset
+    #if ENABLED(LASER_FAN_SHARING)
+      case 3:   C3(); break;                // set L = laser mode, F = fan mode
+    #endif
     default: cError(); break;
   }
 }
@@ -279,7 +279,6 @@ void C120 () {
   if (parser.seen("ITFS")) {
     if (parser.seenval('I')) { hmiData.baseIcon = parser.byteval('I'); dwinRedrawScreen(); }
     if (parser.seenval('T')) { hmiData.time_format_textual = parser.boolval('T'); }
-    if (parser.seenval('F')) { hmiData.fan_percent = parser.boolval('F'); dwinDrawDashboard(); }
     if (parser.seenval('S')) { hmiData.autoStoreSD = parser.boolval('S'); }
     return;
   }
@@ -291,7 +290,6 @@ void C120_report(const bool forReplay/*=true*/) {
   gcode.report_echo_start(forReplay);
   SERIAL_ECHOPGM("  C120 I", hmiData.baseIcon);
   SERIAL_ECHOPGM(" T", hmiData.time_format_textual? 1:0);
-  SERIAL_ECHOPGM(" F", hmiData.fan_percent? 1:0);
   SERIAL_ECHOPGM(" S", hmiData.autoStoreSD? 1:0);
   SERIAL_EOL();
 }

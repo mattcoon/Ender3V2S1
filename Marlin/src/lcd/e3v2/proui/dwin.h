@@ -142,7 +142,6 @@ typedef struct {
   uint32_t ledColor;
   bool adaptiveStepSmoothing;
   bool enablePreview;
-  bool fan_percent; // mmm
   bool time_format_textual; // mmm format time in HH:MM:SS or HHhMMmSSs
   bool TBShowCaption; // mmm show toolbar captions along with icons
   bool autoStoreSD; // mmmm when true store EEPROM triggers write SD Config file
@@ -168,7 +167,6 @@ typedef struct {
   bool printing_flag:1; // sd or host printing
   bool abort_flag:1;    // sd or host was aborted
   bool pause_flag:1;    // printing is paused
-  bool percent_flag:1;  // mmm percent was override by M73
   bool remain_flag:1;   // remain was override by M73
   bool select_flag:1;   // Popup button selected
   bool config_flag:1;   // SD G-code file is a Configuration file
@@ -218,6 +216,9 @@ void doCoolDown();
 #endif
 #if HAS_LCD_BRIGHTNESS
   void turnOffBacklight();
+  #if LCD_BACKLIGHT_TIMEOUT_MINS
+    void dimBacklight();
+  #endif
 #endif
 #if HAS_FILAMENT_SENSOR // mmm
   void setRunoutEnable();
@@ -231,15 +232,6 @@ void doCoolDown();
   void drawPrepareLaserMenu();
   void onClick_LaserTest();
   void setLaserTest();
-#endif
-  #if LCD_BACKLIGHT_TIMEOUT_MINS
-    void dimBacklight();
-  #endif
-#if ENABLED(LCD_BED_TRAMMING)
-  TERN(HAS_BED_PROBE, float, void) Tram(uint8_t point, bool stow_probe = true);
-  #if ENABLED(HAS_BED_PROBE)
-    void trammingwizard();
-  #endif
 #endif
 void applyExtMinT();
 void parkHead();
