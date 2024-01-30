@@ -27,7 +27,6 @@
 #include "../../../feature/powerloss.h"
 #include "../../../feature/bltouch.h"
 #include "dwin.h"
-// #include "proui.h"
 #include "../../marlinui.h"
 #include "../../../libs/buzzer.h"
 #include "../../../feature/bedlevel/bedlevel.h"
@@ -103,7 +102,7 @@ void writeSDConfig() {
     writeMaterialConfig(&buffer);
 
     // ; Probe settings
-    buffer += "C29L" + String(meshSet.mesh_min_x) + "R" + String(meshSet.mesh_max_x) + "F" + String(meshSet.mesh_min_x) + "B" + String(meshSet.mesh_max_y) + "N" + String(meshSet.grid_max_points_x) + "\n";
+    buffer += "C29L" + String(meshSet.mesh_min_x) + "R" + String(meshSet.mesh_max_x) + "F" + String(meshSet.mesh_min_x) + "B" + String(meshSet.mesh_max_y) + "X" + String(meshSet.grid_max_points_x) + "Y" + String(meshSet.grid_max_points_y) + "\n";
     #if HAS_BED_PROBE
       buffer += "M851X" + String(probe.offset.x) + "Y" + String(probe.offset.y) + "Z" + String(probe.offset.z) + "\n";
       buffer += "C851S" + String(PRO_data.zprobefeedslow) + "M" + String(PRO_data.multiple_probing) + "\n";
