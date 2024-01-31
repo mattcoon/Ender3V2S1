@@ -686,21 +686,21 @@ void _drawIconBlink(bool &flag, const bool sensor, const uint8_t icon1, const ui
 #if HAS_HOTEND
   void _drawHotendIcon() {
     static bool _isHeatingHotend = false;
-    _drawIconBlink(_isHeatingHotend, thermalManager.isHeatingHotend(EXT), ICON_SetEndTemp, ICON_SetEndTemp, 10, 383);
+    _drawIconBlink(_isHeatingHotend, thermalManager.isHeatingHotend(EXT), ICON_HotendTemp, ICON_SetEndTemp, 10, 383);
   }
 #endif
 
 #if HAS_HEATED_BED
   void _drawBedIcon() {
     static bool _isHeatingBed = false;
-    _drawIconBlink(_isHeatingBed, thermalManager.isHeatingBed(), ICON_SetBedTemp, ICON_SetBedTemp, 10, 416);
+    _drawIconBlink(_isHeatingBed, thermalManager.isHeatingBed(), ICON_BedTemp, ICON_SetBedTemp, 10, 416);
   }
 #endif
 
 void _drawZOffsetIcon() {
   #if HAS_LEVELING
     static bool _leveling_active = false;
-    _drawIconBlink(_leveling_active, planner.leveling_active, ICON_Zoffset, ICON_Zoffset, 186, 416);
+    _drawIconBlink(_leveling_active, planner.leveling_active, ICON_Zoffset, ICON_SetZOffset, 186, 416);
   #else
     DWINUI::drawIcon(ICON_Zoffset, 187, 416);
   #endif
@@ -1726,7 +1726,6 @@ void dwinPrintStarted() {
   DEBUG_ECHOLNPGM("dwinPrintStarted: ", sdPrinting());
   TERN_(SET_PROGRESS_PERCENT, ui.progress_reset());
   TERN_(SET_REMAINING_TIME, ui.reset_remaining_time());
-  hmiFlag.remain_flag = false;
   hmiFlag.pause_flag = false;
   hmiFlag.abort_flag = false;
   select_print.reset();

@@ -46,9 +46,12 @@
 #define ICON_Leveling_0          7
 #define ICON_Leveling_1          8
 #define ICON_HotendTemp          9
+#define ICON_SetEndTemp         ICON_HotendTemp
 #define ICON_BedTemp            10
+#define ICON_SetBedTemp         ICON_BedTemp
 #define ICON_Speed              11
 #define ICON_Zoffset            12
+#define ICON_SetZOffset        ICON_Zoffset
 #define ICON_Back               13
 #define ICON_File               14
 #define ICON_PrintTime          15
@@ -85,8 +88,8 @@
 #define ICON_ResumeEEPROM       44
 #define ICON_Info               45
 
-#define ICON_SetEndTemp         46
-#define ICON_SetBedTemp         47
+// #define ICON_SetEndTemp         46
+// #define ICON_SetBedTemp         47
 #define ICON_FanSpeed           48
 #define ICON_SetPLAPreheat      49
 #define ICON_SetABSPreheat      50
@@ -116,7 +119,7 @@
 #define ICON_StepZ              73
 #define ICON_StepE              74
 #define ICON_Setspeed           75
-#define ICON_SetZOffset         76
+// #define ICON_SetZOffset         76
 #define ICON_Rectangle          77
 #define ICON_BLTouch            78
 #define ICON_TempTooLow         79

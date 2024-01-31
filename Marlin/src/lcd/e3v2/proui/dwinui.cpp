@@ -208,7 +208,7 @@ void DWINUI::iconShow(bool BG, uint8_t icon, uint16_t x, uint16_t y) {
 
 void DWINUI::drawButton(uint16_t color, uint16_t bcolor, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const char * const caption) {
   dwinDrawRectangle(1, bcolor, x1, y1, x2, y2);
-  drawCenteredString(0, fontID, color, bcolor, x1, x2, (y2 + y1 - fontHeight())/2, caption);
+  DWINUI::drawCenteredString(0, fontID, color, bcolor, x1, x2, (y2 + y1 - fontHeight())/2, caption);
 }
 
 void DWINUI::drawButton(uint8_t id, uint16_t x, uint16_t y) {
@@ -219,7 +219,6 @@ void DWINUI::drawButton(uint8_t id, uint16_t x, uint16_t y) {
     case BTN_Print   : drawButton(GET_TEXT_F(MSG_BUTTON_PRINT), x, y); break;
     case BTN_Save    : drawButton(GET_TEXT_F(MSG_BUTTON_SAVE), x, y); break;
     case BTN_Purge   : drawButton(GET_TEXT_F(MSG_BUTTON_PURGE), x, y); break;
-    case BTN_Repeat  : drawButton(GET_TEXT_F(MSG_BUTTON_REPEAT), x, y); break; // mmm
     default: break;
   }
 }

@@ -191,7 +191,6 @@
 #define BTN_Print             90
 #define BTN_Save              91
 #define BTN_Purge             92
-#define BTN_Repeat            98 // mmm
 
 // UI element defines and constants
 #define DWIN_FONT_MENU font8x16
