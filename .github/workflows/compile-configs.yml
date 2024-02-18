@@ -42,6 +42,7 @@ jobs:
       run: |
         if [ "$BOARD" = V422 ]; then BOARDTMP=v4.2.2; else BOARDTMP=v4.2.7; fi;
         if [ "$CONFIG" = UBL ]; then CONFIGTMP=UBL; else CONFIGTMP=ABL; fi;
+        echo "${CONFIG}" "${BOARD} $BOARD $CONFIG" 
         echo "::set-output name=filename::E3V2-${CONFIGTMP}-${BOARDTMP}-${VERSION}.bin"
         cp configurations/${CONFIGTMP}/Configuration.h Marlin/Configuration.h
         cp configurations/${CONFIGTMP}/Configuration_adv.h Marlin/Configuration_adv.h
