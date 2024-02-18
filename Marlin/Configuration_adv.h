@@ -1112,7 +1112,6 @@
    */
   #define TRAMMING_SCREW_THREAD 40
 
-
 #endif
 
 // @section motion control
@@ -2397,7 +2396,7 @@
 #endif
 
 #if ALL(AUTO_BED_LEVELING_UBL, EEPROM_SETTINGS)
-  #define OPTIMIZED_MESH_STORAGE  // Store mesh with less precision to save EEPROM space
+  //#define OPTIMIZED_MESH_STORAGE  // Store mesh with less precision to save EEPROM space
 #endif
 
 /**
