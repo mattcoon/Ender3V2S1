@@ -10,6 +10,8 @@ on:
     branches:
     - bugfix-2.1.x
     - MattMods2023
+    - Matt2023_fall
+    - Matt2024_winter
     - 2.1.x
     paths-ignore:
     - config/**
@@ -21,6 +23,7 @@ on:
     - bugfix-2.1.x
     - MattMods2023
     - Matt2023_fall
+    - Matt2024_winter
     - 2.1.x
     paths-ignore:
     - config/**
