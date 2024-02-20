@@ -69,7 +69,7 @@ jobs:
         - mks_tinybee
 
         # Teensy 2
-        #- at90usb1286_cdc
+        - at90usb1286_cdc
 
         # Teensy MK20DX256
         - teensy31
@@ -115,10 +115,10 @@ jobs:
         - STM32F103RC_meeb_maple
         - STM32F103VE_longer_maple
         - STM32F103VE_ZM3E4V2_USB_maple
-        #- mks_robin_maple
-        #- mks_robin_nano_v1v2_maple
-        #- STM32F103RC_btt_maple
-        #- STM32F103RE_creality_maple
+        - mks_robin_maple
+        - mks_robin_nano_v1v2_maple
+        - STM32F103RC_btt_maple
+        - STM32F103RE_creality_maple
 
         # STM32G0
         - STM32G0B1RE_btt
