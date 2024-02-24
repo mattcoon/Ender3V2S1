@@ -209,7 +209,9 @@ bool CardReader::is_visible_entity(const dir_t &p OPTARG(CUSTOM_FIRMWARE_UPLOAD,
     constexpr bool onlyBin = false;
   #endif
 
-  if ( (p.attributes & DIR_ATT_HIDDEN)                  // Hidden by attribute
+  if ( (p.attributes & DIR_ATT_HIDDEN)                // Hidden by attribute
+    || p.name[0] == '.'                               // Hidden by name
+    || longFilename[0] == '.'                         // Hidden by name
     // When readDir() > 0 these must be false:
     //|| pn0 == DIR_NAME_FREE || pn0 == DIR_NAME_DELETED  // Clear or Deleted entry
     //|| pn0 == '.' || longFilename[0] == '.'             // Hidden file
@@ -217,7 +219,7 @@ bool CardReader::is_visible_entity(const dir_t &p OPTARG(CUSTOM_FIRMWARE_UPLOAD,
   ) return false;
 
   flag.filenameIsDir = DIR_IS_SUBDIR(&p);               // We know it's a File or Folder
-  setBinFlag(p.name[8] == 'B' &&                        // List .bin files (a firmware file for flashing)
+  setBinFlag(p.name[8] == 'B' &&                         // List .bin files (a firmware file for flashing)
              p.name[9] == 'I' &&
              p.name[10]== 'N');
 
