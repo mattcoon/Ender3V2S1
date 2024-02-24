@@ -111,7 +111,8 @@ void writeSDConfig() {
 
     // ; filament sensor and runout
     #if HAS_FILAMENT_SENSOR
-      buffer += "C412M" + String(PRO_data.Runout_active_state) + "S" + String(runout.enabled) + "D" + String(runout.runout_distance()) + "\n";
+      buffer += "C412M" + String(PRO_data.Runout_active_state) + "\n";
+      buffer += "M412S" + String(runout.enabled) + "D" + String(runout.runout_distance()) + "\n";
     #endif
 
     // ; Exttruder settings
