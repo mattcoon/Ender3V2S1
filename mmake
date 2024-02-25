@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# backup configs
+backup() {
+  cp ./Marlin/Configuration.h ./Marlin/Configuration.h.bak
+  cp ./Marlin/Configuration_adv.h ./Marlin/Configuration_adv.h.bak
+}
+
+# restore
+restore() {
+  cp ./Marlin/Configuration.h.bak ./Marlin/Configuration.h
+  cp ./Marlin/Configuration_adv.h.bak ./Marlin/Configuration_adv.h
+}
+
+UBL() {
+  # build Ender3 V2 with UBL
+  echo "Building UBL"
+  cp ./Configurations/UBL/* Marlin
+  platformio run -e STM32F103RC_creality_V427
+  platformio run -e STM32F103RC_creality_V422
+}
+
+ABL() {
+  # build Ender3 V2 with ABL
+  echo "Building ABL"
+  cp ./Configurations/ABL/* Marlin
+  platformio run -e STM32F103RC_creality_V427
+  platformio run -e STM32F103RC_creality_V422
+}
+
+CNC() {
+  # build CNC for SKR PRO
+  echo "Building CNC"
+  cp ./Configurations/CNC/* Marlin
+  platformio run -e BIGTREE_SKR_PRO
+}
+
+if [ "$1" == "backup" ]; then
+  backup
+elif [ "$1" == "restore" ]; then
+  restore
+elif [ "$1" == "UBL" ]; then
+  backup
+  UBL
+elif [ "$1" == "ABL" ]; then
+  backup
+  ABL
+elif [ "$1" == "CNC" ]; then
+  backup
+  CNC
+elif [ "$1" == "ALL" ]; then
+  backup
+  UBL
+  CNC
+  restore
+else
+  echo "Usage: $0 [ALL|backup|restore|UBL|ABL|CNC]"
+fi
+
