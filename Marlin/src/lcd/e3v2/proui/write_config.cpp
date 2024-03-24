@@ -25,7 +25,9 @@
 #include "../../../module/probe.h"
 #include "../../../feature/runout.h"
 #include "../../../feature/powerloss.h"
-#include "../../../feature/bltouch.h"
+#if ENABLED(BLTOUCH)
+  #include "../../../feature/bltouch.h"
+#endif
 #include "dwin.h"
 #include "../../marlinui.h"
 #include "../../../libs/buzzer.h"
@@ -106,7 +108,9 @@ void writeSDConfig() {
     #if HAS_BED_PROBE
       buffer += "M851X" + String(probe.offset.x) + "Y" + String(probe.offset.y) + "Z" + String(probe.offset.z) + "\n";
       buffer += "C851S" + String(PRO_data.zprobefeedslow) + "M" + String(PRO_data.multiple_probing) + "\n";
-      buffer += "M401S" + String(bltouch.high_speed_mode? 1:0) + "\n";
+      #if ENABLED(BLTOUCH)
+        buffer += "M401S" + String(bltouch.high_speed_mode? 1:0) + "\n";
+      #endif
     #endif
 
     // ; filament sensor and runout
