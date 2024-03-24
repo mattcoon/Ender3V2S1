@@ -114,6 +114,8 @@
       SERIAL_ECHOLNPGM_P(SP_Y_STR, LINEAR_UNIT(endstops.y2_endstop_adj));
     #endif
     #if ENABLED(Z_MULTI_ENDSTOPS)
+      report_echo_start(forReplay);
+      SERIAL_ECHOPGM("  M666");
       #if NUM_Z_STEPPERS >= 3
         SERIAL_ECHOPGM(" S2 Z", LINEAR_UNIT(endstops.z3_endstop_adj));
         report_echo_start(forReplay);
