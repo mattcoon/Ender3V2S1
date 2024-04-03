@@ -2390,7 +2390,7 @@ void applyMove() {
   #if !ALL(CASE_LIGHT_MENU, CASE_LIGHT_USE_NEOPIXEL)
     void setLedStatus() {
       leds.toggle();
-      showChkbLine(leds.lights_on);
+      showCheckboxLine(leds.lights_on);
     }
   #endif
   #if HAS_COLOR_LEDS
