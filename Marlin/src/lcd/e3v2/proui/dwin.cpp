@@ -686,14 +686,14 @@ void _drawIconBlink(bool &flag, const bool sensor, const uint8_t icon1, const ui
 #if HAS_HOTEND
   void _drawHotendIcon() {
     static bool _isHeatingHotend = false;
-    _drawIconBlink(_isHeatingHotend, thermalManager.isHeatingHotend(EXT), ICON_HotendTemp, ICON_SetEndTemp, 10, 383);
+    _drawIconBlink(_isHeatingHotend, thermalManager.isHeatingHotend(EXT), ICON_HotendTemp, ICON_SetEndTemp, DASH_ICO_COL1, 383);
   }
 #endif
 
 #if HAS_HEATED_BED
   void _drawBedIcon() {
     static bool _isHeatingBed = false;
-    _drawIconBlink(_isHeatingBed, thermalManager.isHeatingBed(), ICON_BedTemp, ICON_SetBedTemp, 10, 416);
+    _drawIconBlink(_isHeatingBed, thermalManager.isHeatingBed(), ICON_BedTemp, ICON_SetBedTemp, DASH_ICO_COL1, 416);
   }
 #endif
 
@@ -731,18 +731,18 @@ void _drawFeedrate() {
     int16_t _value;
     if (blink) {
       _value = feedrate_percentage;
-      DWINUI::drawString(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 116 + 4 * STAT_CHR_W + 2, 384, F(" %"));
+      DWINUI::drawString(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 116 + 4 * DASH_CHR_W + 2, 384, F(" %"));
     }
     else {
       _value = round(feedrate_mm_s * feedrate_percentage / 100);
-      dwinDrawBox(1, hmiData.colorBackground, 116 + 5 * STAT_CHR_W + 2, 384, 20, 20);
+      dwinDrawBox(1, hmiData.colorBackground, 116 + 5 * DASH_CHR_W + 2, 384, 20, 20);
     }
-    DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 116 + 2 * STAT_CHR_W, 384, _value);
+    DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 116 + 2 * DASH_CHR_W, 384, _value);
   #else
     static int16_t _feedrate = 100;
     if (_feedrate != feedrate_percentage) {
       _feedrate = feedrate_percentage;
-      DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 116 + 2 * STAT_CHR_W, 384, _feedrate);
+      DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 116 + 2 * DASH_CHR_W, 384, _feedrate);
     }
   #endif
 }
@@ -803,13 +803,13 @@ void updateVariable() {
     if (_new_hotend_temp)
       DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 28, 384, _hotendtemp);
     if (_new_hotend_target)
-      DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 25 + 4 * STAT_CHR_W + 6, 384, _hotendtarget);
+      DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 25 + 4 * DASH_CHR_W + 6, 384, _hotendtarget);
     _drawHotendIcon();
 
     static int16_t _flow = planner.flow_percentage[EXT];
     if (_flow != planner.flow_percentage[EXT]) {
       _flow = planner.flow_percentage[EXT];
-      DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 116 + 2 * STAT_CHR_W, 417, _flow);
+      DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 116 + 2 * DASH_CHR_W, 417, _flow);
     }
   #endif
 
@@ -817,7 +817,7 @@ void updateVariable() {
     if (_new_bed_temp)
       DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 28, 417, _bedtemp);
     if (_new_bed_target)
-      DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 25 + 4 * STAT_CHR_W + 6, 417, _bedtarget);
+      DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 25 + 4 * DASH_CHR_W + 6, 417, _bedtarget);
     _drawBedIcon();
   #endif
 
@@ -827,7 +827,7 @@ void updateVariable() {
   #if HAS_FAN
     if (_new_fanspeed) {
       _fanspeed = thermalManager.fan_speed[0];
-      DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 195 + 2 * STAT_CHR_W, 384, blink ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
+      DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 195 + 2 * DASH_CHR_W, 384, blink ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
     }
   #endif
 
@@ -1029,26 +1029,26 @@ void dwinDrawDashboard() {
   TERN_(CV_LASER_MODULE, if (laser_device.is_laser_device()) return);
 
   #if HAS_HOTEND
-    DWINUI::drawIcon(ICON_HotendTemp, 10, 383);
+    DWINUI::drawIcon(ICON_HotendTemp, DASH_ICO_COL1, 383);
     DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 28, 384, thermalManager.wholeDegHotend(EXT));
-    DWINUI::drawString(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 25 + 3 * STAT_CHR_W + 5, 384, F("/"));
-    DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 25 + 4 * STAT_CHR_W + 6, 384, thermalManager.degTargetHotend(EXT));
+    DWINUI::drawString(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 25 + 3 * DASH_CHR_W + 5, 384, F("/"));
+    DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 25 + 4 * DASH_CHR_W + 6, 384, thermalManager.degTargetHotend(EXT));
 
     DWINUI::drawIcon(ICON_StepE, 112, 417);
-    DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 116 + 2 * STAT_CHR_W, 417, planner.flow_percentage[EXT]);
-    DWINUI::drawString(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 116 + 5 * STAT_CHR_W + 2, 417, F("%"));
+    DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 116 + 2 * DASH_CHR_W, 417, planner.flow_percentage[EXT]);
+    DWINUI::drawString(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 116 + 5 * DASH_CHR_W + 2, 417, F("%"));
   #endif
 
   #if HAS_HEATED_BED
-    DWINUI::drawIcon(ICON_BedTemp, 10, 416);
+    DWINUI::drawIcon(ICON_BedTemp, DASH_ICO_COL1, 416);
     DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 28, 417, thermalManager.wholeDegBed());
-    DWINUI::drawString(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 25 + 3 * STAT_CHR_W + 5, 417, F("/"));
-    DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 25 + 4 * STAT_CHR_W + 6, 417, thermalManager.degTargetBed());
+    DWINUI::drawString(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 25 + 3 * DASH_CHR_W + 5, 417, F("/"));
+    DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 25 + 4 * DASH_CHR_W + 6, 417, thermalManager.degTargetBed());
   #endif
 
   DWINUI::drawIcon(ICON_Speed, 113, 383);
-  DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 116 + 2 * STAT_CHR_W, 384, feedrate_percentage);
-  IF_DISABLED(SHOW_SPEED_IND, DWINUI::drawString(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 116 + 5 * STAT_CHR_W + 2, 384, F("%")));
+  DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 116 + 2 * DASH_CHR_W, 384, feedrate_percentage);
+  IF_DISABLED(SHOW_SPEED_IND, DWINUI::drawString(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 116 + 5 * DASH_CHR_W + 2, 384, F("%")));
 
   #if HAS_FAN
     #if ENABLED(LASER_FAN_SHARING) // mmm
@@ -1057,9 +1057,9 @@ void dwinDrawDashboard() {
     else
     #endif
       DWINUI::drawIcon(ICON_FanSpeed, 186, 383);
-    DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 195 + 2 * STAT_CHR_W, 384, blink ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
-    DWINUI::drawString( DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 195 + 5 * STAT_CHR_W + 2, 384, blink ? F("%") : F(" "));
-  #endif
+    DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 195 + 2 * DASH_CHR_W, 384, blink ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
+    DWINUI::drawString( DWIN_FONT_DASH, hmiData.colorIndicator, hmiData.colorBackground, 195 + 5 * DASH_CHR_W + 2, 384, blink ? F("%") : F(" "));
+  #eDASH
 
   #if HAS_ZOFFSET_ITEM
     DWINUI::drawIcon(planner.leveling_active ? ICON_SetZOffset : ICON_Zoffset, 186, 416);
@@ -1512,7 +1512,7 @@ void dwinHomingDone() {
         proUIEx.cancel_lev = 0;
         DWINUI::drawButton(BTN_Cancel, 86, 305);
       #else
-        dwinShowPopup(ICON_AutoLeveling, GET_TEXT_F(MSG_BED_LEVELING), GET_TEXT_F(MSG_PLEASE_WAIT), TERN(PROUI_EX, BTN_Cancel, 0));
+        dwinShowPopup(ICON_AutoLeveling, GET_TEXT_F(MSG_BED_LEVELING), GET_TEXT_F(MSG_PLEASE_WAIT));
       #endif
       #if ALL(AUTO_BED_LEVELING_UBL, PREHEAT_BEFORE_LEVELING)
         #if HAS_BED_PROBE
@@ -3954,8 +3954,6 @@ void drawStepsMenu() {
 
   #if ENABLED(MESH_EDIT_MENU)
     bool autoMovToMesh = false;
-    #define Z_OFFSET_MIN -3
-    #define Z_OFFSET_MAX  3
     void applyEditMeshX() { bedLevelTools.mesh_x = menuData.value; if (autoMovToMesh) bedLevelTools.moveToXY(); }
     void applyEditMeshY() { bedLevelTools.mesh_y = menuData.value; if (autoMovToMesh) bedLevelTools.moveToXY(); }
     void liveEditMesh() { getMenuItem(editZValueItem)->value = &bedlevel.z_values[hmiValue.select ? bedLevelTools.mesh_x : menuData.value][hmiValue.select ? menuData.value : bedLevelTools.mesh_y]; redrawItem(editZValueItem); }
