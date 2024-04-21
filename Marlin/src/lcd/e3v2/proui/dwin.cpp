@@ -748,8 +748,8 @@ void _drawFeedrate() {
 }
 
 void _drawFanspeed() {
-  DWINUI::drawInt(    DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 195 + 2 * STAT_CHR_W, 384, blink ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
-  DWINUI::drawString( DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 195 + 5 * STAT_CHR_W + 2, 384, blink ? F("%") : F(" "));
+  DWINUI::drawInt(    DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 195 + 2 * DASH_CHR_W, 384, blink ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
+  DWINUI::drawString( DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 195 + 5 * DASH_CHR_W + 2, 384, blink ? F("%") : F(" "));
 }
 
 void _drawXYZPosition(const bool force) {
