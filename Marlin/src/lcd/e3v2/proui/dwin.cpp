@@ -1058,8 +1058,8 @@ void dwinDrawDashboard() {
     #endif
       DWINUI::drawIcon(ICON_FanSpeed, 186, 383);
     DWINUI::drawInt(DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 3, 195 + 2 * DASH_CHR_W, 384, blink ? (uint32_t)floor((thermalManager.fan_speed[0]) * 100 / 255) : thermalManager.fan_speed[0]);
-    DWINUI::drawString( DWIN_FONT_DASH, hmiData.colorIndicator, hmiData.colorBackground, 195 + 5 * DASH_CHR_W + 2, 384, blink ? F("%") : F(" "));
-  #eDASH
+    DWINUI::drawString( DWIN_FONT_STAT, hmiData.colorIndicator, hmiData.colorBackground, 195 + 5 * DASH_CHR_W + 2, 384, blink ? F("%") : F(" "));
+  #endif
 
   #if HAS_ZOFFSET_ITEM
     DWINUI::drawIcon(planner.leveling_active ? ICON_SetZOffset : ICON_Zoffset, 186, 416);
